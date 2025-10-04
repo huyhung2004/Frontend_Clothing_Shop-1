@@ -1,0 +1,18 @@
+<h2 mat-dialog-title class="center">Add Category</h2>
+
+
+<div mat-dialog-content>
+  <form #categoryForm="ngForm" (ngSubmit)="onSubmit()">
+    <mat-form-field class="w-100">
+      <mat-label>Category Name</mat-label>
+      <input matInput [(ngModel)]="category.name" name="name" required />
+    </mat-form-field>
+
+    <div mat-dialog-actions class="action-buttons">
+      <button mat-flat-button color="primary" class="save-button" type="submit" [disabled]="!category.name">
+        Save
+      </button>
+      <button mat-button class="cancel-button" type="button" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</div>

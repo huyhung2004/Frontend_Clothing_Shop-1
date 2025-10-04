@@ -1,0 +1,67 @@
+<div class="container-fluid">
+    <h2 class="text-center text-primary mb-4">Order Management</h2>
+  
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover table-striped shadow-sm">
+        <thead class="table-dark">
+  <tr>
+        <th>ID</th>
+        <th>Fullname</th>
+        <th>PhoneNumber</th>
+        <th>Address</th>
+        <th>OrderDate</th>
+        <th>Status</th>
+        <th>TotalMoney</th>
+        <th>ShippingMethod</th>
+        <th>ShippingDate</th>
+        <th>PaymentMethod</th>
+        <th>Actions</th>
+      </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of orders">
+            <td>{{ item.id }}</td>
+        <td>{{ item.fullname }}</td>
+        <td>{{ item.phoneNumber }}</td>
+        <td>{{ item.address }}</td>
+        <td>{{ item.orderDate | date: 'short' }}</td>
+        <td>{{ item.status }}</td>
+        <td>{{ item.totalMoney | currency }}</td>
+        <td>{{ item.shippingMethod }}</td>
+        <td>{{ item.shippingDate | date: 'short' }}</td>
+        <td>{{ item.paymentMethod }}</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditDialog(item)">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <span class="mx-2"></span>
+              <button class="btn btn-sm btn-outline-danger " (click)="openDeleteDialog(item)">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <nav *ngIf="totalPages > 1" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="changePage(currentPage - 1)">Previous</button>
+        </li>
+        <li
+          class="page-item"
+          *ngFor="let page of pages"
+          [class.active]="page === currentPage"
+        >
+          <button class="page-link" (click)="changePage(page)">{{ page }}</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="changePage(currentPage + 1)">Next</button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  
+  
+  

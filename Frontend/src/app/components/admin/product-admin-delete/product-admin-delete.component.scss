@@ -1,0 +1,43 @@
+.dialog-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #d32f2f; // màu đỏ nổi bật cho tiêu đề
+  margin-bottom: 10px;
+}
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.left-buttons,
+.right-buttons {
+  display: flex;
+}
+
+.delete-button {
+  background-color: transparent;
+  color: #d21919;
+  border: 1px solid #d21919;
+  margin-left: 30px;
+
+  &:hover {
+    background-color: #d21919 !important;
+    color: #fff !important;
+  }
+}
+
+.cancel-button {
+  background-color: transparent;
+  color: #1976d2;
+  border: 1px solid #1976d2;
+  margin-right: 30px;
+
+  &:hover {
+    background-color: #1976d2 !important;
+    color: #fff !important;
+  }
+}

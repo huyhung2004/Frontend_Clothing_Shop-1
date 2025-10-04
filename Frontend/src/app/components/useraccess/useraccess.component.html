@@ -1,0 +1,7 @@
+<div *ngIf="!hasAccessToken" id="userAccountDropdown" class="nav-item dropdown" (click)="toggleDropdown($event)">
+    <a href="#" class="nav-link dropdown-toggle">User Account</a>
+    <div class="dropdown-menu" [class.show]="dropdownOpen">
+        <a id="loginLink" class="dropdown-item" routerLink="admin/login">Login</a>
+        <a id="registerLink" class="dropdown-item" routerLink="admin/register">Register</a>
+    </div>
+</div>

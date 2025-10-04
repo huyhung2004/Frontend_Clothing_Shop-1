@@ -1,0 +1,64 @@
+<h2 mat-dialog-title>Edit Order</h2>
+<div mat-dialog-content>
+  <form style="padding-left: 16px;">
+    <div class="mb-2">
+      <label>ID:</label>
+      <input class="form-control" [value]="data.id" disabled />
+    </div>
+
+    <div class="mb-2">
+      <label>Fullname:</label>
+      <input class="form-control" [value]="data.fullname" disabled />
+    </div>
+
+    <div class="mb-2">
+      <label>Phone Number:</label>
+      <input class="form-control" [value]="data.phoneNumber" disabled />
+    </div>
+
+    <div class="mb-2">
+      <label>Address:</label>
+      <input class="form-control" [value]="data.address" disabled />
+    </div>
+
+    <div class="mb-2">
+      <label>Order Date:</label>
+      <input class="form-control" [value]="data.orderDate | date: 'short'" disabled />
+    </div>
+
+    <div class="mb-2">
+      <label>Status:</label>
+      <select class="form-select" [(ngModel)]="order.status" name="status">
+        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+      </select>
+    </div>
+
+    <div class="mb-2">
+      <label>Total Money:</label>
+      <input class="form-control" [value]="data.totalMoney | currency" disabled />
+    </div>
+
+    <div class="mb-2">
+      <label>Shipping Method:</label>
+      <input class="form-control" [value]="data.shippingMethod" disabled />
+    </div>
+
+    <div class="mb-2">
+      <label>Shipping Date:</label>
+      <input class="form-control" [value]="data.shippingDate | date: 'short'" disabled />
+    </div>
+
+    <div class="mb-2">
+      <label>Payment Method:</label>
+      <input class="form-control" [value]="data.paymentMethod" disabled />
+    </div>
+  </form>
+</div>
+
+<div mat-dialog-actions class="d-flex justify-between">
+  <button mat-raised-button color="primary" class="save-button" (click)="onSubmit()">Save</button>
+  <button mat-stroked-button color="warn" class="cancel-button" (click)="onCancel()">Cancel</button>
+  
+</div>
+
+

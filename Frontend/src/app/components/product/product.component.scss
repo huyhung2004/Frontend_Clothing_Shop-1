@@ -1,0 +1,145 @@
+/* FILTER BAR */
+.filter-bar {
+  gap: 1rem;
+
+  > .filter-item {
+    flex: 1 1 0;  // chia đều
+  }
+}
+
+.search-item {
+  display: flex;
+  flex-direction: column;
+
+  .input-group-text {
+    font-size: 1rem;
+    color: #6c757d;
+    border: 1px solid #ced4da;
+    border-right: none;
+    border-radius: 0.375rem 0 0 0.375rem;
+  }
+
+  .form-control {
+    border: 1px solid #ced4da;
+    border-left: none;
+    border-radius: 0 0.375rem 0.375rem 0;
+    &:focus {
+      box-shadow: none;
+      border-color: #007bff;
+    }
+  }
+
+  .suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+}
+
+.upload-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .btn {
+    font-weight: 500;
+  }
+
+  .small {
+    color: #495057;
+  }
+}
+
+.price-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .btn {
+    border-radius: 0.375rem;
+    &:focus {
+      box-shadow: none;
+      border-color: #007bff;
+    }
+  }
+
+  .dropdown-menu {
+    width: 100%;
+  }
+}
+
+/* PAGINATION */
+.pagination .page-link {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
+}
+.pagination .page-item.active .page-link {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}
+.pagination .page-item .page-link:hover {
+  background-color: #e9ecef;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .filter-bar {
+    flex-direction: column;
+  }
+  .filter-bar > .filter-item {
+    width: 100%;
+  }
+}
+.preview-wrapper {
+  img {
+    border: 1px solid #ddd;
+    padding: 4px;
+    background: #fff;
+  }
+}
+.preview-wrapper {
+  position: relative;
+  display: inline-block;
+
+  img {
+    display: block;
+    border: 1px solid #ddd;
+    padding: 4px;
+    background: #fff;
+  }
+
+  .preview-close {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: #fff;
+    border: 2px solid #dc3545; /* viền đỏ nổi bật */
+    border-radius: 50%;
+    color: #dc3545;            /* chữ "×" màu đỏ */
+    font-size: 1.1rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    
+    &::before {
+      content: "×";
+    }
+    
+    &:hover {
+      background: #dc3545;
+      color: #fff;
+      border-color: #dc3545;
+    }
+  }
+}
+

@@ -1,0 +1,221 @@
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <div class="col-md-3">
+            <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                <!-- Orders Tab -->
+                <a class="nav-link" id="orders-nav" data-toggle="pill" role="tab"
+                    [ngClass]="{'active-tab': selectedTab === 'orders'}" (click)="setTab('orders')">
+                    <i class="fa" [ngClass]="selectedTab === 'orders' ? 'fa-hand-pointer' : 'fa-shopping-bag'"></i>
+                    Orders
+                </a>
+                <!-- Address Tab -->
+                <a class="nav-link" id="address-nav" data-toggle="pill" role="tab"
+                    [ngClass]="{'active-tab': selectedTab === 'address'}" (click)="setTab('address')">
+                    <i class="fa" [ngClass]="selectedTab === 'address' ? 'fa-hand-pointer' : 'fa-map-marker-alt'"></i>
+                    Address
+                </a>
+                <!-- Account Details Tab -->
+                <a class="nav-link" id="account-nav" data-toggle="pill" role="tab"
+                    [ngClass]="{'active-tab': selectedTab === 'account'}" (click)="setTab('account')">
+                    <i class="fa" [ngClass]="selectedTab === 'account' ? 'fa-hand-pointer' : 'fa-user'"></i>
+                    Account Details
+                </a>
+                <!-- Logout (không thay đổi style) -->
+                <a class="nav-link" (click)="logout()">
+                    <i class="fa fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="col-md-9">
+            <ng-container [ngSwitch]="selectedTab">
+                <!-- Order Tab -->
+                <div *ngSwitchCase="'orders'">
+                    <!-- Menu lọc trạng thái đơn hàng -->
+                    <div class="order-status-menu mb-3 d-flex justify-content-center">
+                        <button *ngFor="let status of statuses" (click)="selectedStatus = status"
+                            [ngClass]="{'active-status': selectedStatus === status}"
+                            class="btn btn-outline-primary mr-2 status-btn">
+                            {{ status | titlecase }}
+                            <span class="badge badge-secondary ml-1">{{ countOrdersByStatus(status) }}</span>
+                        </button>
+                    </div>
+
+
+
+
+                    <!-- Hiển thị danh sách đơn hàng đã được lọc -->
+                    <div *ngIf="filteredOrders && filteredOrders.length > 0; else noOrders">
+                        <div class="row">
+                            <div class="col-md-12" *ngFor="let order of filteredOrders">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <!-- Cột hình ảnh chồng lên nhau ở bên trái -->
+                                            <div class="col-md-2">
+                                                <div class="product-images">
+                                                    <img *ngFor="let productImg of order.products; let i = index"
+                                                        [src]="'assets/image/' + productImg.productImageUrl"
+                                                        alt="{{ productImg.name }}" [ngStyle]="{
+        'top': (i * 5) + 'px', 
+        'left': (i * 5) + 'px', 
+        'z-index': order.products.length - i
+    }">
+
+                                                </div>
+                                            </div>
+
+                                            <!-- Cột thông tin đơn hàng -->
+                                            <div class="col-md-8">
+                                                <p class="card-text">
+                                                    <strong>Full Name:</strong> {{ order.fullnameS }}<br>
+                                                    <strong>Phone Number:</strong> {{ order.phoneNumberS }}<br>
+                                                    <strong>Address:</strong> {{ order.addressS }}<br>
+                                                    <strong>Payment Method:</strong> {{ order.paymentMethod }}<br>
+                                                    <strong>Order Date:</strong> {{ order.orderDate | date:'short'
+                                                    }}<br>
+                                                    <strong>Status:</strong>
+                                                    <span [ngClass]="{
+                                        'text-success': order.status === 'completed',
+                                        'text-warning': order.status === 'processing'
+                                      }">{{ order.status }}</span><br>
+                                                    <strong>Total Money:</strong> {{ order.totalMoney | currency }}
+                                                </p>
+                                            </div>
+
+                                            <!-- Cột nút toggle -->
+                                            <div class="col-md-2 text-right">
+                                                <button class="btn btn-link" (click)="order.expanded = !order.expanded">
+                                                    <i class="fa"
+                                                        [ngClass]="order.expanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <hr />
+
+                                        <!-- Chi tiết sản phẩm (mở rộng khi toggle) -->
+                                        <div class="slide-container" [ngClass]="{'expanded': order.expanded}">
+                                            <div *ngFor="let product of order.products;">
+                                                <div class="row">
+                                                    <!-- Nếu cần, bạn có thể hiển thị hình ảnh chi tiết tại đây -->
+                                                    <div class="col-3">
+                                                        <img [src]="'assets/image/' + product.productImageUrl"
+                                                            class="img-fluid" alt="{{ product.name }}">
+                                                    </div>
+                                                    <div class="col-9">
+                                                        <h5>{{ product.name }}</h5>
+                                                        <p>
+                                                            <strong>Price:</strong> {{ product.price | currency }}<br>
+                                                            <strong>Quantity:</strong> {{ product.numberOfProducts
+                                                            }}<br>
+                                                            <strong>Total:</strong> {{ (product.numberOfProducts || 0) *
+                                                            (product.price || 0) | currency }}
+                                                        </p>
+                                                        <ng-container *ngIf="order.status === 'completed'">
+                                                            <ng-container
+                                                                *ngIf="reviewedMap[product.productId]; else notReviewed">
+                                                                <span class="text-success">Complete Review </span> |
+                                                                <button class="btn btn-secondary btn-sm ml-2"
+                                                                    (click)="editReview(product)">
+                                                                    Edit Review
+                                                                </button>
+                                                            </ng-container>
+                                                            <ng-template #notReviewed>
+                                                                <button class="btn btn-primary btn-sm"
+                                                                    (click)="reviewProduct(product)">
+                                                                    Review Product
+                                                                </button>
+                                                            </ng-template>
+                                                        </ng-container>
+                                                    </div>
+                                                </div>
+                                                <hr />
+                                            </div>
+                                        </div>
+
+                                        <!-- Các nút hành động khác nếu cần -->
+                                        <button *ngIf="order.status === 'processing'"
+                                            class="btn btn-secondary btn-sm mr-2" (click)="changeOrderAddress(order)">
+                                            Change Address
+                                        </button>
+                                        <button
+                                            *ngIf="order.status === 'processing' || order.status === 'addressChanged'"
+                                            class="btn btn-danger btn-sm" (click)="cancelOrder(order)">
+                                            Cancel Order
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ng-template #noOrders>
+                        <div>No orders found.</div>
+                    </ng-template>
+
+                    <ng-template #noOrders>
+                        <div>No orders found.</div>
+                    </ng-template>
+
+                    <ng-template #noOrders>
+                        <div>No orders found.</div>
+                    </ng-template>
+
+                    <ng-template #noOrders>
+                        <div>No orders found.</div>
+                    </ng-template>
+                </div>
+
+                <!-- Address Tab -->
+                <div *ngSwitchCase="'address'">
+                    <app-address></app-address>
+                    <p></p>
+                </div>
+
+                <!-- Account Details Tab -->
+                <div *ngSwitchCase="'account'">
+                    <h3>Account Details</h3>
+
+                    <!-- Phần cập nhật thông tin -->
+                    <h5>Edit Account Details</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" placeholder="Full Name" [(ngModel)]="fullname">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" placeholder="Mobile" [(ngModel)]="phoneNumber">
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <button class="btn btn-primary" (click)="updateAccount()">Update Account</button>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h4>Password Change</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="password" class="form-control" placeholder="Current Password"
+                                [(ngModel)]="currentPassword">
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <input type="password" class="form-control" placeholder="New Password"
+                                [(ngModel)]="newPassword">
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <input type="password" class="form-control" placeholder="Confirm Password"
+                                [(ngModel)]="confirmPassword">
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <button class="btn btn-primary" (click)="changePassword()">Save Changes</button>
+                        </div>
+                    </div>
+                    <p></p>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

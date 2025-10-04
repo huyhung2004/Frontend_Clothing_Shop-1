@@ -1,0 +1,53 @@
+:host ::ng-deep h2.mat-dialog-title.center {
+  text-align: left;
+  padding-left: 16px;
+  font-weight: 1000;
+  color: #1976d2;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .save-button,
+  .cancel-button {
+    transition: all 0.3s ease;
+  }
+
+  .save-button {
+    color: #1976d2;
+    border: 1px solid #1976d2;
+    background-color: transparent;
+    padding: 6px 12px;
+  }
+  
+  .cancel-button {
+    color: #f44336;
+    border: 1px solid #f44336;
+    background-color: transparent;
+    padding: 6px 12px;
+  }
+  
+  
+  
+  .save-button:hover {
+    background-color: #1976d2 !important;
+    color: #fff;
+  }
+  
+  .cancel-button:hover {
+    background-color: #f44336 !important;
+    color: #fff;
+  }
+
+  .center {
+    text-align: center;
+    font-weight: bold;
+    color: #1976d2;              
+  }
+  
+  
+  

@@ -1,0 +1,18 @@
+<h2 mat-dialog-title class="dialog-title">Edit Brand</h2>
+
+
+<div mat-dialog-content>
+  <form #brandForm="ngForm" (ngSubmit)="onSubmit()">
+    <mat-form-field class="w-100">
+      <mat-label>Brand Name</mat-label>
+      <input matInput [(ngModel)]="brand.name" name="name" required />
+    </mat-form-field>
+
+    <div mat-dialog-actions class="action-buttons">
+      <button mat-flat-button color="primary" class="save-button" type="submit" [disabled]="!brand.name">
+        Save
+      </button>
+      <button mat-button class="cancel-button" type="button" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</div>

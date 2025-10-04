@@ -1,0 +1,17 @@
+<h2 mat-dialog-title class="dialog-title text-center">Delete Product</h2>
+
+<mat-dialog-content>
+  <p class="text-center">
+    Bạn có chắc chắn muốn xóa Product này?
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions class="action-buttons">
+  <div class="left-buttons">
+    <button mat-button class="delete-button" (click)="onDelete()">Delete</button>
+  </div>
+  <div class="right-buttons">
+    <button mat-button class="cancel-button" type="button" (click)="onCancel()">Cancel</button>
+  </div>
+</mat-dialog-actions>
+

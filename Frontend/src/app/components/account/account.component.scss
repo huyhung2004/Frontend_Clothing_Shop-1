@@ -1,0 +1,84 @@
+.nav-link {
+    background-color: white;
+    color: black;
+    transition: background-color 0.3s, color 0.3s;
+    margin-bottom: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+  
+  .nav-link {
+    user-select: none;
+}
+
+  .nav-link.active-tab {
+    background-color: #FF6F61;
+    color: white !important;
+  }
+  .slide-container {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 300ms ease-out;
+  }
+  
+  .slide-container.expanded {
+    max-height: none; /* hoặc height: auto; */
+    opacity: 1;
+    overflow: visible;
+  }
+  
+  .order-status-menu button {
+    text-transform: capitalize;
+  }
+  
+  .active-status {
+    background-color: #FF6F61;
+    color: white;
+    border-color: #FF6F61;
+  }
+  
+  .status-btn {
+    font-weight: bold;
+    border-radius: 20px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    min-width: 120px;
+  }
+  
+  /* Khi nút được chọn */
+  .active-status {
+    background-color: #FF6F61 !important;
+    color: #fff !important;
+    border-color: #FF6F61 !important;
+  }
+  
+  /* Badge style có thể tuỳ chỉnh thêm */
+  .status-btn .badge {
+    font-size: 0.9em;
+    vertical-align: middle;
+  }
+  .product-images {
+    position: relative;
+    width: 150px;       /* Kích thước khung chứa đã định */
+    height: 150px;
+    overflow: hidden;   /* Ẩn phần ảnh tràn ra ngoài */
+}
+
+.product-images img {
+    position: absolute;
+    width: 90px;        /* Kích thước ảnh */
+    height: 90px;
+    border: 2px solid #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+}
+
+/* Hiệu ứng phóng to khi hover lên hình ảnh */
+.product-images img:hover {
+    transform: scale(1.1);
+}
+
+  
+  
+  

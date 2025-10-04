@@ -1,0 +1,52 @@
+<h2 mat-dialog-title class="center"style="font-size: 30px;">Edit User</h2>
+
+<div mat-dialog-content>
+  <form #userForm="ngForm" (ngSubmit)="onSubmit()">
+    <mat-form-field class="w-100">
+      <mat-label>Fullname</mat-label>
+      <input matInput [(ngModel)]="user.fullname" name="fullname" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>Phone Number</mat-label>
+      <input matInput [(ngModel)]="user.phoneNumber" name="phoneNumber" required />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" [(ngModel)]="user.password" name="password" required />
+    </mat-form-field>
+
+
+    <mat-form-field class="w-100">
+      <mat-label>Facebook Account ID</mat-label>
+      <input matInput type="number" [(ngModel)]="user.facebookAccountId" name="facebookAccountId" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>Google Account ID</mat-label>
+      <input matInput type="number" [(ngModel)]="user.googleAccountId" name="googleAccountId" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>Role ID</mat-label>
+      <input matInput type="number" [(ngModel)]="user.roleId" name="roleId" required />
+    </mat-form-field>
+
+    <mat-checkbox [(ngModel)]="user.isActive" name="isActive">Active</mat-checkbox>
+
+    <div mat-dialog-actions class="action-buttons mt-3">
+      <button mat-flat-button color="primary" class="save-button" type="submit"
+  [disabled]="
+    !user.fullname ||
+    !user.phoneNumber ||
+    !user.password ||
+    !user.roleId 
+  ">
+  Save
+</button>
+
+      <button mat-button class="cancel-button" type="button" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</div>

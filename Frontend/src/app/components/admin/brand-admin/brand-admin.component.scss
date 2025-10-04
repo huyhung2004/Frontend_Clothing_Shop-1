@@ -1,0 +1,28 @@
+
+.table {
+  th, td {
+    vertical-align: middle;
+  }
+}
+.btn-outline-primary, .btn-outline-danger {
+  transition: 0.2s ease-in-out !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+/* Đặt transition ở trạng thái bình thường */
+.table-hover tbody tr {
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Khi hover thì chỉ đổi màu nền thôi */
+.table-hover tbody tr:hover {
+  background-color: #f1f1f1 !important;
+}

@@ -1,0 +1,50 @@
+<div id="layoutSidenav_content">
+  <main>
+    <div class="container-fluid px-4">
+      <h1 class="mt-4">Statistics</h1>
+      <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Statistics</li>
+      </ol>
+
+      <div class="row">
+        <div class="col-xl-3 col-md-6">
+          <app-stat-card title="Total Revenue" [value]="totalRevenue" [isCurrency]="true" bgColor="primary"
+            format="1.0-0">
+          </app-stat-card>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+          <app-stat-card title="Average Order Value" [value]="averageOrderValue" [isCurrency]="true" bgColor="success"
+            format="1.2-2">
+          </app-stat-card>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+          <app-stat-card title="Avg Items/Order" [value]="averageItemsPerOrder" bgColor="warning" format="1.2-2">
+          </app-stat-card>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+          <app-stat-card title="Orders Today" [value]="averageOrdersToday" bgColor="danger" format="1.2-2">
+          </app-stat-card>
+        </div>
+      </div>
+
+      <app-mychart></app-mychart>
+      <dashboard-ng19-table></dashboard-ng19-table>
+    </div>
+  </main>
+
+  <footer class="py-4 bg-light mt-auto">
+    <div class="container-fluid px-4">
+      <div class="d-flex align-items-center justify-content-between small">
+        <div class="text-muted">Copyright &copy; Your Website 2023</div>
+        <div>
+          <a href="#">Privacy Policy</a>
+          &middot;
+          <a href="#">Terms &amp; Conditions</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

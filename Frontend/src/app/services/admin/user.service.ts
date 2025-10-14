@@ -15,15 +15,25 @@ export class UserService {
 
   getUsers(
     page: number,
-    itemsPerPage: number
+    itemsPerPage: number,
+    search?: string,
+    roleId?: number,
+    isActive?: boolean
   ): Observable<PagedResponse<User>> {
-    const params = {
+    const params: any = {
       page: page.toString(),
       size: itemsPerPage.toString(),
     };
-    return this.http.get<PagedResponse<User>>(`${this.baseUrl}`, {
-      params,
-    });
+    if (search && search.trim().length > 0) {
+      params.search = search.trim();
+    }
+    if (roleId !== undefined && roleId !== null) {
+      params.roleId = roleId.toString();
+    }
+    if (isActive !== undefined && isActive !== null) {
+      params.isActive = String(isActive);
+    }
+    return this.http.get<PagedResponse<User>>(`${this.baseUrl}`, { params });
   }
   getAllUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.baseUrl}/all`);
@@ -42,6 +52,16 @@ export class UserService {
 
   deleteUser(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/Delete/${id}`);
+  }
+
+  restoreUser(id: number): Observable<any> {
+    return this.http.put(`${this.baseUrl}/Restore/${id}`, {});
+  }
+
+  checkPhone(phone: string, excludeId?: number): Observable<{ exists: boolean }> {
+    const params: any = { phone };
+    if (excludeId != null) params.excludeId = excludeId.toString();
+    return this.http.get<{ exists: boolean }>(`${this.baseUrl}/check-phone`, { params });
   }
 
   getCurrentUser(): User | null {

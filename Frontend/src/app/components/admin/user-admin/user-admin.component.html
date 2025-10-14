@@ -1,10 +1,31 @@
 <div class="container-fluid">
     <h2 class="text-center text-primary mb-4">User Management</h2>
-    <div class="text-end mb-3">
+  <div class="row mb-3 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label">Search</label>
+      <input type="text" class="form-control" placeholder="Name or phone..." [(ngModel)]="searchKeyword" (ngModelChange)="onSearchChange()" />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Role</label>
+      <select class="form-select" [(ngModel)]="selectedRoleId" (change)="onRoleFilterChange()">
+        <option [ngValue]="null">All roles</option>
+        <option *ngFor="let r of roles" [ngValue]="r.id">{{ r.name }}</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Status</label>
+      <select class="form-select" [(ngModel)]="selectedStatus" (change)="onStatusFilterChange()">
+        <option value="all">All</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+    <div class="col-md-3 text-end">
       <button class="btn btn-success" (click)="openAddDialog()">
         <i class="fas fa-plus-circle"></i> Add User
       </button>
     </div>
+  </div>
   
     <div class="table-responsive">
       <table class="table table-bordered table-hover table-striped shadow-sm">
@@ -13,9 +34,8 @@
         <th>ID</th>
         <th>Fullname</th>
         <th>PhoneNumber</th>
-        <th>Password</th>
-        <th>IsActive</th>
-        <th>RoleID</th>
+        <th>Status</th>
+        <th>Role</th>
         <th>Actions</th>
       </tr>
         </thead>
@@ -24,7 +44,6 @@
             <td>{{ item.id }}</td>
             <td>{{ item.fullname }}</td>
             <td>{{ item.phoneNumber }}</td>
-            <td>{{ item.password }}</td>
             <td>
               <span
                 class="badge"
@@ -36,14 +55,20 @@
                 {{ item.isActive ? 'Active' : 'Inactive' }}
               </span>
             </td>
-            <td>{{ item.roleId }}</td>
+            <td>{{ getRoleDisplay(item) }}</td>
             <td class="text-center">
-              <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditDialog(item)">
+              <button class="btn btn-sm btn-outline-info me-2" (click)="openViewDialog(item)">
+                <i class="fas fa-eye"></i> View
+              </button>
+              <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditDialog(item)" [disabled]="!item.isActive">
                 <i class="fas fa-edit"></i> Edit
               </button>
               <span class="mx-2"></span>
-              <button class="btn btn-sm btn-outline-danger" (click)="openDeleteDialog(item)">
-                <i class="fas fa-trash"></i> Delete
+              <button *ngIf="item.isActive" class="btn btn-sm btn-outline-danger" (click)="openDeleteDialog(item)">
+                <i class="fas fa-user-slash"></i> Deactivate
+              </button>
+              <button *ngIf="!item.isActive" class="btn btn-sm btn-outline-success" (click)="restoreUser(item)">
+                <i class="fas fa-undo"></i> Restore
               </button>
             </td>
           </tr>

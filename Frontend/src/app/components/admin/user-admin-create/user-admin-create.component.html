@@ -36,17 +36,20 @@
 
     <mat-form-field class="w-100">
       <mat-label>Facebook Account ID</mat-label>
-      <input matInput type="number" [(ngModel)]="user.facebookAccountId" name="facebookAccountId" />
+      <input matInput type="number" [(ngModel)]="user.facebookAccountId" name="facebookAccountId" [disabled]="true" />
     </mat-form-field>
 
     <mat-form-field class="w-100">
       <mat-label>Google Account ID</mat-label>
-      <input matInput type="number" [(ngModel)]="user.googleAccountId" name="googleAccountId" />
+      <input matInput type="number" [(ngModel)]="user.googleAccountId" name="googleAccountId" [disabled]="true" />
     </mat-form-field>
 
     <mat-form-field class="w-100">
-      <mat-label>Role ID</mat-label>
-      <input matInput type="number" [(ngModel)]="user.roleId" name="roleId" required />
+      <mat-label>Role</mat-label>
+      <select matNativeControl [(ngModel)]="user.roleId" name="roleId" required>
+        <option [ngValue]="null" disabled>Select role</option>
+        <option *ngFor="let r of roles" [ngValue]="r.id">{{ r.name }}</option>
+      </select>
     </mat-form-field>
 
     <mat-checkbox [(ngModel)]="user.isActive" name="isActive">Active</mat-checkbox>

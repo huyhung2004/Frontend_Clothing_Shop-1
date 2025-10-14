@@ -2,8 +2,11 @@ import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { UserService } from '../../../services/admin/user.service';
 import { User } from '../../../dto/user.dto';
+import { Role } from '../../../dto/role.dto';
+import { RoleService } from '../../../services/admin/role.service';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
@@ -22,6 +25,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatDatepickerModule,
     MatNativeDateModule,
     FormsModule,
+    MatSnackBarModule,
   ],
 })
 export class UserAdminCreateComponent {
@@ -33,24 +37,34 @@ export class UserAdminCreateComponent {
     createdAt: undefined,
     updatedAt: undefined,
     isActive: true,
-    facebookAccountId: undefined,
-    googleAccountId: undefined,
+    facebookAccountId: 0,
+    googleAccountId: 0,
     roleId: undefined,
   };
+  roles: Role[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<UserAdminCreateComponent>,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    private roleService: RoleService,
+    private snackBar: MatSnackBar
+  ) {
+    this.roleService.getRoles().subscribe({
+      next: (roles) => (this.roles = roles),
+      error: (err) => console.error('Error loading roles', err),
+    });
+  }
 
   onSubmit(): void {
     this.userService.createUser(this.user).subscribe({
       next: () => {
-        alert('User added successfully!');
+        this.snackBar.open('User added successfully!', 'Close', { duration: 3000 });
         this.dialogRef.close(true);
       },
       error: (error) => {
         console.error('Error adding user:', error);
+        const message = error?.error?.message || 'Tạo người dùng thất bại. Vui lòng kiểm tra thông tin và thử lại.';
+        this.snackBar.open(message, 'Close', { duration: 3000 });
       },
     });
   }

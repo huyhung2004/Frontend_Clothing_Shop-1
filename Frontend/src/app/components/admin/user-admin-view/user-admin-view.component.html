@@ -1,0 +1,20 @@
+<h2 mat-dialog-title class="center" style="font-size: 26px;">User Details</h2>
+
+<div mat-dialog-content>
+  <div class="mb-2"><strong>ID:</strong> {{ data.id }}</div>
+  <div class="mb-2"><strong>Fullname:</strong> {{ data.fullname || '-' }}</div>
+  <div class="mb-2"><strong>Phone:</strong> {{ data.phoneNumber }}</div>
+  <div class="mb-2"><strong>Status:</strong> {{ data.isActive ? 'Active' : 'Inactive' }}</div>
+  <div class="mb-2"><strong>Role:</strong> {{ displayRoleName }}</div>
+  <div class="mb-2"><strong>Facebook ID:</strong> {{ data.facebookAccountId }}</div>
+  <div class="mb-2"><strong>Google ID:</strong> {{ data.googleAccountId }}</div>
+  <div class="mb-2"><strong>Created:</strong> {{ data.createdAt | date:'short' }}</div>
+  <div class="mb-2"><strong>Updated:</strong> {{ data.updatedAt | date:'short' }}</div>
+</div>
+
+<div mat-dialog-actions class="mt-3">
+  <button mat-button mat-dialog-close>Close</button>
+  
+</div>
+
+

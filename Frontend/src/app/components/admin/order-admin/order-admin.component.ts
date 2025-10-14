@@ -5,11 +5,12 @@ import { Order } from '../../../dto/order.dto';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { OrderAdminEditComponent } from '../order-admin-edit/order-admin-edit.component';
-import { OrderAdminDeleteComponent } from '../order-admin-delete/order-admin-delete.component';
+import { OrderAdminViewComponent } from '../order-admin-view/order-admin-view.component';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-order-admin',
+  standalone: true,
   imports: [CommonModule, RouterModule, MatDialogModule, FormsModule],
   templateUrl: './order-admin.component.html',
   styleUrl: './order-admin.component.scss',
@@ -20,6 +21,15 @@ export class OrderAdminComponent implements OnInit {
   totalPages = 1;
   pages: number[] = [];
   itemsPerPage = 10;
+
+  // Search and Filter
+  searchTerm: string = '';
+  selectedStatus: string = '';
+  selectedPaymentMethod: string = '';
+
+  // Filter options
+  statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+  paymentMethodOptions = ['COD', 'PayPal', 'Credit Card'];
 
   constructor(
     private orderService: OrderService,
@@ -32,7 +42,13 @@ export class OrderAdminComponent implements OnInit {
   }
 
   getOrders(page: number): void {
-    this.orderService.getOrders(page, this.itemsPerPage).subscribe({
+    this.orderService.getOrders(
+      page, 
+      this.itemsPerPage,
+      this.searchTerm || undefined,
+      this.selectedStatus || undefined,
+      this.selectedPaymentMethod || undefined
+    ).subscribe({
       next: (response) => {
         this.orders = response.data;
         this.totalPages = Math.ceil(response.total / this.itemsPerPage);
@@ -43,6 +59,24 @@ export class OrderAdminComponent implements OnInit {
         console.error('Error fetching orders:', error);
       },
     });
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+    this.getOrders(this.currentPage);
+  }
+
+  onFilterChange(): void {
+    this.currentPage = 1;
+    this.getOrders(this.currentPage);
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.selectedStatus = '';
+    this.selectedPaymentMethod = '';
+    this.currentPage = 1;
+    this.getOrders(this.currentPage);
   }
 
   goToPage(page: number): void {
@@ -61,8 +95,8 @@ export class OrderAdminComponent implements OnInit {
   openEditDialog(order: Order): void {
     const dialogRef = this.dialog.open(OrderAdminEditComponent, {
       width: '900px',
-      height: '80vh', // giới hạn chiều cao
-      maxHeight: '80vh', // hoặc chỉ dùng maxHeight
+      height: '80vh',
+      maxHeight: '80vh',
       data: { ...order },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -71,16 +105,29 @@ export class OrderAdminComponent implements OnInit {
       }
     });
   }
-  openDeleteDialog(order: Order): void {
-    const dialogRef = this.dialog.open(OrderAdminDeleteComponent, {
-      width: '500px',
+
+  openViewDialog(order: Order): void {
+    this.dialog.open(OrderAdminViewComponent, {
+      width: '1000px',
+      maxHeight: '90vh',
       data: { id: order.id },
     });
+  }
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.getOrders(this.currentPage); // refresh brand list sau khi xóa
-      }
-    });
+  getStatusBadgeClass(status: string | undefined): string {
+    switch (status?.toLowerCase()) {
+      case 'pending':
+        return 'badge bg-warning text-dark';
+      case 'processing':
+        return 'badge bg-info';
+      case 'shipped':
+        return 'badge bg-primary';
+      case 'delivered':
+        return 'badge bg-success';
+      case 'cancelled':
+        return 'badge bg-danger';
+      default:
+        return 'badge bg-secondary';
+    }
   }
 }

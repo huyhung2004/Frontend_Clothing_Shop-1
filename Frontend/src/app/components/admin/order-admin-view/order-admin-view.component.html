@@ -1,0 +1,131 @@
+<div class="order-detail-dialog">
+  <h2 mat-dialog-title class="dialog-title">
+    <i class="fas fa-receipt me-2"></i>Chi Tiết Đơn Hàng #{{ data.id }}
+  </h2>
+
+  <div mat-dialog-content class="dialog-content">
+    <div *ngIf="loading" class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && order" class="order-details">
+      <!-- Customer Information -->
+      <div class="section">
+        <h5 class="section-title">
+          <i class="fas fa-user me-2"></i>Thông Tin Khách Hàng
+        </h5>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Họ và tên:</label>
+            <span>{{ order.fullname || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Email:</label>
+            <span>{{ order.email || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Số điện thoại:</label>
+            <span>{{ order.phoneNumber }}</span>
+          </div>
+          <div class="info-item">
+            <label>Địa chỉ:</label>
+            <span>{{ order.address }}</span>
+          </div>
+          <div class="info-item" *ngIf="order.note">
+            <label>Ghi chú:</label>
+            <span>{{ order.note }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Information -->
+      <div class="section">
+        <h5 class="section-title">
+          <i class="fas fa-info-circle me-2"></i>Thông Tin Đơn Hàng
+        </h5>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Ngày đặt:</label>
+            <span>{{ order.orderDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Trạng thái:</label>
+            <span [class]="getStatusBadgeClass(order.status)">{{ order.status }}</span>
+          </div>
+          <div class="info-item">
+            <label>Phương thức thanh toán:</label>
+            <span>{{ order.paymentMethod || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Phương thức vận chuyển:</label>
+            <span>{{ order.shippingMethod || 'N/A' }}</span>
+          </div>
+          <div class="info-item" *ngIf="order.shippingDate">
+            <label>Ngày giao hàng:</label>
+            <span>{{ order.shippingDate | date: 'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="info-item" *ngIf="order.trackingNumber">
+            <label>Mã vận đơn:</label>
+            <span class="tracking-number">{{ order.trackingNumber }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Items -->
+      <div class="section">
+        <h5 class="section-title">
+          <i class="fas fa-shopping-cart me-2"></i>Sản Phẩm Đã Đặt
+        </h5>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Sản phẩm</th>
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detail of order.orderDetails; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>
+                  <strong>{{ detail.product?.name || 'N/A' }}</strong>
+                </td>
+                <td>{{ detail.price | currency:'VND':'symbol':'1.0-0' }}</td>
+                <td>{{ detail.numberOfProducts }}</td>
+                <td>{{ detail.totalMoney | currency:'VND':'symbol':'1.0-0' }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="text-end"><strong>Tổng số lượng:</strong></td>
+                <td><strong>{{ getTotalQuantity() }}</strong></td>
+                <td></td>
+              </tr>
+              <tr class="total-row">
+                <td colspan="4" class="text-end"><strong>Tổng tiền:</strong></td>
+                <td><strong class="text-success">{{ order.totalMoney | currency:'VND':'symbol':'1.0-0' }}</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && !order" class="text-center text-danger">
+      <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+      <p>Không thể tải thông tin đơn hàng!</p>
+    </div>
+  </div>
+
+  <div mat-dialog-actions class="dialog-actions">
+    <button type="button" class="btn btn-secondary" (click)="onClose()">
+      <i class="fas fa-times me-2"></i>Đóng
+    </button>
+  </div>
+</div>
+

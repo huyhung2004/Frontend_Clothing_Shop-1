@@ -1,64 +1,107 @@
-<h2 mat-dialog-title>Edit Order</h2>
-<div mat-dialog-content>
-  <form style="padding-left: 16px;">
-    <div class="mb-2">
-      <label>ID:</label>
-      <input class="form-control" [value]="data.id" disabled />
-    </div>
-
-    <div class="mb-2">
-      <label>Fullname:</label>
-      <input class="form-control" [value]="data.fullname" disabled />
-    </div>
-
-    <div class="mb-2">
-      <label>Phone Number:</label>
-      <input class="form-control" [value]="data.phoneNumber" disabled />
-    </div>
-
-    <div class="mb-2">
-      <label>Address:</label>
-      <input class="form-control" [value]="data.address" disabled />
-    </div>
-
-    <div class="mb-2">
-      <label>Order Date:</label>
-      <input class="form-control" [value]="data.orderDate | date: 'short'" disabled />
-    </div>
-
-    <div class="mb-2">
-      <label>Status:</label>
-      <select class="form-select" [(ngModel)]="order.status" name="status">
-        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
-      </select>
-    </div>
-
-    <div class="mb-2">
-      <label>Total Money:</label>
-      <input class="form-control" [value]="data.totalMoney | currency" disabled />
-    </div>
-
-    <div class="mb-2">
-      <label>Shipping Method:</label>
-      <input class="form-control" [value]="data.shippingMethod" disabled />
-    </div>
-
-    <div class="mb-2">
-      <label>Shipping Date:</label>
-      <input class="form-control" [value]="data.shippingDate | date: 'short'" disabled />
-    </div>
-
-    <div class="mb-2">
-      <label>Payment Method:</label>
-      <input class="form-control" [value]="data.paymentMethod" disabled />
-    </div>
-  </form>
-</div>
-
-<div mat-dialog-actions class="d-flex justify-between">
-  <button mat-raised-button color="primary" class="save-button" (click)="onSubmit()">Save</button>
-  <button mat-stroked-button color="warn" class="cancel-button" (click)="onCancel()">Cancel</button>
+<div class="edit-order-dialog">
+  <h2 mat-dialog-title class="dialog-title">
+    <i class="fas fa-edit me-2"></i>Cập Nhật Trạng Thái Đơn Hàng #{{ data.id }}
+  </h2>
   
+  <div mat-dialog-content class="dialog-content">
+    <form style="padding-left: 16px;">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label"><strong>Mã đơn hàng:</strong></label>
+          <input class="form-control" [value]="data.id" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label"><strong>Ngày đặt:</strong></label>
+          <input class="form-control" [value]="data.orderDate | date: 'dd/MM/yyyy HH:mm'" disabled />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label"><strong>Khách hàng:</strong></label>
+          <input class="form-control" [value]="data.fullname" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label"><strong>Số điện thoại:</strong></label>
+          <input class="form-control" [value]="data.phoneNumber" disabled />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label"><strong>Địa chỉ:</strong></label>
+        <textarea class="form-control" [value]="data.address" disabled rows="2"></textarea>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label"><strong>Tổng tiền:</strong></label>
+          <input class="form-control text-success fw-bold" [value]="(data.totalMoney || 0) | currency:'VND':'symbol':'1.0-0'" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label"><strong>Phương thức thanh toán:</strong></label>
+          <input class="form-control" [value]="data.paymentMethod" disabled />
+        </div>
+      </div>
+
+      <hr />
+
+      <!-- Status Update Section -->
+      <div class="status-section mb-3">
+        <label class="form-label"><strong>Trạng thái hiện tại:</strong></label>
+        <div class="mb-2">
+          <span [class]="getStatusBadgeClass(originalStatus)" style="font-size: 1.1em; padding: 8px 16px;">
+            {{ originalStatus | titlecase }}
+          </span>
+        </div>
+
+        <!-- Show message if status cannot be changed -->
+        <div *ngIf="!canUpdateStatus()" class="alert alert-warning">
+          <i class="fas fa-info-circle me-2"></i>{{ getStatusMessage() }}
+        </div>
+
+        <!-- Status selection if can be updated -->
+        <div *ngIf="canUpdateStatus()">
+          <label class="form-label mt-3"><strong>Cập nhật trạng thái mới:</strong></label>
+          <select class="form-select" [(ngModel)]="order.status" name="status">
+            <option [value]="originalStatus" disabled selected>-- Chọn trạng thái mới --</option>
+            <option *ngFor="let s of availableStatuses" [value]="s">
+              {{ s | titlecase }}
+            </option>
+          </select>
+          
+          <!-- Status Flow Guide -->
+          <div class="alert alert-info mt-3">
+            <i class="fas fa-route me-2"></i><strong>Luồng cập nhật trạng thái:</strong>
+            <ul class="mb-0 mt-2">
+              <li>Pending → Processing hoặc Cancelled</li>
+              <li>Processing → Shipped hoặc Cancelled</li>
+              <li>Shipped → Delivered</li>
+              <li>Delivered: Không thể thay đổi</li>
+              <li>Cancelled: Không thể thay đổi</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div mat-dialog-actions class="dialog-actions">
+    <button 
+      mat-raised-button 
+      color="primary" 
+      class="save-button" 
+      (click)="onSubmit()"
+      [disabled]="!canUpdateStatus() || order.status === originalStatus"
+    >
+      <i class="fas fa-save me-2"></i>Lưu thay đổi
+    </button>
+    <button mat-stroked-button color="warn" class="cancel-button" (click)="onCancel()">
+      <i class="fas fa-times me-2"></i>Hủy
+    </button>
+  </div>
 </div>
 
 

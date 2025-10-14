@@ -16,12 +16,26 @@ export class OrderService {
 
   getOrders(
     page: number,
-    itemsPerPage: number
+    itemsPerPage: number,
+    search?: string,
+    status?: string,
+    paymentMethod?: string
   ): Observable<PagedResponse<Order>> {
-    const params = {
+    let params: any = {
       page: page.toString(),
       size: itemsPerPage.toString(),
     };
+
+    if (search) {
+      params.search = search;
+    }
+    if (status) {
+      params.status = status;
+    }
+    if (paymentMethod) {
+      params.paymentMethod = paymentMethod;
+    }
+
     return this.http.get<PagedResponse<Order>>(`${this.baseUrl}`, {
       params,
     });

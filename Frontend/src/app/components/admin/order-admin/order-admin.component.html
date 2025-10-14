@@ -1,42 +1,108 @@
 <div class="container-fluid">
-    <h2 class="text-center text-primary mb-4">Order Management</h2>
+    <h2 class="text-center text-primary mb-4">
+      <i class="fas fa-shopping-cart me-2"></i>Quản Lý Đơn Hàng
+    </h2>
   
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section mb-4">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="fas fa-search"></i>
+            </span>
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Tìm kiếm theo tên, SĐT, địa chỉ..."
+              [(ngModel)]="searchTerm"
+              (keyup.enter)="onSearch()"
+            />
+            <button class="btn btn-primary" type="button" (click)="onSearch()">
+              Tìm kiếm
+            </button>
+          </div>
+        </div>
+        
+        <div class="col-md-3">
+          <select 
+            class="form-select" 
+            [(ngModel)]="selectedStatus"
+            (change)="onFilterChange()"
+          >
+            <option value="">Tất cả trạng thái</option>
+            <option *ngFor="let status of statusOptions" [value]="status">
+              {{ status | titlecase }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="col-md-3">
+          <select 
+            class="form-select" 
+            [(ngModel)]="selectedPaymentMethod"
+            (change)="onFilterChange()"
+          >
+            <option value="">Tất cả phương thức thanh toán</option>
+            <option *ngFor="let method of paymentMethodOptions" [value]="method">
+              {{ method }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="col-md-2">
+          <button class="btn btn-outline-secondary w-100" (click)="clearFilters()">
+            <i class="fas fa-redo me-2"></i>Xóa bộ lọc
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="table-responsive">
       <table class="table table-bordered table-hover table-striped shadow-sm">
         <thead class="table-dark">
-  <tr>
-        <th>ID</th>
-        <th>Fullname</th>
-        <th>PhoneNumber</th>
-        <th>Address</th>
-        <th>OrderDate</th>
-        <th>Status</th>
-        <th>TotalMoney</th>
-        <th>ShippingMethod</th>
-        <th>ShippingDate</th>
-        <th>PaymentMethod</th>
-        <th>Actions</th>
-      </tr>
+          <tr>
+            <th>ID</th>
+            <th>Họ và tên</th>
+            <th>Số điện thoại</th>
+            <th>Địa chỉ</th>
+            <th>Ngày đặt</th>
+            <th>Trạng thái</th>
+            <th>Tổng tiền</th>
+            <th>Vận chuyển</th>
+            <th>Thanh toán</th>
+            <th>Thao tác</th>
+          </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of orders">
             <td>{{ item.id }}</td>
-        <td>{{ item.fullname }}</td>
-        <td>{{ item.phoneNumber }}</td>
-        <td>{{ item.address }}</td>
-        <td>{{ item.orderDate | date: 'short' }}</td>
-        <td>{{ item.status }}</td>
-        <td>{{ item.totalMoney | currency }}</td>
-        <td>{{ item.shippingMethod }}</td>
-        <td>{{ item.shippingDate | date: 'short' }}</td>
-        <td>{{ item.paymentMethod }}</td>
+            <td>{{ item.fullname }}</td>
+            <td>{{ item.phoneNumber }}</td>
+            <td>{{ item.address }}</td>
+            <td>{{ item.orderDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <span [class]="getStatusBadgeClass(item.status)">
+                {{ item.status | titlecase }}
+              </span>
+            </td>
+            <td>{{ item.totalMoney | currency:'VND':'symbol':'1.0-0' }}</td>
+            <td>{{ item.shippingMethod }}</td>
+            <td>{{ item.paymentMethod }}</td>
             <td class="text-center">
-              <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditDialog(item)">
-                <i class="fas fa-edit"></i> Edit
+              <button 
+                class="btn btn-sm btn-outline-info me-2" 
+                (click)="openViewDialog(item)"
+                title="Xem chi tiết"
+              >
+                <i class="fas fa-eye"></i> Chi tiết
               </button>
-              <span class="mx-2"></span>
-              <button class="btn btn-sm btn-outline-danger " (click)="openDeleteDialog(item)">
-                <i class="fas fa-trash"></i> Delete
+              <button 
+                class="btn btn-sm btn-outline-primary" 
+                (click)="openEditDialog(item)"
+                title="Cập nhật trạng thái"
+              >
+                <i class="fas fa-edit"></i> Cập nhật
               </button>
             </td>
           </tr>

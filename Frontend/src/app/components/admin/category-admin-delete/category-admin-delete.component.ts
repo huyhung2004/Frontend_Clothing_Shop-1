@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-category-admin-delete',
+  standalone: true,
   templateUrl: './category-admin-delete.component.html',
   imports: [
     CommonModule,

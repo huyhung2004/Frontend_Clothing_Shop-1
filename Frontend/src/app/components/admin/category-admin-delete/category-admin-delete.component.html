@@ -4,13 +4,20 @@
   <p class="text-center">
     Bạn có chắc chắn muốn xóa category: <strong>{{ data.name }}</strong>?
   </p>
+  
+  <!-- Error Message Display -->
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3" role="alert" style="white-space: pre-line;">
+    {{ errorMessage }}
+  </div>
 </mat-dialog-content>
 
 <mat-dialog-actions class="action-buttons">
   <div class="left-buttons">
-    <button mat-stroked-button color="warn" class="delete-button" (click)="onDelete()">Delete</button>
+    <button mat-stroked-button color="warn" class="delete-button" (click)="onDelete()" [disabled]="isDeleting">
+      {{ isDeleting ? 'Đang xóa...' : 'Delete' }}
+    </button>
   </div>
   <div class="right-buttons">
-    <button mat-stroked-button class="cancel-button" type="button" (click)="onCancel()">Cancel</button>
+    <button mat-stroked-button class="cancel-button" type="button" (click)="onCancel()" [disabled]="isDeleting">Cancel</button>
   </div>
 </mat-dialog-actions>

@@ -1,11 +1,64 @@
 <div class="container-fluid">
   <h2 class="text-center text-primary mb-4">Product Management</h2>
 
-  <button class="btn btn-success" (click)="openAddDialog()">
-    <i class="fas fa-plus-circle"></i> Add Product
-  </button>
-  
-<p></p>
+  <!-- Search and Filter Controls -->
+  <div class="search-filter-container">
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="input-group">
+          <span class="input-group-text">
+            <i class="fas fa-search"></i>
+          </span>
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Search products..." 
+            [(ngModel)]="searchTerm"
+            (input)="onSearchChange()"
+          >
+        </div>
+      </div>
+      <div class="col-md-3">
+        <select class="form-select" [(ngModel)]="selectedCategory" (change)="onFilterChange()">
+          <option value="">All Categories</option>
+          <option *ngFor="let category of categories" [value]="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select class="form-select" [(ngModel)]="selectedBrand" (change)="onFilterChange()">
+          <option value="">All Brands</option>
+          <option *ngFor="let brand of brands" [value]="brand.id">
+            {{ brand.name }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" [(ngModel)]="sortBy" (change)="onSortChange()">
+          <option value="name">Sort by Name</option>
+          <option value="price">Sort by Price</option>
+          <option value="id">Sort by ID</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 filter-controls">
+        <button class="btn btn-success" (click)="openAddDialog()">
+          <i class="fas fa-plus-circle"></i> Add Product
+        </button>
+        <button class="btn btn-outline-secondary ms-2" (click)="clearFilters()">
+          <i class="fas fa-times"></i> Clear Filters
+        </button>
+      </div>
+      <div class="col-md-6 text-end">
+        <span class="product-count">
+          Showing {{ filteredProducts.length }} of {{ totalProducts }} products
+        </span>
+      </div>
+    </div>
+  </div>
   <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped shadow-sm">
       <thead class="table-dark">
@@ -20,7 +73,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of products">
+        <tr *ngFor="let item of filteredProducts">
           <td>{{ item.id }}</td>
           <td>{{ item.name }}</td>
           <td>{{ item.price | currency:'USD' }}</td>

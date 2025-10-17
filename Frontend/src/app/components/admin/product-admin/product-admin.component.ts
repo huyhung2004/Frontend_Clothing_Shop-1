@@ -47,10 +47,13 @@ export class ProductAdminComponent implements OnInit {
 
   openEditDialog(product: Product): void {
     const dialogRef = this.dialog.open(ProductAdminEditComponent, {
-      width: '700px',
-      data: { ...product },
-      autoFocus: true, // Đảm bảo tiêu điểm di chuyển vào hộp thoại
-      restoreFocus: true, // Khôi phục tiêu điểm sau khi đóng hộp thoại
+      width: '90vw',
+      maxWidth: '1200px',
+      height: '90vh',
+      maxHeight: '800px',
+      data: { id: product.id },
+      autoFocus: true,
+      restoreFocus: true,
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -74,7 +77,10 @@ export class ProductAdminComponent implements OnInit {
 
   openAddDialog(): void {
     const dialogRef = this.dialog.open(ProductAdminCreateComponent, {
-      width: '10000px',
+      width: '90vw',
+      maxWidth: '1200px',
+      height: '90vh',
+      maxHeight: '800px',
       data: {} 
     });
   

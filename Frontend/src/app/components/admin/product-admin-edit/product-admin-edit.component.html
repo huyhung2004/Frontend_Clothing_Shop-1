@@ -1,60 +1,195 @@
 <div class="container mt-4">
-    <h2 class="text-center mb-4">Edit Product</h2>
-    <form (ngSubmit)="onSubmit()" #editForm="ngForm">
-      
-      <!-- Product Name -->
-      <div class="mb-3">
-        <label for="name" class="form-label">Product Name</label>
-        <input type="text" id="name" class="form-control" [(ngModel)]="product.name" name="name" required>
-      </div>
-      
-      <!-- Price -->
-      <div class="mb-3">
-        <label for="price" class="form-label">Price</label>
-        <input type="number" id="price" class="form-control" [(ngModel)]="product.price" name="price" required>
-      </div>
-      
-      <!-- Description -->
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <textarea id="description" class="form-control" [(ngModel)]="product.description" name="description" rows="3" required></textarea>
-      </div>
-      
-      <!-- Category -->
-      <div class="mb-3">
-        <label for="category" class="form-label">Category</label>
-        <select id="category" class="form-select" [(ngModel)]="product.categoryId" name="category" required>
-          <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
-        </select>
-      </div>
-      
-      <!-- Brand -->
-      <div class="mb-3">
-        <label for="brand" class="form-label">Brand</label>
-        <select id="brand" class="form-select" [(ngModel)]="product.brandId" name="brand" required>
-          <option *ngFor="let brand of brands" [value]="brand.id">{{ brand.name }}</option>
-        </select>
-      </div>
-
-      <!-- Image URL -->
-<div class="mb-3">
-  <label for="image" class="form-label">Image URL</label>
-  <input type="text" id="image" class="form-control" [(ngModel)]="product.image" name="image">
-</div>
-
-
-      
-      <!-- Buttons -->
-      <div class="d-flex justify-content-between">
-        <button 
-          type="submit" 
-          class="save-button"
-          [disabled]="!editForm.valid"
-        >
-          Save
-        </button>
-        <button type="button" class="cancel-button" (click)="onCancel()">Cancel</button>
-      </div>
-      
-    </form>
+  <h2 class="text-center mb-4">Chỉnh Sửa Sản Phẩm</h2>
+  
+  <div *ngIf="isLoading" class="text-center">
+    <p>Đang tải...</p>
   </div>
+
+  <form *ngIf="!isLoading" (ngSubmit)="onSubmit()" #editForm="ngForm">
+    
+    <!-- Product Name -->
+    <div class="mb-3">
+      <label for="name" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
+      <input 
+        type="text" 
+        id="name" 
+        class="form-control" 
+        [(ngModel)]="productData.name" 
+        name="name" 
+        required
+        placeholder="Nhập tên sản phẩm">
+    </div>
+    
+    <!-- Price -->
+    <div class="mb-3">
+      <label for="price" class="form-label">Giá <span class="text-danger">*</span></label>
+      <input 
+        type="number" 
+        id="price" 
+        class="form-control" 
+        [(ngModel)]="productData.price" 
+        name="price" 
+        required
+        min="0"
+        placeholder="Nhập giá sản phẩm">
+    </div>
+    
+    <!-- Description -->
+    <div class="mb-3">
+      <label for="description" class="form-label">Mô tả</label>
+      <textarea 
+        id="description" 
+        class="form-control" 
+        [(ngModel)]="productData.description" 
+        name="description" 
+        rows="3"
+        placeholder="Nhập mô tả sản phẩm"></textarea>
+    </div>
+    
+    <!-- Category -->
+    <div class="mb-3">
+      <label for="category" class="form-label">Danh mục</label>
+      <select 
+        id="category" 
+        class="form-select" 
+        [(ngModel)]="productData.categoryId" 
+        name="category">
+        <option [ngValue]="undefined">-- Chọn danh mục --</option>
+        <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+      </select>
+    </div>
+    
+    <!-- Brand -->
+    <div class="mb-3">
+      <label for="brand" class="form-label">Thương hiệu</label>
+      <select 
+        id="brand" 
+        class="form-select" 
+        [(ngModel)]="productData.brandId" 
+        name="brand">
+        <option [ngValue]="undefined">-- Chọn thương hiệu --</option>
+        <option *ngFor="let brand of brands" [value]="brand.id">{{ brand.name }}</option>
+      </select>
+    </div>
+
+    <!-- Thumbnail Image -->
+    <div class="mb-3">
+      <label class="form-label">Ảnh đại diện</label>
+      <div class="image-upload-container">
+        <input 
+          type="file" 
+          #thumbnailInput
+          (change)="onThumbnailSelect($event)"
+          accept="image/*"
+          class="d-none">
+        
+        <div class="thumbnail-preview-container">
+          <!-- Show new thumbnail if selected -->
+          <div *ngIf="thumbnailPreview" class="image-preview-wrapper">
+            <img [src]="thumbnailPreview" alt="New Thumbnail" class="thumbnail-preview">
+            <button 
+              type="button" 
+              class="btn btn-danger btn-sm remove-btn"
+              (click)="removeThumbnailPreview()">
+              <mat-icon>close</mat-icon>
+            </button>
+            <div class="image-label">Ảnh mới</div>
+          </div>
+
+          <!-- Show current thumbnail if no new one selected -->
+          <div *ngIf="!thumbnailPreview && currentThumbnail" class="image-preview-wrapper">
+            <img [src]="getImageUrl(currentThumbnail)" alt="Current Thumbnail" class="thumbnail-preview">
+            <button 
+              type="button" 
+              class="btn btn-warning btn-sm change-btn"
+              (click)="thumbnailInput.click()">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <div class="image-label">Ảnh hiện tại</div>
+          </div>
+
+          <!-- Show upload placeholder if no thumbnail -->
+          <div 
+            *ngIf="!thumbnailPreview && !currentThumbnail" 
+            class="upload-placeholder"
+            (click)="thumbnailInput.click()">
+            <mat-icon>add_photo_alternate</mat-icon>
+            <p class="mb-0">Chọn ảnh đại diện</p>
+            <small class="text-muted">JPG, PNG, GIF, WEBP (max 5MB)</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Images -->
+    <div class="mb-3">
+      <label class="form-label">Ảnh bổ sung</label>
+      <div class="image-upload-container">
+        <input 
+          type="file" 
+          #additionalImagesInput
+          (change)="onAdditionalImagesSelect($event)"
+          accept="image/*"
+          multiple
+          class="d-none">
+        
+        <div class="additional-images-container">
+          <!-- Current images from database -->
+          <div 
+            *ngFor="let image of currentAdditionalImages" 
+            class="image-preview-wrapper small">
+            <img [src]="getImageUrl(image.imageUrl)" alt="Product image" class="image-preview">
+            <button 
+              type="button" 
+              class="btn btn-danger btn-sm remove-btn"
+              (click)="markImageForDeletion(image.id)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <div class="image-label small">Hiện tại</div>
+          </div>
+
+          <!-- New images to upload -->
+          <div 
+            *ngFor="let image of newAdditionalImages; let i = index" 
+            class="image-preview-wrapper small">
+            <img [src]="image.preview" alt="New image" class="image-preview">
+            <button 
+              type="button" 
+              class="btn btn-danger btn-sm remove-btn"
+              (click)="removeNewAdditionalImage(i)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <div class="image-label small">Mới</div>
+          </div>
+
+          <!-- Add more button -->
+          <div 
+            class="upload-placeholder small"
+            (click)="additionalImagesInput.click()">
+            <mat-icon>add_photo_alternate</mat-icon>
+            <p class="mb-0">Thêm ảnh</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Buttons -->
+    <div class="d-flex justify-content-between mt-4">
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="!editForm.valid || isSubmitting">
+        <span *ngIf="!isSubmitting">Cập nhật</span>
+        <span *ngIf="isSubmitting">Đang cập nhật...</span>
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        (click)="onCancel()"
+        [disabled]="isSubmitting">
+        Hủy
+      </button>
+    </div>
+    
+  </form>
+</div>

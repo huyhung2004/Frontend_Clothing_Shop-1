@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { Order } from '../../../dto/order.dto';
 import { OrderService } from '../../../services/admin/order.service';
 import { CommonModule } from '@angular/common';
@@ -7,7 +8,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-order-admin-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatDialogModule, MatButtonModule],
   templateUrl: './order-admin-view.component.html',
   styleUrls: ['./order-admin-view.component.scss'],
 })
@@ -56,6 +57,27 @@ export class OrderAdminViewComponent implements OnInit {
         return 'badge bg-danger';
       default:
         return 'badge bg-secondary';
+    }
+  }
+
+  getStatusClass(status: string | undefined): string {
+    return status?.toLowerCase() || 'pending';
+  }
+
+  getStatusIcon(status: string | undefined): string {
+    switch (status?.toLowerCase()) {
+      case 'pending':
+        return 'fas fa-clock';
+      case 'processing':
+        return 'fas fa-spinner';
+      case 'shipped':
+        return 'fas fa-truck';
+      case 'delivered':
+        return 'fas fa-check-circle';
+      case 'cancelled':
+        return 'fas fa-times-circle';
+      default:
+        return 'fas fa-question-circle';
     }
   }
 

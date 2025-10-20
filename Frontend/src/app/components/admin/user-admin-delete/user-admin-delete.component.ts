@@ -2,25 +2,28 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UserService } from '../../../services/admin/user.service';
 import { User } from '../../../dto/user.dto';
+import { CommonModule } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon'; // Nếu sử dụng icon
+import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-user-admin-delete',
   templateUrl: './user-admin-delete.component.html',
+  styleUrls: ['./user-admin-delete.component.scss'],
+  standalone: true,
   imports: [
+    CommonModule,
     MatDialogModule,
     MatButtonModule,
-    MatIconModule, // Nếu bạn dùng icon trong các button
+    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
   ],
-  styleUrls: ['./user-admin-delete.component.scss'],
 })
 export class UserAdminDeleteComponent {
   constructor(

@@ -1,66 +1,175 @@
-<h2 mat-dialog-title class="center"
-    style="font-size: 30px;" >
-  Add User
-</h2>
-
-<div mat-dialog-content>
-  <form #userForm="ngForm" (ngSubmit)="onSubmit()">
-    <mat-form-field class="w-100">
-      <mat-label>Fullname</mat-label>
-      <input matInput [(ngModel)]="user.fullname" name="fullname" />
-    </mat-form-field>
-
-    <mat-form-field class="w-100">
-      <mat-label>Phone Number</mat-label>
-      <input
-        matInput
-        type="tel"
-        [(ngModel)]="user.phoneNumber"
-        name="phoneNumber"
-        pattern="^[0-9]{10}$"
-        maxlength="10"
-        required
-        #phoneNumber="ngModel"
-      />
-      <mat-error *ngIf="phoneNumber.invalid && phoneNumber.touched">
-        Phone number must be exactly 10 digits.
-      </mat-error>
-    </mat-form-field>
-    
-
-    <mat-form-field class="w-100">
-      <mat-label>Password</mat-label>
-      <input matInput type="password" [(ngModel)]="user.password" name="password" required />
-    </mat-form-field>
-
-
-    <mat-form-field class="w-100">
-      <mat-label>Facebook Account ID</mat-label>
-      <input matInput type="number" [(ngModel)]="user.facebookAccountId" name="facebookAccountId" [disabled]="true" />
-    </mat-form-field>
-
-    <mat-form-field class="w-100">
-      <mat-label>Google Account ID</mat-label>
-      <input matInput type="number" [(ngModel)]="user.googleAccountId" name="googleAccountId" [disabled]="true" />
-    </mat-form-field>
-
-    <mat-form-field class="w-100">
-      <mat-label>Role</mat-label>
-      <select matNativeControl [(ngModel)]="user.roleId" name="roleId" required>
-        <option [ngValue]="null" disabled>Select role</option>
-        <option *ngFor="let r of roles" [ngValue]="r.id">{{ r.name }}</option>
-      </select>
-    </mat-form-field>
-
-    <mat-checkbox [(ngModel)]="user.isActive" name="isActive">Active</mat-checkbox>
-
-    <div mat-dialog-actions class="action-buttons mt-3">
-      <button mat-flat-button color="primary" class="save-button" type="submit"
-      [disabled]="!userForm.valid || !phoneNumber.valid || !user.password || !user.roleId">
-  Save
-</button>
-
-      <button mat-button class="cancel-button" type="button" (click)="onCancel()">Cancel</button>
+<div class="modern-dialog">
+  <div class="dialog-header">
+    <div class="header-icon primary">
+      <i class="fas fa-user-plus"></i>
     </div>
-  </form>
+    <div class="header-text">
+      <h2 class="dialog-title">Thêm người dùng mới</h2>
+      <p class="dialog-subtitle">Tạo tài khoản người dùng mới cho hệ thống</p>
+    </div>
+  </div>
+
+  <div mat-dialog-content class="dialog-content">
+    <form #userForm="ngForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Basic Information -->
+      <div class="form-section">
+        <div class="section-title">
+          <i class="fas fa-info-circle"></i>
+          <span>Thông tin cơ bản</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-user"></i>
+            Họ và tên
+          </label>
+          <mat-form-field class="w-100" appearance="outline">
+            <input 
+              matInput 
+              [(ngModel)]="user.fullname" 
+              name="fullname"
+              placeholder="Nhập họ và tên..." />
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-phone"></i>
+            Số điện thoại
+            <span class="required">*</span>
+          </label>
+          <mat-form-field class="w-100" appearance="outline">
+            <input
+              matInput
+              type="tel"
+              [(ngModel)]="user.phoneNumber"
+              name="phoneNumber"
+              pattern="^[0-9]{10}$"
+              maxlength="10"
+              required
+              #phoneNumber="ngModel"
+              placeholder="Nhập số điện thoại 10 chữ số..." />
+            <mat-error *ngIf="phoneNumber.invalid && phoneNumber.touched">
+              Số điện thoại phải có đúng 10 chữ số
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-lock"></i>
+            Mật khẩu
+            <span class="required">*</span>
+          </label>
+          <mat-form-field class="w-100" appearance="outline">
+            <input 
+              matInput 
+              type="password" 
+              [(ngModel)]="user.password" 
+              name="password" 
+              required
+              placeholder="Nhập mật khẩu..." />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Account Settings -->
+      <div class="form-section">
+        <div class="section-title">
+          <i class="fas fa-cog"></i>
+          <span>Cài đặt tài khoản</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-user-shield"></i>
+            Vai trò
+            <span class="required">*</span>
+          </label>
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-select [(ngModel)]="user.roleId" name="roleId" required placeholder="Chọn vai trò...">
+              <mat-option [value]="null" disabled>Chọn vai trò</mat-option>
+              <mat-option *ngFor="let r of roles" [value]="r.id">
+                {{ r.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-toggle-on"></i>
+            Trạng thái
+          </label>
+          <div class="checkbox-wrapper">
+            <mat-checkbox [(ngModel)]="user.isActive" name="isActive" color="primary">
+              Kích hoạt tài khoản
+            </mat-checkbox>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social Accounts (Read-only) -->
+      <div class="form-section">
+        <div class="section-title">
+          <i class="fas fa-share-alt"></i>
+          <span>Tài khoản mạng xã hội</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fab fa-facebook"></i>
+              Facebook ID
+            </label>
+            <mat-form-field class="w-100" appearance="outline">
+              <input 
+                matInput 
+                type="number" 
+                [(ngModel)]="user.facebookAccountId" 
+                name="facebookAccountId" 
+                [disabled]="true"
+                placeholder="Chưa liên kết" />
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fab fa-google"></i>
+              Google ID
+            </label>
+            <mat-form-field class="w-100" appearance="outline">
+              <input 
+                matInput 
+                type="number" 
+                [(ngModel)]="user.googleAccountId" 
+                name="googleAccountId" 
+                [disabled]="true"
+                placeholder="Chưa liên kết" />
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div mat-dialog-actions class="dialog-actions">
+        <button 
+          mat-button 
+          class="btn-cancel" 
+          type="button" 
+          (click)="onCancel()">
+          <i class="fas fa-times"></i>
+          Hủy bỏ
+        </button>
+        <button 
+          mat-raised-button 
+          class="btn-save" 
+          type="submit"
+          [disabled]="!userForm.valid || !phoneNumber.valid || !user.password || !user.roleId">
+          <i class="fas fa-check"></i>
+          Tạo người dùng
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

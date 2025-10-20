@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 import { User } from '../../../dto/user.dto';
 import { RoleService } from '../../../services/admin/role.service';
 import { Role } from '../../../dto/role.dto';
@@ -8,7 +9,7 @@ import { Role } from '../../../dto/role.dto';
 @Component({
   selector: 'app-user-admin-view',
   standalone: true,
-  imports: [CommonModule, MatDialogModule],
+  imports: [CommonModule, MatDialogModule, MatButtonModule],
   templateUrl: './user-admin-view.component.html',
   styleUrls: ['./user-admin-view.component.scss']
 })

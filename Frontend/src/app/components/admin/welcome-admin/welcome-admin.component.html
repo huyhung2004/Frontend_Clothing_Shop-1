@@ -1,6 +1,198 @@
-<div class="admin-dashboard">
-  <div class="welcome-box">
-    <h1>🎉 Chào mừng trở lại, Admin!</h1>
-    <p>Chúc bạn một ngày làm việc hiệu quả trong trang quản trị.</p>
+<div class="dashboard-container">
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <div class="welcome-content">
+      <div class="welcome-text">
+        <h1 class="welcome-title">
+          <i class="fas fa-hand-sparkles"></i>
+          Chào mừng trở lại, {{ adminName }}!
+        </h1>
+        <p class="welcome-subtitle">Đây là tổng quan về hoạt động kinh doanh của bạn</p>
+      </div>
+      <div class="welcome-date">
+        <i class="far fa-calendar"></i>
+        <span>{{ currentDate | date: 'EEEE, dd/MM/yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card primary">
+      <div class="stat-icon">
+        <i class="fas fa-shopping-cart"></i>
+      </div>
+      <div class="stat-info">
+        <h3 class="stat-value">{{ stats.totalOrders }}</h3>
+        <p class="stat-label">Tổng đơn hàng</p>
+        <div class="stat-trend positive">
+          <i class="fas fa-arrow-up"></i>
+          <span>+12% so với tháng trước</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card success">
+      <div class="stat-icon">
+        <i class="fas fa-dollar-sign"></i>
+      </div>
+      <div class="stat-info">
+        <h3 class="stat-value">{{ stats.totalRevenue | number:'1.0-0' }} VNĐ</h3>
+        <p class="stat-label">Doanh thu</p>
+        <div class="stat-trend positive">
+          <i class="fas fa-arrow-up"></i>
+          <span>+8% so với tháng trước</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card warning">
+      <div class="stat-icon">
+        <i class="fas fa-tshirt"></i>
+      </div>
+      <div class="stat-info">
+        <h3 class="stat-value">{{ stats.totalProducts }}</h3>
+        <p class="stat-label">Sản phẩm</p>
+        <div class="stat-trend">
+          <i class="fas fa-minus"></i>
+          <span>Không đổi</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card info">
+      <div class="stat-icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <div class="stat-info">
+        <h3 class="stat-value">{{ stats.totalUsers }}</h3>
+        <p class="stat-label">Người dùng</p>
+        <div class="stat-trend positive">
+          <i class="fas fa-arrow-up"></i>
+          <span>+5 người dùng mới</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions-section">
+    <h2 class="section-title">
+      <i class="fas fa-bolt"></i>
+      Thao tác nhanh
+    </h2>
+    <div class="quick-actions-grid">
+      <a routerLink="/adminDashboard/product" class="action-card">
+        <div class="action-icon purple">
+          <i class="fas fa-plus-circle"></i>
+        </div>
+        <div class="action-content">
+          <h3>Thêm sản phẩm</h3>
+          <p>Thêm sản phẩm mới vào cửa hàng</p>
+        </div>
+        <i class="fas fa-arrow-right action-arrow"></i>
+      </a>
+
+      <a routerLink="/adminDashboard/order" class="action-card">
+        <div class="action-icon blue">
+          <i class="fas fa-list-alt"></i>
+        </div>
+        <div class="action-content">
+          <h3>Quản lý đơn hàng</h3>
+          <p>Xem và xử lý đơn hàng</p>
+        </div>
+        <i class="fas fa-arrow-right action-arrow"></i>
+      </a>
+
+      <a routerLink="/adminDashboard/category" class="action-card">
+        <div class="action-icon green">
+          <i class="fas fa-tags"></i>
+        </div>
+        <div class="action-content">
+          <h3>Quản lý danh mục</h3>
+          <p>Quản lý danh mục sản phẩm</p>
+        </div>
+        <i class="fas fa-arrow-right action-arrow"></i>
+      </a>
+
+      <a routerLink="/adminDashboard/statistics" class="action-card">
+        <div class="action-icon orange">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="action-content">
+          <h3>Xem thống kê</h3>
+          <p>Báo cáo và phân tích dữ liệu</p>
+        </div>
+        <i class="fas fa-arrow-right action-arrow"></i>
+      </a>
+
+      <a routerLink="/adminDashboard/users" class="action-card">
+        <div class="action-icon pink">
+          <i class="fas fa-user-cog"></i>
+        </div>
+        <div class="action-content">
+          <h3>Quản lý người dùng</h3>
+          <p>Quản lý tài khoản người dùng</p>
+        </div>
+        <i class="fas fa-arrow-right action-arrow"></i>
+      </a>
+
+      <a routerLink="/adminDashboard/brand" class="action-card">
+        <div class="action-icon red">
+          <i class="fas fa-copyright"></i>
+        </div>
+        <div class="action-content">
+          <h3>Quản lý thương hiệu</h3>
+          <p>Quản lý các thương hiệu</p>
+        </div>
+        <i class="fas fa-arrow-right action-arrow"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Recent Activity & Tips -->
+  <div class="bottom-section">
+    <div class="recent-activity">
+      <h2 class="section-title">
+        <i class="fas fa-history"></i>
+        Hoạt động gần đây
+      </h2>
+      <div class="activity-list">
+        <div class="activity-item" *ngFor="let activity of recentActivities">
+          <div class="activity-icon" [ngClass]="activity.type">
+            <i [class]="activity.icon"></i>
+          </div>
+          <div class="activity-content">
+            <p class="activity-text">{{ activity.text }}</p>
+            <span class="activity-time">{{ activity.time }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tips-section">
+      <h2 class="section-title">
+        <i class="fas fa-lightbulb"></i>
+        Mẹo hữu ích
+      </h2>
+      <div class="tips-list">
+        <div class="tip-item">
+          <i class="fas fa-check-circle"></i>
+          <p>Cập nhật thông tin sản phẩm thường xuyên để thu hút khách hàng</p>
+        </div>
+        <div class="tip-item">
+          <i class="fas fa-check-circle"></i>
+          <p>Kiểm tra đơn hàng mới mỗi ngày để xử lý kịp thời</p>
+        </div>
+        <div class="tip-item">
+          <i class="fas fa-check-circle"></i>
+          <p>Theo dõi thống kê để đưa ra quyết định kinh doanh tốt hơn</p>
+        </div>
+        <div class="tip-item">
+          <i class="fas fa-check-circle"></i>
+          <p>Phản hồi nhanh các yêu cầu của khách hàng</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

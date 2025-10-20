@@ -1,23 +1,59 @@
-<h2 mat-dialog-title class="center">Add Category</h2>
-
-
-<div mat-dialog-content>
-  <form #categoryForm="ngForm" (ngSubmit)="onSubmit()">
-    <!-- Error Message Display -->
-    <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
-      {{ errorMessage }}
+<div class="modern-dialog">
+  <div class="dialog-header">
+    <div class="header-icon primary">
+      <i class="fas fa-plus-circle"></i>
     </div>
-
-    <mat-form-field class="w-100">
-      <mat-label>Category Name</mat-label>
-      <input matInput [(ngModel)]="category.name" name="name" required maxlength="255" />
-    </mat-form-field>
-
-    <div mat-dialog-actions class="action-buttons">
-      <button mat-flat-button color="primary" class="save-button" type="submit" [disabled]="!category.name || isSubmitting">
-        {{ isSubmitting ? 'Đang lưu...' : 'Save' }}
-      </button>
-      <button mat-button class="cancel-button" type="button" (click)="onCancel()" [disabled]="isSubmitting">Cancel</button>
+    <div class="header-text">
+      <h2 class="dialog-title">Thêm danh mục mới</h2>
+      <p class="dialog-subtitle">Tạo danh mục sản phẩm mới cho cửa hàng</p>
     </div>
-  </form>
+  </div>
+
+  <div mat-dialog-content class="dialog-content">
+    <form #categoryForm="ngForm" (ngSubmit)="onSubmit()">
+      <!-- Error Message Display -->
+      <div *ngIf="errorMessage" class="error-banner">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-tag"></i>
+          Tên danh mục
+          <span class="required">*</span>
+        </label>
+        <mat-form-field class="w-100" appearance="outline">
+          <input 
+            matInput 
+            [(ngModel)]="category.name" 
+            name="name" 
+            required 
+            maxlength="255"
+            placeholder="Nhập tên danh mục..." />
+          <mat-hint>Tối đa 255 ký tự</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div mat-dialog-actions class="dialog-actions">
+        <button 
+          mat-button 
+          class="btn-cancel" 
+          type="button" 
+          (click)="onCancel()" 
+          [disabled]="isSubmitting">
+          <i class="fas fa-times"></i>
+          Hủy bỏ
+        </button>
+        <button 
+          mat-raised-button 
+          class="btn-save" 
+          type="submit" 
+          [disabled]="!category.name || isSubmitting">
+          <i class="fas fa-check"></i>
+          {{ isSubmitting ? 'Đang lưu...' : 'Lưu lại' }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

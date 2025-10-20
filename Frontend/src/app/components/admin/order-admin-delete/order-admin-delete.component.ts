@@ -1,24 +1,20 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { OrderService } from '../../../services/admin/order.service';
 import { Order } from '../../../dto/order.dto';
 import { CommonModule } from '@angular/common';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms'; // Đảm bảo import FormsModule
 
 @Component({
   selector: 'app-order-admin-delete',
+  standalone: true,
   templateUrl: './order-admin-delete.component.html',
+  styleUrls: ['./order-admin-delete.component.scss'],
   imports: [
     CommonModule,
     MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule, // Đảm bảo FormsModule đã được import
+    MatButtonModule,
   ],
-  styleUrls: ['./order-admin-delete.component.scss'],
 })
 export class OrderAdminDeleteComponent {
   constructor(

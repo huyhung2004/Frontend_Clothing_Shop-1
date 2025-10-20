@@ -35,6 +35,7 @@ export class ProductAdminComponent implements OnInit {
   selectedCategory = '';
   selectedBrand = '';
   sortBy = 'name';
+  viewMode: 'grid' | 'table' = 'grid';
 
   constructor(
     private productsService: ProductService,
@@ -189,6 +190,22 @@ export class ProductAdminComponent implements OnInit {
     this.selectedBrand = '';
     this.sortBy = 'name';
     this.filteredProducts = [...this.products];
+  }
+
+  toggleView(): void {
+    this.viewMode = this.viewMode === 'grid' ? 'table' : 'grid';
+  }
+
+  getCategoryName(categoryId: number | undefined): string {
+    if (!categoryId) return 'N/A';
+    const category = this.categories.find(c => c.id === categoryId);
+    return category ? category.name : 'N/A';
+  }
+
+  getBrandName(brandId: number | undefined): string {
+    if (!brandId) return 'N/A';
+    const brand = this.brands.find(b => b.id === brandId);
+    return brand ? brand.name : 'N/A';
   }
 
 }

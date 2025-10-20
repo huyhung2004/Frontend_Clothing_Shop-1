@@ -130,4 +130,32 @@ export class OrderAdminComponent implements OnInit {
         return 'badge bg-secondary';
     }
   }
+
+  getStatusLabel(status: string | undefined): string {
+    if (!status) return 'N/A';
+    const statusLabels: { [key: string]: string } = {
+      'pending': 'Chờ xử lý',
+      'processing': 'Đang xử lý',
+      'shipped': 'Đang giao',
+      'delivered': 'Đã giao',
+      'cancelled': 'Đã hủy'
+    };
+    return statusLabels[status] || status;
+  }
+
+  getStatusIcon(status: string | undefined): string {
+    if (!status) return 'fas fa-circle';
+    const statusIcons: { [key: string]: string } = {
+      'pending': 'fas fa-clock',
+      'processing': 'fas fa-box',
+      'shipped': 'fas fa-shipping-fast',
+      'delivered': 'fas fa-check-circle',
+      'cancelled': 'fas fa-times-circle'
+    };
+    return statusIcons[status] || 'fas fa-circle';
+  }
+
+  getOrderCountByStatus(status: string): number {
+    return this.orders.filter(order => order.status?.toLowerCase() === status.toLowerCase()).length;
+  }
 }

@@ -162,4 +162,30 @@ export class UserAdminComponent implements OnInit {
       }
     });
   }
+
+  getUserCountByStatus(isActive: boolean): number {
+    return this.users.filter(user => user.isActive === isActive).length;
+  }
+
+  getAdminCount(): number {
+    return this.users.filter(user => this.isAdmin(user)).length;
+  }
+
+  isAdmin(user: User): boolean {
+    return user.role?.name?.toLowerCase() === 'admin' || user.roleId === 1;
+  }
+
+  getRoleIcon(user: User): string {
+    if (this.isAdmin(user)) {
+      return 'fas fa-user-shield';
+    }
+    return 'fas fa-user';
+  }
+
+  clearFilters(): void {
+    this.searchKeyword = '';
+    this.selectedRoleId = null;
+    this.selectedStatus = 'all';
+    this.getUsers(1);
+  }
 }

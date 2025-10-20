@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Renderer2, OnInit } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { Component, Renderer2, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { RouterModule, RouterOutlet, Router } from '@angular/router';
 import { AccountService, Account } from '../../../services/account.service';
 import { UserService } from '../../../services/admin/user.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -13,6 +13,16 @@ import {
   faAngleLeft,
   faAngleRight,
   faChartLine,
+  faSearch,
+  faBell,
+  faUserCircle,
+  faChevronDown,
+  faUser,
+  faCog,
+  faSignOutAlt,
+  faHome,
+  faInfoCircle,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -22,27 +32,69 @@ import {
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
 })
-export class LayoutComponent implements OnInit {
-  showSearch = false;
-  userName: string = ''; // ← thêm thuộc tính giữ tên người dùng
+export class LayoutComponent implements OnInit, OnDestroy {
+  userName: string = '';
   private linkElements: HTMLLinkElement[] = [];
   isCollapsed = false;
+  showUserDropdown = false;
+  showMobileSearch = false;
+  showSearch = false;
+  isMobileView = false;
+
+  // Font Awesome Icons
   faAngleLeft = faAngleLeft;
   faAngleRight = faAngleRight;
+  faSearch = faSearch;
+  faBell = faBell;
+  faUserCircle = faUserCircle;
+  faChevronDown = faChevronDown;
+  faUser = faUser;
+  faCog = faCog;
+  faSignOutAlt = faSignOutAlt;
+  faHome = faHome;
+  faTshirt = faTshirt;
+  faShoppingCart = faShoppingCart;
+  faChartLine = faChartLine;
+  faInfoCircle = faInfoCircle;
+  faTimes = faTimes;
+
   navItems = [
-    { label: 'Brands', link: '/adminDashboard/brand', icon: faBoxes },
-    { label: 'Categories', link: '/adminDashboard/category', icon: faTags },
-    { label: 'Products', link: '/adminDashboard/product', icon: faTshirt },
-    { label: 'Users', link: '/adminDashboard/users', icon: faUsers },
-    { label: 'Orders', link: '/adminDashboard/order', icon: faShoppingCart },
-    {
-      label: 'Statistics',
-      link: '/adminDashboard/statistics',
-      icon: faChartLine,
-    },
+    { label: 'Thương hiệu', link: '/adminDashboard/brand', icon: faBoxes, badge: null },
+    { label: 'Danh mục', link: '/adminDashboard/category', icon: faTags, badge: null },
+    { label: 'Sản phẩm', link: '/adminDashboard/product', icon: faTshirt, badge: null },
+    { label: 'Người dùng', link: '/adminDashboard/users', icon: faUsers, badge: null },
+    { label: 'Đơn hàng', link: '/adminDashboard/order', icon: faShoppingCart, badge: '12' },
+    { label: 'Thống kê', link: '/adminDashboard/statistics', icon: faChartLine, badge: null },
   ];
 
-  // layout.component.ts
+  constructor(
+    private renderer: Renderer2,
+    private userService: UserService,
+    private router: Router
+  ) {
+    this.checkMobileView();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event?: any) {
+    this.checkMobileView();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.user-menu')) {
+      this.showUserDropdown = false;
+    }
+  }
+
+  checkMobileView() {
+    this.isMobileView = window.innerWidth <= 768;
+    if (this.isMobileView) {
+      this.isCollapsed = true;
+    }
+  }
+
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
     if (this.isCollapsed) {
@@ -52,10 +104,19 @@ export class LayoutComponent implements OnInit {
     }
   }
 
-  constructor(
-    private renderer: Renderer2,
-    private userService: UserService // ← inject service
-  ) {}
+  toggleUserDropdown() {
+    this.showUserDropdown = !this.showUserDropdown;
+  }
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    this.router.navigate(['/login']);
+  }
 
   ngOnInit(): void {
     // 1) Load CSS như trước

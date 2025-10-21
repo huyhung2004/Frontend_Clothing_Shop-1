@@ -1,53 +1,84 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Product } from '../../../dto/product.dto';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ProductAdminService } from '../../../services/admin/productadmin.service';
+import { CommonModule } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon'; // Nếu sử dụng icon
+import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-product-admin-delete',
   templateUrl: './product-admin-delete.component.html',
   standalone: true,
   imports: [
+    CommonModule,
     MatDialogModule,
     MatButtonModule,
-    MatIconModule, // Nếu bạn dùng icon trong các button
+    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
+    FormsModule,
+    MatSnackBarModule,
   ],
   styleUrls: ['./product-admin-delete.component.scss'],
 })
-export class ProductAdminDeleteComponent implements OnInit {
-  product!: Product;
+export class ProductAdminDeleteComponent {
+  errorMessage: string = '';
+  isDeleting: boolean = false;
 
   constructor(
-    private dialogRef: MatDialogRef<ProductAdminDeleteComponent>,
+    public dialogRef: MatDialogRef<ProductAdminDeleteComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { id: number; name: string },
     private productAdminService: ProductAdminService,
-    @Inject(MAT_DIALOG_DATA) public data: { product: Product }
+    private snackBar: MatSnackBar
   ) {}
 
-  ngOnInit(): void {
-    this.product = this.data.product;
-  }
-
   onDelete(): void {
-    this.productAdminService.deleteProduct(this.product.id).subscribe({
-      next: () => {
-        alert('Product deleted sucessfully!');
-        this.dialogRef.close(true); // đóng dialog và trả kết quả thành công
+    this.errorMessage = '';
+    this.isDeleting = true;
+
+    this.productAdminService.deleteProduct(this.data.id).subscribe({
+      next: (response) => {
+        const message = response.message || 'Sản phẩm đã được xóa thành công!';
+        this.snackBar.open(message, 'Đóng', { duration: 3000 });
+        this.dialogRef.close(true); // Đóng dialog và trả kết quả
       },
-      error: (err) => {
-        console.error('Lỗi khi xoá sản phẩm:', err);
-        alert('Xoá thất bại: ' + err.message);
+      error: (error) => {
+        this.isDeleting = false;
+        console.error('Error deleting product:', error);
+        
+        // Xử lý các loại lỗi khác nhau
+        if (error.status === 400) {
+          // Bad Request - có thể là vì product đang được sử dụng
+          this.errorMessage = error.error?.message || 'Không thể xóa sản phẩm này';
+          if (error.error?.detail) {
+            this.errorMessage += '\n' + error.error.detail;
+          }
+        } else if (error.status === 404) {
+          // Not Found
+          this.errorMessage = 'Không tìm thấy sản phẩm';
+        } else if (error.status === 500) {
+          // Server error
+          this.errorMessage = 'Lỗi server: ' + (error.error?.message || 'Vui lòng thử lại sau');
+        } else {
+          this.errorMessage = 'Có lỗi xảy ra: ' + (error.error?.message || error.message || 'Vui lòng thử lại');
+        }
+        
+        // Hiển thị lỗi trên toast
+        this.snackBar.open(this.errorMessage, 'Đóng', { duration: 5000 });
       },
+      complete: () => {
+        this.isDeleting = false;
+      }
     });
   }
 
+  // Đóng dialog mà không làm gì
   onCancel(): void {
-    this.dialogRef.close(false);
+    this.dialogRef.close();
   }
 }

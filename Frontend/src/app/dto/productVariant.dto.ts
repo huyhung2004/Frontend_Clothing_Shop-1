@@ -37,3 +37,4 @@ export interface ProductVariantBatchCreateRequest {
   variants: VariantData[];
 }
 
+

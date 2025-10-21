@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
@@ -9,7 +9,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 import { Product } from '../../../dto/product.dto';
+import { Category } from '../../../dto/category.dto';
+import { Brand } from '../../../dto/brand.dto';
 import { ProductAdminService, ProductFormData } from '../../../services/admin/productadmin.service';
+import { CategoryService } from '../../../services/admin/category.service';
+import { BrandService } from '../../../services/admin/brand.service';
 
 @Component({
   selector: 'app-product-admin-create',
@@ -27,7 +31,7 @@ import { ProductAdminService, ProductFormData } from '../../../services/admin/pr
     MatIconModule,
   ],
 })
-export class ProductAdminCreateComponent {
+export class ProductAdminCreateComponent implements OnInit {
   productData: ProductFormData = {
     name: '',
     description: '',
@@ -44,32 +48,42 @@ export class ProductAdminCreateComponent {
 
   isSubmitting = false;
 
-  categories = [
-    { id: 1, name: 'Áo thun' },
-    { id: 2, name: 'Áo khoác' },
-    { id: 3, name: 'Áo kiểu' },
-    { id: 4, name: 'Đầm ngắn' },
-    { id: 5, name: 'Váy' },
-    { id: 6, name: 'Quần' },
-  ];
-
-  brands = [
-    { id: 1, name: 'Nike' },
-    { id: 2, name: 'Adidas' },
-    { id: 3, name: 'Puma' },
-    { id: 4, name: 'Reebook' },
-    { id: 5, name: 'Under Armour' },
-    { id: 6, name: 'New Balance' },
-    { id: 7, name: 'Asics' },
-    { id: 8, name: 'Fila' },
-    { id: 9, name: 'Converse' },
-    { id: 10, name: 'Vans' },
-  ];
+  categories: Category[] = [];
+  brands: Brand[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<ProductAdminCreateComponent>,
-    private productAdminService: ProductAdminService
+    private productAdminService: ProductAdminService,
+    private categoryService: CategoryService,
+    private brandService: BrandService
   ) {}
+
+  ngOnInit(): void {
+    this.loadCategories();
+    this.loadBrands();
+  }
+
+  loadCategories(): void {
+    this.categoryService.getAllCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+      },
+      error: (error) => {
+        console.error('Lỗi khi tải danh mục:', error);
+      }
+    });
+  }
+
+  loadBrands(): void {
+    this.brandService.getAllBrands().subscribe({
+      next: (brands) => {
+        this.brands = brands;
+      },
+      error: (error) => {
+        console.error('Lỗi khi tải thương hiệu:', error);
+      }
+    });
+  }
 
   // Xử lý chọn ảnh đại diện
   onThumbnailSelect(event: Event): void {

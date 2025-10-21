@@ -11,7 +11,11 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { Product } from '../../../dto/product.dto';
 import { ProductImage } from '../../../dto/productImage.dto';
+import { Category } from '../../../dto/category.dto';
+import { Brand } from '../../../dto/brand.dto';
 import { ProductAdminService, ProductFormData } from '../../../services/admin/productadmin.service';
+import { CategoryService } from '../../../services/admin/category.service';
+import { BrandService } from '../../../services/admin/brand.service';
 
 @Component({
   selector: 'app-product-admin-edit',
@@ -59,38 +63,23 @@ export class ProductAdminEditComponent implements OnInit {
   isSubmitting = false;
   isLoading = true;
 
-  categories = [
-    { id: 1, name: 'Áo thun' },
-    { id: 2, name: 'Áo khoác' },
-    { id: 3, name: 'Áo kiểu' },
-    { id: 4, name: 'Đầm ngắn' },
-    { id: 5, name: 'Váy' },
-    { id: 6, name: 'Quần' },
-  ];
-
-  brands = [
-    { id: 1, name: 'Nike' },
-    { id: 2, name: 'Adidas' },
-    { id: 3, name: 'Puma' },
-    { id: 4, name: 'Reebook' },
-    { id: 5, name: 'Under Armour' },
-    { id: 6, name: 'New Balance' },
-    { id: 7, name: 'Asics' },
-    { id: 8, name: 'Fila' },
-    { id: 9, name: 'Converse' },
-    { id: 10, name: 'Vans' },
-  ];
+  categories: Category[] = [];
+  brands: Brand[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<ProductAdminEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { id: number },
-    private productAdminService: ProductAdminService
+    private productAdminService: ProductAdminService,
+    private categoryService: CategoryService,
+    private brandService: BrandService
   ) {
     this.productId = data.id;
   }
 
   ngOnInit(): void {
     this.loadProduct();
+    this.loadCategories();
+    this.loadBrands();
   }
 
   loadProduct(): void {
@@ -112,6 +101,28 @@ export class ProductAdminEditComponent implements OnInit {
         console.error('Lỗi khi tải sản phẩm:', error);
         alert('Không thể tải thông tin sản phẩm');
         this.dialogRef.close();
+      }
+    });
+  }
+
+  loadCategories(): void {
+    this.categoryService.getAllCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+      },
+      error: (error) => {
+        console.error('Lỗi khi tải danh mục:', error);
+      }
+    });
+  }
+
+  loadBrands(): void {
+    this.brandService.getAllBrands().subscribe({
+      next: (brands) => {
+        this.brands = brands;
+      },
+      error: (error) => {
+        console.error('Lỗi khi tải thương hiệu:', error);
       }
     });
   }

@@ -22,13 +22,8 @@
       <!-- Search Box -->
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
-        <input 
-          type="text" 
-          class="search-input" 
-          placeholder="Tìm kiếm tên sản phẩm, mô tả..." 
-          [(ngModel)]="searchTerm"
-          (input)="onSearchChange()"
-        >
+        <input type="text" class="search-input" placeholder="Tìm kiếm tên sản phẩm, mô tả..." [(ngModel)]="searchTerm"
+          (input)="onSearchChange()">
       </div>
 
       <!-- Category Filter -->
@@ -61,7 +56,8 @@
       </div>
 
       <!-- Clear Filters -->
-      <button class="btn-clear-filters" (click)="clearFilters()" *ngIf="searchTerm || selectedCategory || selectedBrand">
+      <button class="btn-clear-filters" (click)="clearFilters()"
+        *ngIf="searchTerm || selectedCategory || selectedBrand">
         <i class="fas fa-times"></i>
         Xóa bộ lọc
       </button>
@@ -71,7 +67,8 @@
     <div class="results-summary">
       <span class="result-count">
         <i class="fas fa-box"></i>
-        Hiển thị <strong>{{ filteredProducts.length }}</strong> trong tổng số <strong>{{ totalProducts }}</strong> sản phẩm
+        Hiển thị <strong>{{ filteredProducts.length }}</strong> trong tổng số <strong>{{ totalProducts }}</strong> sản
+        phẩm
       </span>
       <button class="view-toggle" (click)="toggleView()">
         <i [class]="viewMode === 'grid' ? 'fas fa-th' : 'fas fa-list'"></i>
@@ -84,7 +81,7 @@
   <div class="products-grid" *ngIf="viewMode === 'grid'">
     <div class="product-card" *ngFor="let product of filteredProducts">
       <div class="product-image">
-        <img [src]="product.image || 'assets/img/placeholder.jpg'" [alt]="product.name">
+        <img [src]="getImageUrl(product.image)" [alt]="product.name">
         <div class="product-overlay">
           <button class="overlay-btn" (click)="openEditDialog(product)" title="Chỉnh sửa">
             <i class="fas fa-edit"></i>
@@ -96,7 +93,8 @@
       </div>
       <div class="product-info">
         <h3 class="product-name">{{ product.name }}</h3>
-        <p class="product-description">{{ (product.description || '') | slice:0:60 }}{{ (product.description?.length || 0) > 60 ? '...' : '' }}</p>
+        <p class="product-description">{{ (product.description || '') | slice:0:60 }}{{ (product.description?.length ||
+          0) > 60 ? '...' : '' }}</p>
         <div class="product-meta">
           <span class="meta-item">
             <i class="fas fa-tag"></i>
@@ -142,14 +140,16 @@
             <td><span class="table-id">#{{ product.id }}</span></td>
             <td>
               <div class="table-product">
-                <img [src]="product.image || 'assets/img/placeholder.jpg'" [alt]="product.name" class="table-product-img">
+                <img [src]="getImageUrl(product.image)" [alt]="product.name"
+                  class="table-product-img">
                 <span class="table-product-name">{{ product.name }}</span>
               </div>
             </td>
             <td><span class="table-price">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</span></td>
             <td>{{ getCategoryName(product.categoryId) }}</td>
             <td>{{ getBrandName(product.brandId) }}</td>
-            <td class="description-cell">{{ (product.description || '') | slice:0:50 }}{{ (product.description?.length || 0) > 50 ? '...' : '' }}</td>
+            <td class="description-cell">{{ (product.description || '') | slice:0:50 }}{{ (product.description?.length
+              || 0) > 50 ? '...' : '' }}</td>
             <td class="action-cell">
               <button class="action-btn edit" (click)="openEditDialog(product)" title="Chỉnh sửa">
                 <i class="fas fa-edit"></i>
@@ -178,10 +178,7 @@
       Trước
     </button>
     <div class="pagination-pages">
-      <button 
-        *ngFor="let page of pages" 
-        class="pagination-page" 
-        [class.active]="page === currentPage"
+      <button *ngFor="let page of pages" class="pagination-page" [class.active]="page === currentPage"
         (click)="goToPage(page)">
         {{ page }}
       </button>

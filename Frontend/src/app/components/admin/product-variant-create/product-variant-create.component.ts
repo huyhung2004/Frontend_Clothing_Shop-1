@@ -32,18 +32,12 @@ export class ProductVariantCreateComponent implements OnInit {
   // Các tùy chọn định sẵn
   predefinedColors = [
     { name: 'Đen', value: 'Black', color: '#000000' },
-    { name: 'Trắng', value: 'White', color: '#FFFFFF' },
     { name: 'Đỏ', value: 'Red', color: '#FF0000' },
     { name: 'Xanh dương', value: 'Blue', color: '#0000FF' },
-    { name: 'Xanh lá', value: 'Green', color: '#00FF00' },
     { name: 'Vàng', value: 'Yellow', color: '#FFFF00' },
-    { name: 'Hồng', value: 'Pink', color: '#FFC0CB' },
-    { name: 'Xám', value: 'Gray', color: '#808080' },
-    { name: 'Nâu', value: 'Brown', color: '#A52A2A' },
-    { name: 'Tím', value: 'Purple', color: '#800080' },
   ];
 
-  predefinedSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+  predefinedSizes = ['S', 'M', 'L', 'XL'];
 
   isCustomColor = false;
   isCustomSize = false;
@@ -70,7 +64,7 @@ export class ProductVariantCreateComponent implements OnInit {
     this.productService.getAllProducts().subscribe({
       next: (products) => {
         this.products = products;
-        
+
         // Nếu chỉ có một sản phẩm hoặc đã chỉ định ID sản phẩm, tự động chọn
         if (this.variant.productId && this.variant.productId > 0) {
           const selectedProduct = products.find(p => p.id === this.variant.productId);

@@ -1,59 +1,45 @@
-<div class="modern-dialog">
-  <div class="dialog-header">
-    <div class="header-icon success">
-      <i class="fas fa-edit"></i>
-    </div>
-    <div class="header-text">
-      <h2 class="dialog-title">Chỉnh sửa thương hiệu</h2>
-      <p class="dialog-subtitle">Cập nhật thông tin thương hiệu sản phẩm</p>
-    </div>
-  </div>
+<div class="compact-dialog">
+  <h2 mat-dialog-title class="dialog-title">
+    <i class="fas fa-edit"></i>
+    Sửa thương hiệu
+  </h2>
 
-  <div mat-dialog-content class="dialog-content">
+  <mat-dialog-content class="dialog-content">
     <form #brandForm="ngForm" (ngSubmit)="onSubmit()">
       <!-- Error Message Display -->
-      <div *ngIf="errorMessage" class="error-banner">
-        <i class="fas fa-exclamation-triangle"></i>
-        <span>{{ errorMessage }}</span>
+      <div *ngIf="errorMessage" class="error-message">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ errorMessage }}
       </div>
 
-      <div class="form-group">
-        <label class="form-label">
-          <i class="fas fa-copyright"></i>
-          Tên thương hiệu
-          <span class="required">*</span>
-        </label>
-        <mat-form-field class="w-100" appearance="outline">
-          <input 
-            matInput 
-            [(ngModel)]="brand.name" 
-            name="name" 
-            required 
-            maxlength="255"
-            placeholder="Nhập tên thương hiệu..." />
-          <mat-hint>Tối đa 255 ký tự</mat-hint>
-        </mat-form-field>
-      </div>
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Tên thương hiệu</mat-label>
+        <input 
+          matInput 
+          [(ngModel)]="brand.name" 
+          name="name" 
+          required 
+          maxlength="255"
+          placeholder="Nhập tên thương hiệu..." 
+          autocomplete="off" />
+      </mat-form-field>
 
-      <div mat-dialog-actions class="dialog-actions">
+      <mat-dialog-actions align="end">
         <button 
           mat-button 
-          class="btn-cancel" 
           type="button" 
           (click)="onCancel()" 
           [disabled]="isSubmitting">
-          <i class="fas fa-times"></i>
-          Hủy bỏ
+          Hủy
         </button>
         <button 
           mat-raised-button 
-          class="btn-update" 
+          color="primary"
           type="submit" 
           [disabled]="!brand.name || isSubmitting">
-          <i class="fas fa-save"></i>
           {{ isSubmitting ? 'Đang cập nhật...' : 'Cập nhật' }}
         </button>
-      </div>
+      </mat-dialog-actions>
     </form>
-  </div>
+  </mat-dialog-content>
 </div>

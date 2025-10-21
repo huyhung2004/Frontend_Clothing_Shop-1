@@ -23,7 +23,7 @@
                             <div class="carousel-inner">
                                 <ng-container *ngFor="let image of productImages; let i = index">
                                     <div class="carousel-item" [ngClass]="{'active': i === 0}">
-                                        <img [src]="'/assets/image/' + image.imageUrl" class="d-block w-100 rounded"
+                                        <img [src]="getImageUrl(image.imageUrl)" class="d-block w-100 rounded"
                                             alt="Product Image">
                                     </div>
                                 </ng-container>
@@ -43,7 +43,7 @@
                         <div *ngIf="productImages && productImages.length > 1" class="additional-images mt-4">
                             <div class="row">
                                 <div class="col-3" *ngFor="let image of productImages">
-                                    <img [src]="'/assets/image/' + image.imageUrl" alt="Product Image"
+                                    <img [src]="getImageUrl(image.imageUrl)" alt="Product Image"
                                         class="img-thumbnail w-100">
                                 </div>
                             </div>

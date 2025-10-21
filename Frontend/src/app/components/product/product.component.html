@@ -89,7 +89,7 @@
                             </div>
                             <div class="product-image">
                                 <a [routerLink]="['/product-detail', item.id]">
-                                    <img [src]="'assets/image/' + item.image" alt="Product Image" />
+                                    <img [src]="getImageUrl(item.image)" alt="Product Image" />
                                 </a>
                                 <div class="product-action">
                                     <a [routerLink]="['/product-detail', item.id]"><i class="fa fa-cart-plus"></i></a>

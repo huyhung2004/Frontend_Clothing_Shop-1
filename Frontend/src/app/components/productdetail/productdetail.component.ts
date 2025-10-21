@@ -22,6 +22,9 @@ export class ProductdetailComponent implements OnInit {
   // Nếu có lựa chọn màu, bạn có thể lấy từ UI. Ở đây sử dụng giá trị mặc định.
   color: string = 'white';
   reviews: Review[] = [];
+  
+  // Base URL for images
+  private baseImageUrl = 'https://localhost:7163';
 
   constructor(
     private route: ActivatedRoute,
@@ -110,5 +113,16 @@ export class ProductdetailComponent implements OnInit {
           alert('Xử lý mua ngay thất bại');
         },
       });
+  }
+
+  // Get full image URL
+  getImageUrl(imageUrl: string | undefined): string {
+    if (!imageUrl) return 'assets/img/placeholder.jpg';
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    // Nếu là relative URL, thêm base URL
+    return this.baseImageUrl + imageUrl;
   }
 }

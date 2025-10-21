@@ -41,6 +41,9 @@ export class ProductComponent implements OnInit {
   previewUrl: string | null = null; 
   
   maxVisiblePages = 18;
+  
+  // Base URL for images
+  private baseImageUrl = 'https://localhost:7163';
 
   constructor(private productService: ProductService,private imgService: ImageSearchService,) {}
 
@@ -225,5 +228,16 @@ export class ProductComponent implements OnInit {
 
   getTotalPages(): number {
     return Math.ceil(this.filteredProducts.length / this.pageSize);
+  }
+
+  // Get full image URL
+  getImageUrl(imageUrl: string | undefined): string {
+    if (!imageUrl) return 'assets/img/placeholder.jpg';
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    // Nếu là relative URL, thêm base URL
+    return this.baseImageUrl + imageUrl;
   }
 }

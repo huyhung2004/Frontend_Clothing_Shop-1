@@ -36,6 +36,9 @@ export class ProductAdminComponent implements OnInit {
   selectedBrand = '';
   sortBy = 'name';
   viewMode: 'grid' | 'table' = 'grid';
+  
+  // Base URL for images
+  private baseImageUrl = 'https://localhost:7163';
 
   constructor(
     private productsService: ProductService,
@@ -89,7 +92,7 @@ export class ProductAdminComponent implements OnInit {
   openDeleteDialog(product: Product): void {
     const dialogRef = this.dialog.open(ProductAdminDeleteComponent, {
       width: '700px',
-      data: { product }  // Truyền toàn bộ đối tượng product vào data
+      data: { id: product.id, name: product.name }  // Truyền id và name
     });
   
     dialogRef.afterClosed().subscribe(result => {
@@ -206,6 +209,17 @@ export class ProductAdminComponent implements OnInit {
     if (!brandId) return 'N/A';
     const brand = this.brands.find(b => b.id === brandId);
     return brand ? brand.name : 'N/A';
+  }
+
+  // Get full image URL
+  getImageUrl(imageUrl: string | undefined): string {
+    if (!imageUrl) return 'assets/img/placeholder.jpg';
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    // Nếu là relative URL, thêm base URL
+    return this.baseImageUrl + imageUrl;
   }
 
 }

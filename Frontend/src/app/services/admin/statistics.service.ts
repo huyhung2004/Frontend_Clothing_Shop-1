@@ -49,5 +49,26 @@ export class SharedService {
   loadordersbybrand() {
     return this.http.get<{ brandName: string; orderCount: number; }[]>(`${this.baseUrl}/orders-by-brand`);
   }
+
+  // API cho dashboard admin
+  getDashboardStats(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/dashboard`);
+  }
+
+  getMonthlyRevenueChart(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/monthly-revenue-chart`);
+  }
+
+  getTopSellingProducts(limit: number = 5): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/top-selling-products?limit=${limit}`);
+  }
+
+  getUserGrowth(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/user-growth`);
+  }
+
+  loadAverageItemsPerOrder(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/average-items-per-order`);
+  }
 }
 

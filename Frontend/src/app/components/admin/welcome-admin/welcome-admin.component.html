@@ -16,18 +16,24 @@
     </div>
   </div>
 
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Đang tải dữ liệu...</p>
+  </div>
+
   <!-- Quick Stats Cards -->
-  <div class="stats-grid">
+  <div class="stats-grid" *ngIf="!isLoading">
     <div class="stat-card primary">
       <div class="stat-icon">
         <i class="fas fa-shopping-cart"></i>
       </div>
       <div class="stat-info">
-        <h3 class="stat-value">{{ stats.totalOrders }}</h3>
-        <p class="stat-label">Tổng đơn hàng</p>
-        <div class="stat-trend positive">
-          <i class="fas fa-arrow-up"></i>
-          <span>+12% so với tháng trước</span>
+        <h3 class="stat-value">{{ stats.totalOrdersThisMonth }}</h3>
+        <p class="stat-label">Tổng đơn hàng tháng này</p>
+        <div class="stat-description">
+          <i class="fas fa-calendar-alt"></i>
+          <span>{{ currentDate | date: 'MM/yyyy' }}</span>
         </div>
       </div>
     </div>
@@ -37,11 +43,11 @@
         <i class="fas fa-dollar-sign"></i>
       </div>
       <div class="stat-info">
-        <h3 class="stat-value">{{ stats.totalRevenue | number:'1.0-0' }} VNĐ</h3>
-        <p class="stat-label">Doanh thu</p>
-        <div class="stat-trend positive">
-          <i class="fas fa-arrow-up"></i>
-          <span>+8% so với tháng trước</span>
+        <h3 class="stat-value">{{ stats.revenueThisMonth | number:'1.0-0' }} VNĐ</h3>
+        <p class="stat-label">Doanh thu tháng này</p>
+        <div class="stat-description">
+          <i class="fas fa-calendar-alt"></i>
+          <span>{{ currentDate | date: 'MM/yyyy' }}</span>
         </div>
       </div>
     </div>
@@ -52,10 +58,10 @@
       </div>
       <div class="stat-info">
         <h3 class="stat-value">{{ stats.totalProducts }}</h3>
-        <p class="stat-label">Sản phẩm</p>
-        <div class="stat-trend">
-          <i class="fas fa-minus"></i>
-          <span>Không đổi</span>
+        <p class="stat-label">Tổng sản phẩm</p>
+        <div class="stat-description">
+          <i class="fas fa-boxes"></i>
+          <span>Trong hệ thống</span>
         </div>
       </div>
     </div>
@@ -66,10 +72,10 @@
       </div>
       <div class="stat-info">
         <h3 class="stat-value">{{ stats.totalUsers }}</h3>
-        <p class="stat-label">Người dùng</p>
-        <div class="stat-trend positive">
-          <i class="fas fa-arrow-up"></i>
-          <span>+5 người dùng mới</span>
+        <p class="stat-label">Tổng người dùng</p>
+        <div class="stat-description">
+          <i class="fas fa-user-check"></i>
+          <span>Đã đăng ký</span>
         </div>
       </div>
     </div>
@@ -150,6 +156,22 @@
     </div>
   </div>
 
+  <!-- Order Status Stats -->
+  <div class="order-status-section" *ngIf="!isLoading && orderStatusStats.length > 0">
+    <h2 class="section-title">
+      <i class="fas fa-chart-pie"></i>
+      Thống kê đơn hàng theo trạng thái (Tháng này)
+    </h2>
+    <div class="status-grid">
+      <div class="status-card" *ngFor="let statusStat of orderStatusStats">
+        <div class="status-info">
+          <h4 class="status-name">{{ statusStat.status }}</h4>
+          <p class="status-count">{{ statusStat.count }} đơn</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Recent Activity & Tips -->
   <div class="bottom-section">
     <div class="recent-activity">
@@ -157,16 +179,27 @@
         <i class="fas fa-history"></i>
         Hoạt động gần đây
       </h2>
-      <div class="activity-list">
+      <div class="activity-list" *ngIf="!isLoading">
         <div class="activity-item" *ngFor="let activity of recentActivities">
-          <div class="activity-icon" [ngClass]="activity.type">
-            <i [class]="activity.icon"></i>
+          <div class="activity-icon" [ngClass]="getActivityType(activity.status)">
+            <i [class]="getActivityIcon(activity.status)"></i>
           </div>
           <div class="activity-content">
-            <p class="activity-text">{{ activity.text }}</p>
-            <span class="activity-time">{{ activity.time }}</span>
+            <p class="activity-text">
+              <strong>Đơn hàng #{{ activity.id }}</strong> - {{ activity.fullname || 'Khách hàng' }}
+              <br>
+              <span class="activity-status">Trạng thái: {{ activity.status }}</span>
+              <br>
+              <span class="activity-money">Tổng tiền: {{ activity.totalMoney | number:'1.0-0' }} VNĐ</span>
+              <span class="activity-payment"> - Thanh toán: {{ activity.paymentMethod }}</span>
+            </p>
+            <span class="activity-time">{{ getTimeAgo(activity.orderDate) }}</span>
           </div>
         </div>
+      </div>
+      <div *ngIf="!isLoading && recentActivities.length === 0" class="no-activity">
+        <i class="fas fa-inbox"></i>
+        <p>Chưa có hoạt động nào</p>
       </div>
     </div>
 

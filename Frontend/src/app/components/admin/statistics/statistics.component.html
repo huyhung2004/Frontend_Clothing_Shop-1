@@ -1,50 +1,165 @@
-<div id="layoutSidenav_content">
-  <main>
-    <div class="container-fluid px-4">
-      <h1 class="mt-4">Statistics</h1>
-      <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">Statistics</li>
-      </ol>
+<div class="statistics-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="fas fa-chart-line"></i>
+        Thống Kê & Báo Cáo
+      </h1>
+      <p class="page-subtitle">Tổng quan chi tiết về hoạt động kinh doanh của bạn</p>
+    </div>
+  </div>
 
-      <div class="row">
-        <div class="col-xl-3 col-md-6">
-          <app-stat-card title="Total Revenue" [value]="totalRevenue" [isCurrency]="true" bgColor="primary"
-            format="1.0-0">
-          </app-stat-card>
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Đang tải dữ liệu thống kê...</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading" class="statistics-content">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card primary">
+        <div class="stat-icon">
+          <i class="fas fa-dollar-sign"></i>
         </div>
-
-        <div class="col-xl-3 col-md-6">
-          <app-stat-card title="Average Order Value" [value]="averageOrderValue" [isCurrency]="true" bgColor="success"
-            format="1.2-2">
-          </app-stat-card>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-          <app-stat-card title="Avg Items/Order" [value]="averageItemsPerOrder" bgColor="warning" format="1.2-2">
-          </app-stat-card>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-          <app-stat-card title="Orders Today" [value]="averageOrdersToday" bgColor="danger" format="1.2-2">
-          </app-stat-card>
+        <div class="stat-info">
+          <p class="stat-label">Tổng Doanh Thu</p>
+          <h3 class="stat-value">{{ totalRevenue | number:'1.0-0' }} VNĐ</h3>
+          <span class="stat-desc">Tất cả thời gian</span>
         </div>
       </div>
 
-      <app-mychart></app-mychart>
-      <dashboard-ng19-table></dashboard-ng19-table>
-    </div>
-  </main>
+      <div class="stat-card success">
+        <div class="stat-icon">
+          <i class="fas fa-shopping-bag"></i>
+        </div>
+        <div class="stat-info">
+          <p class="stat-label">Tổng Đơn Hàng</p>
+          <h3 class="stat-value">{{ totalOrders }}</h3>
+          <span class="stat-desc">Tất cả thời gian</span>
+        </div>
+      </div>
 
-  <footer class="py-4 bg-light mt-auto">
-    <div class="container-fluid px-4">
-      <div class="d-flex align-items-center justify-content-between small">
-        <div class="text-muted">Copyright &copy; Your Website 2023</div>
-        <div>
-          <a href="#">Privacy Policy</a>
-          &middot;
-          <a href="#">Terms &amp; Conditions</a>
+      <div class="stat-card warning">
+        <div class="stat-icon">
+          <i class="fas fa-chart-bar"></i>
+        </div>
+        <div class="stat-info">
+          <p class="stat-label">Giá Trị TB/Đơn</p>
+          <h3 class="stat-value">{{ averageOrderValue | number:'1.0-0' }} VNĐ</h3>
+          <span class="stat-desc">Trung bình mỗi đơn</span>
+        </div>
+      </div>
+
+      <div class="stat-card info">
+        <div class="stat-icon">
+          <i class="fas fa-box"></i>
+        </div>
+        <div class="stat-info">
+          <p class="stat-label">SP TB/Đơn Hàng</p>
+          <h3 class="stat-value">{{ averageItemsPerOrder | number:'1.2-2' }}</h3>
+          <span class="stat-desc">Trung bình mỗi đơn</span>
         </div>
       </div>
     </div>
-  </footer>
+
+    <!-- Charts Row 1 -->
+    <div class="charts-row">
+      <div class="chart-card large">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="fas fa-chart-line"></i>
+            Doanh Thu & Đơn Hàng 6 Tháng Gần Đây
+          </h3>
+        </div>
+        <div class="chart-body">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="charts-row two-columns">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="fas fa-fire"></i>
+            Top 5 Sản Phẩm Bán Chạy
+          </h3>
+        </div>
+        <div class="chart-body">
+          <canvas id="productChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="fas fa-pie-chart"></i>
+            Đơn Hàng Theo Trạng Thái
+          </h3>
+        </div>
+        <div class="chart-body">
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 3 -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">
+            <i class="fas fa-user-plus"></i>
+            Tăng Trưởng Người Dùng 6 Tháng Gần Đây
+          </h3>
+        </div>
+        <div class="chart-body">
+          <canvas id="userGrowthChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Table -->
+    <div class="product-table-card" *ngIf="topProducts.length > 0">
+      <div class="table-header">
+        <h3 class="table-title">
+          <i class="fas fa-trophy"></i>
+          Chi Tiết Sản Phẩm Bán Chạy
+        </h3>
+      </div>
+      <div class="table-body">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Tên Sản Phẩm</th>
+              <th>Danh Mục</th>
+              <th>Thương Hiệu</th>
+              <th>Giá</th>
+              <th>Đã Bán</th>
+              <th>Doanh Thu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of topProducts; let i = index">
+              <td>
+                <span class="rank-badge" [class.top1]="i === 0" [class.top2]="i === 1" [class.top3]="i === 2">
+                  {{ i + 1 }}
+                </span>
+              </td>
+              <td class="product-name">{{ product.productName }}</td>
+              <td>{{ product.category }}</td>
+              <td>{{ product.brand }}</td>
+              <td class="price">{{ product.price | number:'1.0-0' }} VNĐ</td>
+              <td class="quantity">{{ product.totalSold }}</td>
+              <td class="revenue">{{ product.revenue | number:'1.0-0' }} VNĐ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>

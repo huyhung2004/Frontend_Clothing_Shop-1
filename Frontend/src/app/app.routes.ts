@@ -22,6 +22,7 @@ import { WelcomeAdminComponent } from './components/admin/welcome-admin/welcome-
 import { LayoutComponent } from './components/admin/layout/layout.component';
 
 import { StatisticsComponent } from './components/admin/statistics/statistics.component';
+import { ProductVariantAdminComponent } from './components/admin/product-variant-admin/product-variant-admin.component';
 export const routes: Routes = [
   {
     path: '',
@@ -81,6 +82,10 @@ export const routes: Routes = [
       {
         path: 'product',
         component: ProductAdminComponent,
+      },
+      {
+        path: 'product-variant',
+        component: ProductVariantAdminComponent,
       },
       {
         path: 'brand',

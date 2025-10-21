@@ -185,6 +185,15 @@
         margin-bottom: 20px;
         padding-bottom: 16px;
         border-bottom: 2px solid #f3f4f6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+
+        .chart-header-left {
+          flex: 1;
+        }
 
         .chart-title {
           font-size: 18px;
@@ -198,6 +207,53 @@
           i {
             color: #667eea;
             font-size: 20px;
+          }
+        }
+
+        .chart-filters {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          flex-wrap: wrap;
+
+          .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            label {
+              font-size: 13px;
+              font-weight: 600;
+              color: #6b7280;
+              margin: 0;
+              white-space: nowrap;
+            }
+
+            .filter-select {
+              padding: 8px 12px;
+              border: 2px solid #e5e7eb;
+              border-radius: 8px;
+              font-size: 14px;
+              color: #1f2937;
+              background: white;
+              cursor: pointer;
+              transition: all 0.3s ease;
+              outline: none;
+              min-width: 120px;
+
+              &:hover {
+                border-color: #667eea;
+              }
+
+              &:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+              }
+
+              option {
+                padding: 8px;
+              }
+            }
           }
         }
       }

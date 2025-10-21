@@ -65,14 +65,43 @@
       </div>
     </div>
 
-    <!-- Charts Row 1 -->
+    <!-- Charts Row 1 - Revenue Chart with Filter -->
     <div class="charts-row">
       <div class="chart-card large">
         <div class="chart-header">
-          <h3 class="chart-title">
-            <i class="fas fa-chart-line"></i>
-            Doanh Thu & Đơn Hàng 6 Tháng Gần Đây
-          </h3>
+          <div class="chart-header-left">
+            <h3 class="chart-title">
+              <i class="fas fa-chart-bar"></i>
+              {{ getChartTitle() }}
+            </h3>
+          </div>
+          <div class="chart-filters">
+            <!-- Loại thống kê -->
+            <div class="filter-group">
+              <label for="filterType">Loại:</label>
+              <select id="filterType" [(ngModel)]="filterType" (change)="onFilterChange()" class="filter-select">
+                <option value="day">Theo Ngày</option>
+                <option value="month">Theo Tháng</option>
+                <option value="year">Theo Năm</option>
+              </select>
+            </div>
+
+            <!-- Chọn năm (hiển thị khi type = day hoặc month) -->
+            <div class="filter-group" *ngIf="filterType === 'day' || filterType === 'month'">
+              <label for="selectedYear">Năm:</label>
+              <select id="selectedYear" [(ngModel)]="selectedYear" (change)="onFilterChange()" class="filter-select">
+                <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
+              </select>
+            </div>
+
+            <!-- Chọn tháng (chỉ hiển thị khi type = day) -->
+            <div class="filter-group" *ngIf="filterType === 'day'">
+              <label for="selectedMonth">Tháng:</label>
+              <select id="selectedMonth" [(ngModel)]="selectedMonth" (change)="onFilterChange()" class="filter-select">
+                <option *ngFor="let month of months" [value]="month.value">{{ month.label }}</option>
+              </select>
+            </div>
+          </div>
         </div>
         <div class="chart-body">
           <canvas id="revenueChart"></canvas>

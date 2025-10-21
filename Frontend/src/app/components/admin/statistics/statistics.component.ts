@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import { SharedService } from '../../../services/admin/statistics.service';
 
@@ -8,7 +9,7 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-statistics',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.scss',
 })
@@ -22,10 +23,30 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   averageItemsPerOrder: number = 0;
 
   // Dữ liệu biểu đồ
-  monthlyRevenueData: any[] = [];
+  revenueData: any[] = [];
   topProducts: any[] = [];
   userGrowthData: any[] = [];
   orderStatusData: any[] = [];
+
+  // Filter options
+  filterType: string = 'month'; // day, month, year
+  availableYears: number[] = [];
+  selectedYear: number = new Date().getFullYear();
+  selectedMonth: number = new Date().getMonth() + 1;
+  months: any[] = [
+    { value: 1, label: 'Tháng 1' },
+    { value: 2, label: 'Tháng 2' },
+    { value: 3, label: 'Tháng 3' },
+    { value: 4, label: 'Tháng 4' },
+    { value: 5, label: 'Tháng 5' },
+    { value: 6, label: 'Tháng 6' },
+    { value: 7, label: 'Tháng 7' },
+    { value: 8, label: 'Tháng 8' },
+    { value: 9, label: 'Tháng 9' },
+    { value: 10, label: 'Tháng 10' },
+    { value: 11, label: 'Tháng 11' },
+    { value: 12, label: 'Tháng 12' }
+  ];
 
   // Chart instances
   revenueChart: any;
@@ -36,7 +57,24 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   constructor(private statisticsService: SharedService) {}
 
   ngOnInit() {
+    this.loadAvailableYears();
     this.loadAllStatistics();
+  }
+
+  loadAvailableYears() {
+    this.statisticsService.getAvailableYears().subscribe({
+      next: (years) => {
+        this.availableYears = years;
+        if (years.length > 0 && !years.includes(this.selectedYear)) {
+          this.selectedYear = years[0];
+        }
+      },
+      error: (error) => console.error('Lỗi khi tải danh sách năm:', error)
+    });
+  }
+
+  onFilterChange() {
+    this.loadRevenueChart();
   }
 
   loadAllStatistics() {
@@ -61,13 +99,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     });
 
     // Load biểu đồ doanh thu
-    this.statisticsService.getMonthlyRevenueChart().subscribe({
-      next: (data) => {
-        this.monthlyRevenueData = data;
-        setTimeout(() => this.renderRevenueChart(), 100);
-      },
-      error: (error) => console.error('Lỗi khi tải biểu đồ doanh thu:', error)
-    });
+    this.loadRevenueChart();
 
     // Load sản phẩm bán chạy
     this.statisticsService.getTopSellingProducts(5).subscribe({
@@ -101,6 +133,19 @@ export class StatisticsComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadRevenueChart() {
+    const year = this.filterType === 'year' ? undefined : this.selectedYear;
+    const month = this.filterType === 'day' ? this.selectedMonth : undefined;
+
+    this.statisticsService.getRevenueChart(this.filterType, year, month).subscribe({
+      next: (data) => {
+        this.revenueData = data;
+        setTimeout(() => this.renderRevenueChart(), 100);
+      },
+      error: (error) => console.error('Lỗi khi tải biểu đồ doanh thu:', error)
+    });
+  }
+
   renderRevenueChart() {
     if (this.revenueChart) {
       this.revenueChart.destroy();
@@ -112,32 +157,22 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const labels = this.monthlyRevenueData.map(d => d.month);
-    const revenues = this.monthlyRevenueData.map(d => d.revenue);
-    const orders = this.monthlyRevenueData.map(d => d.orderCount);
+    const labels = this.revenueData.map(d => d.label);
+    const revenues = this.revenueData.map(d => d.revenue);
 
     this.revenueChart = new Chart(ctx, {
-      type: 'line',
+      type: 'bar',
       data: {
         labels: labels,
         datasets: [
           {
             label: 'Doanh thu (VNĐ)',
             data: revenues,
+            backgroundColor: 'rgba(102, 126, 234, 0.8)',
             borderColor: '#667eea',
-            backgroundColor: 'rgba(102, 126, 234, 0.1)',
-            tension: 0.4,
-            fill: true,
-            yAxisID: 'y'
-          },
-          {
-            label: 'Số đơn hàng',
-            data: orders,
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            tension: 0.4,
-            fill: true,
-            yAxisID: 'y1'
+            borderWidth: 2,
+            borderRadius: 8,
+            hoverBackgroundColor: '#667eea',
           }
         ]
       },
@@ -148,31 +183,77 @@ export class StatisticsComponent implements OnInit, OnDestroy {
           mode: 'index',
           intersect: false,
         },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context: any) {
+                let label = context.dataset.label || '';
+                if (label) {
+                  label += ': ';
+                }
+                if (context.parsed.y !== null) {
+                  label += new Intl.NumberFormat('vi-VN').format(context.parsed.y) + ' VNĐ';
+                }
+                return label;
+              }
+            }
+          }
+        },
         scales: {
           y: {
-            type: 'linear',
-            display: true,
-            position: 'left',
+            beginAtZero: true,
             title: {
               display: true,
               text: 'Doanh thu (VNĐ)'
+            },
+            ticks: {
+              callback: function(value: any) {
+                return new Intl.NumberFormat('vi-VN', { 
+                  notation: 'compact', 
+                  compactDisplay: 'short' 
+                }).format(value);
+              }
             }
           },
-          y1: {
-            type: 'linear',
-            display: true,
-            position: 'right',
+          x: {
             title: {
               display: true,
-              text: 'Số đơn hàng'
-            },
-            grid: {
-              drawOnChartArea: false,
+              text: this.getChartXAxisLabel()
             }
           }
         }
       }
     });
+  }
+
+  getChartXAxisLabel(): string {
+    switch (this.filterType) {
+      case 'day':
+        return `Ngày trong tháng ${this.selectedMonth}/${this.selectedYear}`;
+      case 'month':
+        return `Tháng trong năm ${this.selectedYear}`;
+      case 'year':
+        return 'Năm';
+      default:
+        return '';
+    }
+  }
+
+  getChartTitle(): string {
+    switch (this.filterType) {
+      case 'day':
+        return `Doanh Thu Theo Ngày - Tháng ${this.selectedMonth}/${this.selectedYear}`;
+      case 'month':
+        return `Doanh Thu Theo Tháng - Năm ${this.selectedYear}`;
+      case 'year':
+        return 'Doanh Thu Theo Năm';
+      default:
+        return 'Doanh Thu';
+    }
   }
 
   renderProductChart() {

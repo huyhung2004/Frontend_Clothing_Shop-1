@@ -55,8 +55,17 @@ export class SharedService {
     return this.http.get<any>(`${this.baseUrl}/dashboard`);
   }
 
-  getMonthlyRevenueChart(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/monthly-revenue-chart`);
+  // API mới cho biểu đồ doanh thu với filter
+  getRevenueChart(type: string = 'month', year?: number, month?: number): Observable<any[]> {
+    let params = `type=${type}`;
+    if (year) params += `&year=${year}`;
+    if (month) params += `&month=${month}`;
+    return this.http.get<any[]>(`${this.baseUrl}/revenue-chart?${params}`);
+  }
+
+  // API lấy danh sách năm có sẵn
+  getAvailableYears(): Observable<number[]> {
+    return this.http.get<number[]>(`${this.baseUrl}/available-years`);
   }
 
   getTopSellingProducts(limit: number = 5): Observable<any[]> {

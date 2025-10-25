@@ -130,7 +130,7 @@
             <td>
               <div class="customer-info">
                 <div class="customer-name">{{ order.fullname }}</div>
-                <div class="customer-address">{{ order.address | slice:0:40 }}{{ (order.address?.length || 0) > 40 ? '...' : '' }}</div>
+                <div class="customer-address">{{ order.address | slice:0:40 }}{{ (order.address.length || 0) > 40 ? '...' : '' }}</div>
               </div>
             </td>
             <td>

@@ -24,6 +24,7 @@ import {
   faInfoCircle,
   faTimes,
   faLayerGroup,
+  faTruck,
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -59,12 +60,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
   faInfoCircle = faInfoCircle;
   faTimes = faTimes;
   faLayerGroup = faLayerGroup;
+  faTruck = faTruck;
 
   navItems = [
     { label: 'Thương hiệu', link: '/adminDashboard/brand', icon: faBoxes, badge: null },
     { label: 'Danh mục', link: '/adminDashboard/category', icon: faTags, badge: null },
     { label: 'Sản phẩm', link: '/adminDashboard/product', icon: faTshirt, badge: null },
     { label: 'Biến thể sản phẩm', link: '/adminDashboard/product-variant', icon: faLayerGroup, badge: null },
+    { label: 'Nhập hàng', link: '/adminDashboard/purchase-order', icon: faTruck, badge: null },
     { label: 'Người dùng', link: '/adminDashboard/users', icon: faUsers, badge: null },
     { label: 'Đơn hàng', link: '/adminDashboard/order', icon: faShoppingCart, badge: '12' },
     { label: 'Thống kê', link: '/adminDashboard/statistics', icon: faChartLine, badge: null },

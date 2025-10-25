@@ -23,6 +23,9 @@ import { LayoutComponent } from './components/admin/layout/layout.component';
 
 import { StatisticsComponent } from './components/admin/statistics/statistics.component';
 import { ProductVariantAdminComponent } from './components/admin/product-variant-admin/product-variant-admin.component';
+import { PurchaseOrderAdminComponent } from './components/admin/purchase-order-admin/purchase-order-admin.component';
+import { PurchaseOrderCreateComponent } from './components/admin/purchase-order-create/purchase-order-create.component';
+import { PurchaseOrderViewComponent } from './components/admin/purchase-order-view/purchase-order-view.component';
 export const routes: Routes = [
   {
     path: '',
@@ -106,6 +109,22 @@ export const routes: Routes = [
       {
         path: 'statistics',
         component: StatisticsComponent,
+      },
+      {
+        path: 'purchase-order',
+        component: PurchaseOrderAdminComponent,
+      },
+      {
+        path: 'purchase-order/create',
+        component: PurchaseOrderCreateComponent,
+      },
+      {
+        path: 'purchase-order/view/:id',
+        component: PurchaseOrderViewComponent,
+      },
+      {
+        path: 'purchase-order/edit/:id',
+        component: PurchaseOrderCreateComponent,
       },
     ],
   },

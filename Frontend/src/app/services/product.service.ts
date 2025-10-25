@@ -81,4 +81,8 @@ export class ProductService {
   getBrands(): Observable<Brand[]> {
     return this.http.get<Brand[]>(`${this.apiUrl}/brands`);
   }
+
+  getProductVariants(): Observable<any[]> {
+    return this.http.get<any[]>(`https://localhost:7163/api/products/variants`);
+  }
 }

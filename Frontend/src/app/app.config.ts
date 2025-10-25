@@ -9,6 +9,7 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { routes } from './app.routes';
 import {
   provideClientHydration,
@@ -48,7 +49,7 @@ export const appConfig: ApplicationConfig = {
       multi: true,
     },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
-    importProvidersFrom(SocialLoginModule),
+    importProvidersFrom(SocialLoginModule, FormsModule),
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {

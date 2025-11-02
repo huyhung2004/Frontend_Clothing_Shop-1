@@ -1,0 +1,17 @@
+/* Footer Widget Titles - Apply Marcellus heading font */
+.widget-title {
+  font-family: var(--heading-font, "Marcellus", Roboto, sans-serif) !important;
+  font-weight: var(--heading-font-weight, 400);
+  color: var(--heading-color, #111);
+  line-height: var(--heading-line-height, 1.24);
+}
+
+/* Ensure footer h5 headings use heading font */
+footer h5 {
+  font-family: var(--heading-font, "Marcellus", Roboto, sans-serif) !important;
+}
+
+.item-anchor {
+  color: black;
+}
+

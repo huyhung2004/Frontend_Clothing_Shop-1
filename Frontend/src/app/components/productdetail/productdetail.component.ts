@@ -3,6 +3,8 @@ import { Product } from '../../dto/product.dto';
 import { ProductImage } from '../../dto/productImage.dto';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
+import { ProductVariantService } from '../../services/productvariant.service';
+
 import { CartService } from '../../services/cart.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,16 +24,18 @@ export class ProductdetailComponent implements OnInit {
   // Nếu có lựa chọn màu, bạn có thể lấy từ UI. Ở đây sử dụng giá trị mặc định.
   color: string = 'white';
   reviews: Review[] = [];
-  
-  // Base URL for images
-  private baseImageUrl = 'https://localhost:7163';
+  sizes: string[] = [];
+  colors: string[] = [];
+  selectedSize: string | null = null;
+  selectedColor: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
     private accountService: AccountService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private productVariantService: ProductVariantService,
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +44,27 @@ export class ProductdetailComponent implements OnInit {
       this.productService.getProductDetail(+id).subscribe((data) => {
         this.product = data.product;
         this.productImages = data.anhSps;
+
+        this.productVariantService.getVariantsByProduct(+id).subscribe((variants) => {
+      if (Array.isArray(variants) && variants.length) {
+        const sizeSet = new Set<string>();
+        const colorSet = new Set<string>();
+
+        variants.forEach((v) => {
+          if (v.size) sizeSet.add(v.size);
+          if (v.color) colorSet.add(v.color);
+        });
+
+        this.sizes = [...sizeSet];
+        this.colors = [...colorSet];
+
+        // this.selectedSize = this.sizes[0] ?? null;
+        // this.selectedColor = this.colors[0] ?? null;
+        // if (this.selectedColor) this.color = this.selectedColor;
+      }
+        });
+
+this.quantity
       });
       // Lấy danh sách review của sản phẩm
       this.loadReviews(+id);
@@ -78,6 +103,15 @@ export class ProductdetailComponent implements OnInit {
     this.quantity++;
   }
 
+  onSelectSize(size: string | null) {
+    this.selectedSize = size;
+  }
+
+  onSelectColor(color: string | null) {
+    this.selectedColor = color;
+    if (color) this.color = color;
+  }
+
   addToCart(): void {
     // Gọi API thêm vào giỏ hàng
     this.cartService
@@ -113,16 +147,5 @@ export class ProductdetailComponent implements OnInit {
           alert('Xử lý mua ngay thất bại');
         },
       });
-  }
-
-  // Get full image URL
-  getImageUrl(imageUrl: string | undefined): string {
-    if (!imageUrl) return 'assets/img/placeholder.jpg';
-    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
-    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-      return imageUrl;
-    }
-    // Nếu là relative URL, thêm base URL
-    return this.baseImageUrl + imageUrl;
   }
 }

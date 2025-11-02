@@ -1,94 +1,218 @@
-<!-- Bắt đầu trang Giỏ hàng -->
-<div class="cart-page">
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Bảng các sản phẩm trong giỏ -->
-            <div class="col-lg-8">
-                <div class="cart-page-inner">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>
-                                        <div class="checkbox-container">
-                                            <!-- Checkbox "Chọn tất cả" -->
-                                            <input type="checkbox" #selectAll [checked]="isAllSelected()"
-                                                (change)="toggleSelectAll(selectAll.checked)" />
-                                            <span>Select</span>
-                                        </div>
-                                    </th>
-
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Total</th>
-                                    <th>Remove</th>
-                                </tr>
-                            </thead>
-
-
-                            <tbody class="align-middle">
-                                <tr *ngFor="let item of cartItems" [attr.id]="'item-' + item.id">
-                                    <td>
-                                        <input type="checkbox" [value]="item.id" [checked]="isSelected(item.id)"
-                                            #checkbox (change)="toggleSelection(item.id, checkbox.checked)" />
-                                    </td>
-                                    <td>
-                                        <div class="img">
-                                            <a href="#"><img [src]="'assets/image/' + item.image" alt="Image" /></a>
-                                            <p>{{ item.name }}</p>
-                                        </div>
-                                    </td>
-                                    <td>{{ item.price | currency:'USD':'symbol':'1.2-2' }}</td>
-                                    <td>
-                                        <div class="qty">
-                                            <button class="btn-minus" (click)="updateCart(item.id, 'decrease')">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                            <input type="text" [value]="item.numberOfProducts" readonly />
-                                            <button class="btn-plus" (click)="updateCart(item.id, 'increase')">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                    <td class="total-price">
-                                        {{ (item.price * item.numberOfProducts) | currency:'USD':'symbol':'1.2-2' }}
-                                    </td>
-                                    <td>
-                                        <button class="btn-delete" (click)="deleteItem(item.id)">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Phần Tóm tắt Giỏ hàng -->
-            <div class="col-lg-4">
-                <div class="cart-page-inner">
-                    <div class="cart-summary">
-                        <div class="cart-content">
-                            <h1>Cart Summary</h1>
-                            <p>
-                                Sub Total
-                                <span id="sub-total">{{ subTotal | currency:'USD':'symbol':'1.2-2' }}</span>
-                            </p>
-                            <p>Shipping Cost <span>$1.00</span></p>
-                            <h2>
-                                Grand Total
-                                <span id="grand-total">{{ grandTotal | currency:'USD':'symbol':'1.2-2' }}</span>
-                            </h2>
-                        </div>
-                        <div class="cart-btn">
-                            <button type="button" (click)="proceedToCheckout()">Checkout</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- Breadcrumb Section -->
+<section class="py-3 border-bottom">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="page-title mb-0" style="font-family: 'Marcellus', serif; font-size: 2.5rem; color: #111;">Cart</h1>
+        <nav class="breadcrumb mb-0">
+          <a class="breadcrumb-item nav-link" [routerLink]="['/home']">Trang chủ</a>
+          <a class="breadcrumb-item nav-link active"><span aria-current="page">Giỏ hàng</span></a>
+        </nav>
+      </div>
     </div>
-</div>
-<!-- Kết thúc trang Giỏ hàng -->
+  </section>
+  
+  <!-- Cart Section -->
+  <section class="py-5">
+    <div class="container">
+      <div class="row">
+        <!-- Cart Items Table -->
+        <div class="col-md-8">
+          <div class="cart-table">
+            <!-- Cart Header -->
+            <div class="cart-header">
+              <div class="row d-flex align-items-center">
+                <div class="col-1">
+                  <div class="form-check">
+                    <input 
+                      type="checkbox" 
+                      class="form-check-input" 
+                      id="selectAll"
+                      #selectAll 
+                      [checked]="isAllSelected()"
+                      (change)="toggleSelectAll(selectAll.checked)">
+                  </div>
+                </div>
+                <h6 class="cart-title text-uppercase text-muted col-lg-3 pb-3 mb-0">Sản phẩm</h6>
+                <h6 class="cart-title text-uppercase text-muted col-lg-3 pb-3 mb-0">Số lượng</h6>
+                <h6 class="cart-title text-uppercase text-muted col-lg-4 pb-3 mb-0">Tổng</h6>
+                <div class="col-1"></div>
+              </div>
+            </div>
+  
+            <!-- Cart Items -->
+            <div class="cart-item border-top border-bottom py-4" *ngFor="let item of cartItems" [attr.id]="'item-' + item.id">
+              <div class="row align-items-center">
+                <!-- Checkbox Column -->
+                <div class="col-1">
+                  <div class="form-check">
+                    <input 
+                      type="checkbox" 
+                      class="form-check-input" 
+                      [id]="'checkbox-' + item.id"
+                      [value]="item.id"
+                      [checked]="isSelected(item.id)"
+                      #checkbox 
+                      (change)="toggleSelection(item.id, checkbox.checked)">
+                  </div>
+                </div>
+  
+                <!-- Product Info -->
+                <div class="col-lg-3 col-md-4">
+                  <div class="cart-info d-flex align-items-center">
+                    <div class="card-image me-3" style="width: 80px;">
+                      <img [src]="'assets/image/' + item.image" alt="product" class="img-fluid">
+                    </div>
+                    <div class="card-detail">
+                      <h6 class="card-title mb-1">
+                        <a [routerLink]="['/product-detail', item.id]" class="text-decoration-none text-dark">
+                          {{ item.name }}
+                        </a>
+                      </h6>
+                      <div class="card-price">
+                        <span class="money text-muted" style="font-size: 14px;">
+                          {{ item.price | currency:'USD':'symbol':'1.2-2' }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- Quantity Controls -->
+                <div class="col-lg-3 col-md-4">
+                  <div class="input-group product-qty" style="max-width: 150px;">
+                    <span class="input-group-btn">
+                      <button 
+                        type="button" 
+                        class="quantity-left-minus btn btn-light btn-number" 
+                        (click)="updateCart(item.id, 'decrease')">
+                        <svg width="16" height="16" viewBox="0 0 24 24">
+                          <path fill="currentColor" d="M19 11H5a1 1 0 0 0 0 2h14a1 1 0 0 0 0-2Z"/>
+                        </svg>
+                      </button>
+                    </span>
+                    <input 
+                      type="text" 
+                      [value]="item.numberOfProducts" 
+                      class="form-control input-number text-center" 
+                      readonly>
+                    <span class="input-group-btn">
+                      <button 
+                        type="button" 
+                        class="quantity-right-plus btn btn-light btn-number" 
+                        (click)="updateCart(item.id, 'increase')">
+                        <svg width="16" height="16" viewBox="0 0 24 24">
+                          <path fill="currentColor" d="M19 11h-6V5a1 1 0 0 0-2 0v6H5a1 1 0 0 0 0 2h6v6a1 1 0 0 0 2 0v-6h6a1 1 0 0 0 0-2Z"/>
+                        </svg>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+  
+                <!-- Subtotal -->
+                <div class="col-lg-4 col-md-3">
+                  <div class="total-price text-center">
+                    <span class="money text-dark" style="font-size: 18px; font-weight: 500;">
+                      {{ (item.price * item.numberOfProducts) | currency:'USD':'symbol':'1.2-2' }}
+                    </span>
+                  </div>
+                </div>
+  
+                <!-- Remove Button -->
+                <div class="col-1">
+                  <div class="cart-remove text-center">
+                    <a href="javascript:void(0)" (click)="deleteItem(item.id)" class="text-muted">
+                      <svg width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M10 18a1 1 0 0 0 1-1v-6a1 1 0 0 0-2 0v6a1 1 0 0 0 1 1ZM20 6h-4V5a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v1H4a1 1 0 0 0 0 2h1v11a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8h1a1 1 0 0 0 0-2ZM10 5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1h-4Zm7 14a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8h10Zm-3-1a1 1 0 0 0 1-1v-6a1 1 0 0 0-2 0v6a1 1 0 0 0 1 1Z"/>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Empty Cart Message -->
+            <div *ngIf="cartItems.length === 0" class="text-center py-5">
+              <p class="text-muted" style="font-size: 18px;">Giỏ của bạn đang trống</p>
+              <a [routerLink]="['/product']" class="btn btn-dark text-uppercase mt-3">Tiếp tục mua sắm</a>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Cart Totals Sidebar -->
+        <div class="col-md-4">
+          <div class="cart-totals bg-light p-4">
+            <h4 class="text-dark pb-4 mb-4 border-bottom" style="font-family: 'Marcellus', serif; font-weight: 400;">
+              Tổng giỏ hàng
+            </h4>
+            
+            <div class="total-price pb-4">
+              <table class="table text-uppercase mb-0">
+                <tbody>
+                  <tr class="subtotal border-top border-bottom">
+                    <th class="py-3" style="font-weight: 400; color: #8f8f8f;">Tổng</th>
+                    <td class="text-end py-3" data-title="Subtotal">
+                      <span class="price-amount amount text-dark" style="font-weight: 500;">
+                        <bdi>
+                          <span class="price-currency-symbol">$</span>{{ subTotal | number:'1.2-2' }}
+                        </bdi>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="shipping-cost border-bottom">
+                    <th class="py-3" style="font-weight: 400; color: #8f8f8f;">Phí ship</th>
+                    <td class="text-end py-3">
+                      <span class="price-amount amount text-dark" style="font-weight: 500;">
+                        <bdi>
+                          <span class="price-currency-symbol">$</span>1.00
+                        </bdi>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="order-total border-bottom">
+                    <th class="py-3" style="font-weight: 600; color: #111;">Tổng</th>
+                    <td class="text-end py-3" data-title="Total">
+                      <span class="price-amount amount text-dark" style="font-weight: 600; font-size: 1.2rem;">
+                        <bdi>
+                          <span class="price-currency-symbol">$</span>{{ grandTotal | number:'1.2-2' }}
+                        </bdi>
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+  
+            <div class="button-wrap">
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <!-- <button 
+                    class="btn btn-dark text-uppercase w-100" 
+                    style="border-radius: 0; padding: 0.75rem;"
+                    (click)="loadCart()">
+                    Update Cart
+                  </button> -->
+                </div>
+                <div class="col-md-6">
+                  <button 
+                    class="btn btn-dark text-uppercase w-100" 
+                    style="border-radius: 0; padding: 0.75rem;"
+                    [routerLink]="['/product']">
+                    Tiếp tục mua sắm
+                  </button>
+                </div>
+                <div class="col-md-12 mt-3">
+                  <button 
+                    class="btn btn-primary text-uppercase w-100" 
+                    style="border-radius: 0; padding: 0.875rem; background-color: #8C907E; border-color: #8C907E;"
+                    (click)="proceedToCheckout()"
+                    [disabled]="selectedItems.length === 0">
+                    Thanh toán
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

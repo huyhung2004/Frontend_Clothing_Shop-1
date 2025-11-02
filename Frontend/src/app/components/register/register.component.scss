@@ -1,18 +1,112 @@
-/* register.component.css */
-:host {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh; /* Chiếm 100% chiều cao của viewport */
-    background-color: #f4f6f9; /* Màu nền có thể thay đổi */
-  }
-  
-  .register-box {
-    width: 100%;
-    max-width: 400px; /* Giới hạn độ rộng */
-    padding: 20px;
-    background: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-  
+#register-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.register-box {
+  background: #fff;
+  border-radius: 6px;
+  padding: 40px 35px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Heading (same as login) */
+.section-title {
+  font-family: "Marcellus", serif;
+  font-size: 3.5rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #111;
+  margin-bottom: 1.5rem;
+}
+
+.section-title::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 2px;
+  background-color: #000;
+  margin-top: 0.5rem;
+}
+
+/* Input group and labels */
+.form-label {
+  font-family: "Jost", sans-serif;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-control {
+  border-radius: 0;
+  border: 1px solid #ccc;
+  padding: 10px 12px;
+  font-size: 1rem;
+}
+
+.input-group-text {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-left: none;
+  color: #555;
+}
+
+/* Unified button style */
+.btn-main {
+  background-color: #111;
+  color: #fff;
+  border: none;
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+  font-weight: 600;
+  border-radius: 0;
+}
+
+.btn-main:hover {
+  background-color: #333;
+}
+
+/* Links */
+a {
+  color: #111;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: #555;
+  text-decoration: underline;
+}
+
+/* Checkbox alignment */
+.form-check-label {
+  font-family: "Jost", sans-serif;
+  font-weight: 400;
+  color: #333;
+}
+
+/* Dark theme checkbox */
+.form-check-input {
+  width: 1.1em;
+  height: 1.1em;
+  border: 2px solid #111;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-check-input:checked {
+  background-color: #111;
+  border-color: #111;
+}
+
+.form-check-input:focus {
+  box-shadow: none; /* remove blue glow */
+  outline: none;
+}

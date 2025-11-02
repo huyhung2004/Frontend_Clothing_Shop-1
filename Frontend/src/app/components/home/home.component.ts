@@ -1,50 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-// declare var $: any; // Import jQuery nếu bạn đang dùng jQuery
+import { Router } from '@angular/router';
+
+declare var Swiper: any;
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule], // Đúng cách
+  imports: [CommonModule, RouterModule],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
+  styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
   products: any[] = [];
-
-  constructor(private http: HttpClient) {}
-
-  ngOnInit() {
-    this.getAllProducts();
-  }
-
-  getAllProducts(): void {
-    this.http.get<any>('https://localhost:7163/api/products/all').subscribe({
-      next: (data) => {
-        console.log(data);
-        // Kiểm tra nếu có thuộc tính $values thì gán nó cho products, ngược lại gán data trực tiếp
-        this.products = data.$values ? data.$values : data;
-      },
-      error: (error) => {
-        console.error('Lỗi khi lấy sản phẩm:', error);
-      },
-    });
-  }
-  sliderImages = [
-    {
-      imageUrl: 'assets/img/slider-1.jpg',
-      caption: 'Some text goes here that describes the image',
-    },
-    // {
-    //   imageUrl: 'assets/img/slider-2.jpg',
-    //   caption: 'Some text goes here that describes the image',
-    // },
-    // {
-    //   imageUrl: 'assets/img/slider-3.jpg',
-    //   caption: 'Some text goes here that describes the image',
-    // },
-  ];
 
   brandImages = [
     'assets/img/brand-1.png',
@@ -58,96 +28,217 @@ export class HomeComponent implements OnInit {
   features = [
     {
       icon: 'fab fa-cc-mastercard',
-      title: 'Secure Payment',
-      description: 'Lorem ipsum dolor sit amet consectetur elit',
+      title: 'Thanh toán an toàn',
+      description: 'Giao dịch bảo mật tuyệt đối.',
     },
     {
       icon: 'fa fa-truck',
-      title: 'Worldwide Delivery',
-      description: 'Lorem ipsum dolor sit amet consectetur elit',
+      title: 'Giao hàng mọi nơi',
+      description: 'Nhanh chóng, đúng hẹn.',
     },
     {
       icon: 'fa fa-sync-alt',
-      title: '90 Days Return',
-      description: 'Lorem ipsum dolor sit amet consectetur elit',
+      title: 'Đổi trả trong 90 ngày',
+      description: 'Đổi trả dễ dàng, linh hoạt.',
     },
     {
       icon: 'fa fa-comments',
-      title: '24/7 Support',
-      description: 'Lorem ipsum dolor sit amet consectetur elit',
+      title: 'Hỗ trợ 24/7',
+      description: 'Luôn sẵn sàng hỗ trợ bạn.',
     },
-  ];
+  ];  
 
-  categories = [
-    {
-      imageUrl: 'assets/img/category-1.jpg',
-      caption: 'Some text goes here that describes the image',
-      heightClass: 'ch-400',
-    },
-    {
-      imageUrl: 'assets/img/category-2.jpg',
-      caption: 'Some text goes here that describes the image',
-      heightClass: 'ch-400',
-    },
-    {
-      imageUrl: 'assets/img/category-3.jpg',
-      caption: 'Some text goes here that describes the image',
-      heightClass: 'ch-400',
-    },
-    {
-      imageUrl: 'assets/img/category-2.jpg',
-      caption: 'Some text goes here that describes the image',
-      heightClass: 'ch-400',
-    },
-  ];
+  private baseImageUrl = 'https://localhost:7163';
 
-  // products = [
-  //   { id: 1, name: 'Product 1', image: 'product-1.jpg', price: 100 },
-  //   { id: 2, name: 'Product 2', image: 'product-2.jpg', price: 150 },
-  //   { id: 3, name: 'Product 3', image: 'product-3.jpg', price: 200 },
-  // ];
-  // ngAfterViewInit(): void {
-  //   $('.header-slider').slick({
-  //     infinite: true,
-  //     slidesToShow: 1,
-  //     slidesToScroll: 1,
-  //     autoplay: true,
-  //     autoplaySpeed: 3000,
-  //     dots: true,
-  //     arrows: true, // Hiển thị mũi tên
-  //     prevArrow: '<button type="button" class="slick-prev">❮</button>',
-  //     nextArrow: '<button type="button" class="slick-next">❯</button>',
-  //   });
-  //   $('.brand-slider').slick({
-  //     infinite: true, // Lặp lại vô hạn
-  //     slidesToShow: 5, // Số logo hiển thị trên một slide
-  //     slidesToScroll: 1, // Dịch chuyển từng logo
-  //     autoplay: true, // Tự động chạy
-  //     autoplaySpeed: 0, // Không có độ trễ giữa các lần lặp
-  //     speed: 3000, // Tốc độ chạy (ms)
-  //     cssEase: 'linear', // Chạy mượt liên tục
-  //     arrows: false, // Ẩn mũi tên điều hướng
-  //     dots: false, // Ẩn chấm điều hướng
-  //     pauseOnHover: false, // Không dừng khi hover
-  //   });
-  //   this.initSlickSlider();
+  constructor(private http: HttpClient, private router: Router) {}
+
+  ngOnInit(): void {
+    this.getAllProducts();
+  }
+
+  ngAfterViewInit(): void {
+    // Initialize Swiper sliders after the view is loaded
+    setTimeout(() => {
+      this.initSwiper();
+    }, 1000);
+  }
+  
+
+  private initSwiper(): void {
+    if (typeof Swiper !== 'undefined' && this.products.length > 0) {
+      // Wait for the next animation frame for better performance
+      requestAnimationFrame(() => {
+        new Swiper('.product-swiper', {
+          loop: true,
+          slidesPerView: 1,
+          spaceBetween: 30,
+          speed: 600, // Increased from default 300
+          resistance: true,
+          resistanceRatio: 0.85,
+          followFinger: true,
+          shortSwipes: true,
+          longSwipes: true,
+          longSwipesRatio: 0.5,
+          longSwipesMs: 300,
+          threshold: 5,
+          
+          // Improved navigation
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+          
+          // Improved pagination
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            dynamicBullets: true, // Better performance for many slides
+          },
+          
+          // Performance optimizations
+          watchSlidesProgress: true,
+          watchSlidesVisibility: true,
+          preloadImages: true,
+          updateOnWindowResize: true,
+          resizeObserver: true,
+          
+          // Smooth transitions
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)', // Smooth easing function
+          
+          // Touch interactions
+          touchStartPreventDefault: false,
+          touchMoveStopPropagation: true,
+          
+          // Breakpoints
+          breakpoints: {
+            480: { 
+              slidesPerView: 1,
+              spaceBetween: 20 
+            },
+            768: { 
+              slidesPerView: 2,
+              spaceBetween: 25 
+            },
+            1024: { 
+              slidesPerView: 3,
+              spaceBetween: 30 
+            },
+            1200: { 
+              slidesPerView: 4,
+              spaceBetween: 30 
+            },
+          },
+          
+          // Additional smoothness options
+          on: {
+            init: function () {
+              console.log('Swiper initialized smoothly');
+            },
+            transitionStart: function () {
+              // Add any custom transition start logic
+            },
+            transitionEnd: function () {
+              // Add any custom transition end logic
+            }
+          }
+        });
+      });
+    }
+  }
+
+
+
+
+  // private initSwiper(): void {
+  //   if (typeof Swiper !== 'undefined' && this.products.length > 0) {
+  //     requestAnimationFrame(() => {
+  //       new Swiper('.product-swiper', {
+  //         loop: true,
+  //         slidesPerView: 1,
+  //         spaceBetween: 30,
+  //         speed: 500, // Optimal speed for both directions
+  //         resistance: true,
+  //         resistanceRatio: 0.7, // More consistent resistance
+          
+  //         // Direction and language settings
+  //         direction: 'horizontal', // Explicitly set direction
+  //         rtl: false, // Ensure LTR mode
+          
+  //         // Touch settings for consistent behavior
+  //         touchRatio: 1, // Equal sensitivity for both directions
+  //         touchAngle: 45, // Standard angle
+  //         simulateTouch: true, // Enable mouse drag
+  //         allowTouchMove: true,
+          
+  //         // Specific touch event handling
+  //         touchStartPreventDefault: false, // Allow default touch behavior
+  //         touchMoveStopPropagation: false,
+          
+  //         // Edge resistance for consistent feel
+  //         edgeSwipeDetection: true,
+  //         edgeSwipeThreshold: 20,
+          
+  //         // Navigation
+  //         navigation: {
+  //           nextEl: '.swiper-button-next',
+  //           prevEl: '.swiper-button-prev',
+  //           disabledClass: 'swiper-button-disabled',
+  //         },
+          
+  //         // Pagination
+  //         pagination: {
+  //           el: '.swiper-pagination',
+  //           clickable: true,
+  //           dynamicBullets: false, // Can cause issues with left swipe
+  //         },
+          
+  //         // Breakpoints
+  //         breakpoints: {
+  //           480: { slidesPerView: 1, spaceBetween: 20 },
+  //           768: { slidesPerView: 2, spaceBetween: 25 },
+  //           1024: { slidesPerView: 3, spaceBetween: 30 },
+  //           1200: { slidesPerView: 4, spaceBetween: 30 },
+  //         },
+
+  //       });
+  //     });
+  //   }
   // }
-  // initSlickSlider(): void {
-  //   $('.product-slider').slick({
-  //     infinite: true,
-  //     slidesToShow: 4,
-  //     slidesToScroll: 1,
-  //     autoplay: true,
-  //     autoplaySpeed: 3000,
-  //     dots: false,
-  //     arrows: true, // Hiển thị mũi tên
-  //     prevArrow: '<button type="button" class="slick-prev">❮</button>',
-  //     nextArrow: '<button type="button" class="slick-next">❯</button>',
-  //     responsive: [
-  //       { breakpoint: 1024, settings: { slidesToShow: 3 } },
-  //       { breakpoint: 768, settings: { slidesToShow: 2 } },
-  //       { breakpoint: 480, settings: { slidesToShow: 1 } },
-  //     ],
-  //   });
-  // }
+
+  getAllProducts(): void {
+    this.http.get<any>('https://localhost:7163/api/products/all').subscribe({
+      next: (data) => {
+        this.products = data.$values ? data.$values : data;
+        console.log('Products:', this.products);
+        
+        // Reinitialize swiper after products are loaded
+        setTimeout(() => {
+          this.initSwiper();
+        }, 100);
+      },
+      error: (error) => console.error('Error fetching products:', error),
+    });
+  }
+
+  // Get full image URL
+  getImageUrl(imageUrl: string | undefined): string {
+    if (!imageUrl) return 'assets/img/placeholder.jpg';
+    // If already full URL (http/https), return as is
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    // If relative URL, add base URL
+    return this.baseImageUrl + imageUrl;
+  }
+
+  onProductClick(item: any): void {
+    this.router.navigate(['/product-detail', item.id]);
+  }
+  
+  onAddToCart(item: any, event: MouseEvent): void {
+    event.stopPropagation();
+    event.preventDefault();
+    console.log('Add to cart:', item.name);
+    // Add to cart logic here
+  }
 }

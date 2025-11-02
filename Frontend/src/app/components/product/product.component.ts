@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -25,7 +26,7 @@ export class ProductComponent implements OnInit {
   searchTerm = '';
   selectedMinPrice = 0;
   selectedMaxPrice = Infinity;
-  selectedPriceLabel = 'Product price range';
+  selectedPriceLabel = 'Khoảng giá';
   selectedCategoryId: number | null = null;
   selectedBrandId: number | null = null;
 
@@ -45,7 +46,7 @@ export class ProductComponent implements OnInit {
   // Base URL for images
   private baseImageUrl = 'https://localhost:7163';
 
-  constructor(private productService: ProductService,private imgService: ImageSearchService,) {}
+  constructor(private productService: ProductService,private imgService: ImageSearchService,private router: Router) {}
 
   ngOnInit(): void {
     this.loadAllProducts();
@@ -239,5 +240,22 @@ export class ProductComponent implements OnInit {
     }
     // Nếu là relative URL, thêm base URL
     return this.baseImageUrl + imageUrl;
+  }
+
+  onProductClick(item: any): void {
+    // Ví dụ: mở chi tiết sản phẩm
+    this.router.navigate(['/product-detail', item.id]);
+  }
+  
+  onAddToCart(item: any, event: MouseEvent): void {
+    event.stopPropagation(); // chặn click lan ra ngoài
+    console.log('Thêm vào giỏ hàng:', item.name);
+    // ... logic thêm giỏ hàng
+  }
+  
+  onBuyNow(item: any, event: MouseEvent): void {
+    event.stopPropagation(); // chặn click lan ra ngoài
+    console.log('Mua ngay:', item.name);
+    // ... logic mua ngay
   }
 }

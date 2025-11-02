@@ -1,6 +1,8 @@
 <!-- Nội dung chính của ứng dụng -->
-<router-outlet></router-outlet>
-
+<div [ngClass]="{'with-navbar-padding': showNavbarPadding}">
+    <router-outlet></router-outlet>
+  </div>
+  
 <!-- Loading overlay chỉ xuất hiện khi isLoading$ là true -->
 <div *ngIf="isLoading$ | async" id="app-loading">
     <div class="lds-spinner">

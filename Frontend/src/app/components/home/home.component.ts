@@ -64,87 +64,60 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
   
 
-  private initSwiper(): void {
-    if (typeof Swiper !== 'undefined' && this.products.length > 0) {
-      // Wait for the next animation frame for better performance
-      requestAnimationFrame(() => {
-        new Swiper('.product-swiper', {
-          loop: true,
-          slidesPerView: 1,
-          spaceBetween: 30,
-          speed: 600, // Increased from default 300
-          resistance: true,
-          resistanceRatio: 0.85,
-          followFinger: true,
-          shortSwipes: true,
-          longSwipes: true,
-          longSwipesRatio: 0.5,
-          longSwipesMs: 300,
-          threshold: 5,
-          
-          // Improved navigation
-          navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
+ private initSwiper(): void {
+  if (typeof Swiper !== 'undefined' && this.products.length > 0) {
+    requestAnimationFrame(() => {
+      new Swiper('.product-swiper', {
+        loop: true,
+        slidesPerView: 1,
+        spaceBetween: 30,
+        speed: 600,
+
+        // Autoplay configuration: swipe every 1 second (1000ms)
+        autoplay: {
+          delay: 1000,  // 1 second
+          disableOnInteraction: false, // Keep autoplay even after user interaction
+        },
+
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+          dynamicBullets: true,
+        },
+
+        watchSlidesProgress: true,
+        watchSlidesVisibility: true,
+        preloadImages: true,
+        updateOnWindowResize: true,
+        resizeObserver: true,
+
+        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+
+        touchStartPreventDefault: false,
+        touchMoveStopPropagation: true,
+
+        breakpoints: {
+          480: { slidesPerView: 1, spaceBetween: 20 },
+          768: { slidesPerView: 2, spaceBetween: 25 },
+          1024: { slidesPerView: 3, spaceBetween: 30 },
+          1200: { slidesPerView: 4, spaceBetween: 30 },
+        },
+
+        on: {
+          init: function () {
+            console.log('Swiper initialized with autoplay every 1 second');
           },
-          
-          // Improved pagination
-          pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-            dynamicBullets: true, // Better performance for many slides
-          },
-          
-          // Performance optimizations
-          watchSlidesProgress: true,
-          watchSlidesVisibility: true,
-          preloadImages: true,
-          updateOnWindowResize: true,
-          resizeObserver: true,
-          
-          // Smooth transitions
-          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)', // Smooth easing function
-          
-          // Touch interactions
-          touchStartPreventDefault: false,
-          touchMoveStopPropagation: true,
-          
-          // Breakpoints
-          breakpoints: {
-            480: { 
-              slidesPerView: 1,
-              spaceBetween: 20 
-            },
-            768: { 
-              slidesPerView: 2,
-              spaceBetween: 25 
-            },
-            1024: { 
-              slidesPerView: 3,
-              spaceBetween: 30 
-            },
-            1200: { 
-              slidesPerView: 4,
-              spaceBetween: 30 
-            },
-          },
-          
-          // Additional smoothness options
-          on: {
-            init: function () {
-              console.log('Swiper initialized smoothly');
-            },
-            transitionStart: function () {
-              // Add any custom transition start logic
-            },
-            transitionEnd: function () {
-              // Add any custom transition end logic
-            }
-          }
-        });
+        },
       });
-    }
+    });
   }
+}
+
 
 
 

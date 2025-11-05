@@ -9,7 +9,7 @@
                         <div class="header-slider-caption">
                             <p>{{ slide.caption }}</p>
                             <a class="btn" routerLink="/product">
-                                <i class="fa fa-shopping-cart"></i>Shop Now
+                                <i class="fa fa-shopping-cart"></i>Mua ngay
                             </a>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
     <div class="container-fluid">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h1>Call us for any queries</h1>
+                <h1>Liên hệ chúng tôi: </h1>
             </div>
             <div class="col-md-6">
                 <a href="tel:+0123456789">+012-345-6789</a>
@@ -95,7 +95,7 @@
 <div class="featured-product product">
     <div class="container-fluid">
         <div class="section-header">
-            <h1>Featured Product</h1>
+            <h1>Sản phẩm nổi bật</h1>
         </div>
         <div class="row align-items-center product-slider product-slider-4">
             <div *ngFor="let product of products" class="col-lg-3">
@@ -108,7 +108,7 @@
                     </div>
                     <div class="product-image">
                         <a routerLink="/product-detail/{{ product.id }}">
-                            <img [src]="'assets/image/' + product.image" alt="Product Image">
+                            <img [src]="getImageUrl(product.image)" alt="Product Image" />
                         </a>
                         <div class="product-action">
                             <a routerLink="/product-detail/{{ product.id }}"><i class="fa fa-cart-plus"></i></a>
@@ -119,7 +119,7 @@
                     <div class="product-price">
                         <h3><span>$</span>{{ product.price }}</h3>
                         <a class="btn" routerLink="/product-detail/{{ product.id }}">
-                            <i class="fa fa-shopping-cart"></i>Buy Now
+                            <i class="fa fa-shopping-cart"></i>Mua ngay
                         </a>
                     </div>
                 </div>

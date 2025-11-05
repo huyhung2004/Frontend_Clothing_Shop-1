@@ -3,9 +3,9 @@
     <div class="container">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a [routerLink]="['/home']">Home</a></li>
-                <li class="breadcrumb-item"><a [routerLink]="['/product']">Products</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Product Detail</li>
+                <li class="breadcrumb-item"><a [routerLink]="['/home']">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a [routerLink]="['/product']">Sản phẩm</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Chi tiết sản phẩm</li>
             </ol>
         </nav>
     </div>
@@ -23,7 +23,7 @@
                             <div class="carousel-inner">
                                 <ng-container *ngFor="let image of productImages; let i = index">
                                     <div class="carousel-item" [ngClass]="{'active': i === 0}">
-                                        <img [src]="getImageUrl(image.imageUrl)" class="d-block w-100 rounded"
+                                        <img [src]="'/assets/image/' + image.imageUrl" class="d-block w-100 rounded"
                                             alt="Product Image">
                                     </div>
                                 </ng-container>
@@ -39,16 +39,15 @@
                                 <span class="visually-hidden">Next</span>
                             </button>
                         </div>
-                        <!-- Phần hiển thị các ảnh phụ bên dưới -->
+                        <!-- Additional Images -->
                         <div *ngIf="productImages && productImages.length > 1" class="additional-images mt-4">
                             <div class="row">
                                 <div class="col-3" *ngFor="let image of productImages">
-                                    <img [src]="getImageUrl(image.imageUrl)" alt="Product Image"
+                                    <img [src]="'/assets/image/' + image.imageUrl" alt="Product Image"
                                         class="img-thumbnail w-100">
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -56,34 +55,86 @@
                 <div class="col-md-7">
                     <div class="card-body p-4">
                         <h2 class="card-title">{{ product.name }}</h2>
-                        <!-- Bỏ phần hiển thị rating -->
-                        <h4 class="text-primary mb-3">Price: ${{ product.price }}</h4>
+                        <h4 class="text-primary mb-3">
+                            Giá: {{ product.price | currency:'VND':'':'1.0-0' }}₫
+                        </h4>
+
+                        <!-- Quantity Selector -->
                         <div class="d-flex align-items-center mb-3">
-                            <h5 class="me-3 mb-0">Quantity:</h5>
-                            <div class="input-group" style="width: 150px;">
+                            <h5 class="me-3 mb-0">Số lượng:</h5>
+                            <div class="input-group quantity-input-group">
                                 <button class="btn btn-outline-secondary" type="button" (click)="onMinus()">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <input type="text" class="form-control text-center" [(ngModel)]="quantity" readonly>
+                                <input type="number" 
+                                       class="form-control text-center" 
+                                       [(ngModel)]="quantity" 
+                                       (input)="onQuantityInput($event)"
+                                       [min]="1" 
+                                       [max]="stockQuantity || 999">
                                 <button class="btn btn-outline-secondary" type="button" (click)="onPlus()">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
                         </div>
+
+                        <!-- Size & Color Selectors -->
+                        <div class="mb-3">
+                            <div class="row g-2">
+                                <div class="col-auto">
+                                    <label class="form-label mb-1">Size</label>
+                                    <select class="form-select" [(ngModel)]="selectedSize" (ngModelChange)="onSelectSize($event)">
+                                        <option hidden disabled [ngValue]="null">Chọn size</option>
+                                        <option *ngFor="let s of sizes" [value]="s">{{ s }}</option>
+                                    </select>
+                                </div>
+                        
+                                <div class="col-auto">
+                                    <label class="form-label mb-1">Màu sắc</label>
+                                    <select class="form-select" [(ngModel)]="selectedColor" (ngModelChange)="onSelectColor($event)">
+                                        <option hidden disabled [ngValue]="null">Chọn màu</option>
+                                        <option *ngFor="let c of colors" [value]="c">{{ c }}</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-auto d-flex align-items-start mt-2" *ngIf="stockQuantity !== null">
+                                    <span class="text-muted fw-semibold">
+                                        Kho: <strong>{{ stockQuantity }}</strong> sản phẩm
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Size/Color Warning -->
+                            <div *ngIf="(!selectedSize || !selectedColor) && sizes.length > 0" class="mt-2">
+                                <small class="text-warning">
+                                    <i class="fa fa-exclamation-triangle"></i>
+                                    Vui lòng chọn size và màu sắc
+                                </small>
+                            </div>
+                        </div>         
+
+                        <!-- Action Buttons -->
                         <div class="mb-4">
-                            <button class="btn btn-success me-2" (click)="addToCart()">
-                                <i class="fa fa-shopping-cart"></i> Add to Cart
+                            <button 
+                                [ngClass]="(stockQuantity === 0 || !selectedSize || !selectedColor || quantity > (stockQuantity || 0)) ? 'btn btn-secondary me-2 disabled' : 'btn btn-success me-2'"
+                                [disabled]="stockQuantity === 0 || !selectedSize || !selectedColor || quantity > (stockQuantity || 0)" 
+                                (click)="addToCart()">
+                                <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
                             </button>
-                            <button class="btn btn-warning" (click)="buyNow()">
-                                <i class="fa fa-shopping-bag"></i> Buy Now
+                            <button 
+                                [ngClass]="(stockQuantity === 0 || !selectedSize || !selectedColor || quantity > (stockQuantity || 0)) ? 'btn btn-secondary disabled' : 'btn btn-warning'"
+                                [disabled]="stockQuantity === 0 || !selectedSize || !selectedColor || quantity > (stockQuantity || 0)" 
+                                (click)="buyNow()">
+                                <i class="fa fa-shopping-bag"></i> Mua ngay
                             </button>
                         </div>
-                        <!-- Product Description Tab -->
+
+                        <!-- Product Description -->
                         <ul class="nav nav-tabs" id="productTab" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="description-tab" data-bs-toggle="tab"
                                     data-bs-target="#description" type="button" role="tab" aria-controls="description"
-                                    aria-selected="true">Description</button>
+                                    aria-selected="true">Mô tả</button>
                             </li>
                         </ul>
                         <div class="tab-content pt-3" id="productTabContent">
@@ -94,7 +145,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -103,7 +153,7 @@
 <!-- Reviews Section -->
 <div class="reviews-section py-5 bg-light">
     <div class="container">
-        <h3 class="mb-4">Customer Reviews</h3>
+        <h3 class="mb-4">Đánh giá</h3>
         <div *ngIf="reviews && reviews.length; else noReview">
             <div class="row">
                 <div *ngFor="let review of reviews" class="col-md-6 mb-4">
@@ -128,7 +178,7 @@
                                     <video *ngIf="media.mediaType.startsWith('video')"
                                         [src]="'https://localhost:7163' + media.mediaUrl" controls
                                         class="img-thumbnail review-video" style="max-width: 200px;"
-                                        (play)="onVideoPlay($event)" controls disablePictureInPicture></video>
+                                        (play)="onVideoPlay($event)"></video>
                                 </div>
                             </div>
                         </div>
@@ -137,7 +187,7 @@
             </div>
         </div>
         <ng-template #noReview>
-            <p class="text-muted">No reviews yet.</p>
+            <p class="text-muted">Chưa có đánh giá nào.</p>
         </ng-template>
     </div>
 </div>

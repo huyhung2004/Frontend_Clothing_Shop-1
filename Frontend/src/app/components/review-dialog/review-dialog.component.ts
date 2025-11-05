@@ -102,7 +102,7 @@ export class ReviewDialogComponent implements OnInit {
     };
 
     if (this.rating <= 0) {
-      this.snackBar.open('Please select star rating.', '', {
+      this.snackBar.open('Vui lòng chọn số sao đánh giá.', '', {
         duration: 3000,
         horizontalPosition: 'right',
         verticalPosition: 'top',
@@ -117,7 +117,7 @@ export class ReviewDialogComponent implements OnInit {
       // reviewRequest.reviewId = this.data.review.reviewId; // nếu cần
       this.accountService.updateReview(reviewRequest).subscribe({
         next: (response) => {
-          this.snackBar.open('Review updated successfully!', '', {
+          this.snackBar.open('Cập nhật đánh giá thành công!', '', {
             duration: 3000,
             horizontalPosition: 'right',
             verticalPosition: 'top',
@@ -139,7 +139,7 @@ export class ReviewDialogComponent implements OnInit {
       // Chế độ tạo review mới
       this.accountService.addReview(reviewRequest).subscribe({
         next: (response) => {
-          this.snackBar.open('Review has been sent successfully!', '', {
+          this.snackBar.open('Đánh giá đã gửi thành công!', '', {
             duration: 3000,
             horizontalPosition: 'right',
             verticalPosition: 'top',

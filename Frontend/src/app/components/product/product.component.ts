@@ -25,7 +25,7 @@ export class ProductComponent implements OnInit {
   searchTerm = '';
   selectedMinPrice = 0;
   selectedMaxPrice = Infinity;
-  selectedPriceLabel = 'Product price range';
+  selectedPriceLabel = 'Khoảng giá sản phẩm';
   selectedCategoryId: number | null = null;
   selectedBrandId: number | null = null;
 

@@ -7,12 +7,12 @@
 
     <!-- Right side: Review details -->
     <div class="right-side">
-        <h2 class="dialog-title">Review {{ data.product.name }}</h2>
+        <h2 class="dialog-title">Đánh giá {{ data.product.name }}</h2>
         <div class="dialog-content">
             <form>
                 <!-- Star rating section -->
                 <div class="form-group rating-group">
-                    <label>Rating:</label>
+                    <label>Đánh giá:</label>
                     <div class="star-rating">
                         <i class="far fa-star" [ngClass]="{'fas': rating >= 1}" (click)="rating = 1"></i>
                         <i class="far fa-star" [ngClass]="{'fas': rating >= 2}" (click)="rating = 2"></i>
@@ -25,13 +25,13 @@
                 <!-- Review content input section -->
                 <div class="form-group">
                     <textarea [(ngModel)]="reviewText" name="reviewText" class="review-text" rows="4"
-                        placeholder="Please share your thoughts..."></textarea>
+                        placeholder="Hãy chia sẻ cảm nhận của bạn..."></textarea>
                 </div>
 
                 <!-- Media upload section -->
                 <div class="form-group upload-section">
                     <label for="file-upload" class="upload-label">
-                        <i class="fa fa-camera"></i> Add photo / video
+                        <i class="fa fa-camera"></i> Thêm ảnh / video
                     </label>
                     <input id="file-upload" type="file" multiple (change)="onFileSelected($event)" />
                     <div class="preview-list">
@@ -43,8 +43,8 @@
             </form>
         </div>
         <div class="dialog-actions">
-            <button class="btn btn-secondary" (click)="onCancel()">Cancel</button>
-            <button class="btn btn-primary" (click)="onSubmit()">Submit Review</button>
+            <button class="btn btn-secondary" (click)="onCancel()">Hủy</button>
+            <button class="btn btn-primary" (click)="onSubmit()">Gửi đánh giá</button>
         </div>
     </div>
 </div>

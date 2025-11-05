@@ -14,15 +14,17 @@
                                             <!-- Checkbox "Chọn tất cả" -->
                                             <input type="checkbox" #selectAll [checked]="isAllSelected()"
                                                 (change)="toggleSelectAll(selectAll.checked)" />
-                                            <span>Select</span>
+                                            <span>Lựa chọn</span>
                                         </div>
                                     </th>
 
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Total</th>
-                                    <th>Remove</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Size</th> 
+                                    <th>Màu sắc</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Tổng giá</th>
+                                    <th>Xoá</th>
                                 </tr>
                             </thead>
 
@@ -39,7 +41,15 @@
                                             <p>{{ item.name }}</p>
                                         </div>
                                     </td>
-                                    <td>{{ item.price | currency:'USD':'symbol':'1.2-2' }}</td>
+
+                                    <!-- Size -->
+                                    <td>{{ item.size || '-' }}</td>
+                                    
+                                    <!-- Color -->
+                                    <td>{{ item.color || '-' }}</td>
+                                   
+                                    <td>{{ item.price | number:'1.0-0' }}₫</td>
+
                                     <td>
                                         <div class="qty">
                                             <button class="btn-minus" (click)="updateCart(item.id, 'decrease')">
@@ -52,7 +62,8 @@
                                         </div>
                                     </td>
                                     <td class="total-price">
-                                        {{ (item.price * item.numberOfProducts) | currency:'USD':'symbol':'1.2-2' }}
+                                    {{ (item.price * item.numberOfProducts) | number:'1.0-0' }}₫
+
                                     </td>
                                     <td>
                                         <button class="btn-delete" (click)="deleteItem(item.id)">
@@ -71,19 +82,19 @@
                 <div class="cart-page-inner">
                     <div class="cart-summary">
                         <div class="cart-content">
-                            <h1>Cart Summary</h1>
+                            <h1>Tóm tắt đơn hàng</h1>
                             <p>
-                                Sub Total
-                                <span id="sub-total">{{ subTotal | currency:'USD':'symbol':'1.2-2' }}</span>
+                                Tạm tính
+                                <span id="sub-total">{{ subTotal | number:'1.0-0' }}₫</span>
                             </p>
-                            <p>Shipping Cost <span>$1.00</span></p>
+                            <p>Chi phí vận chuyển <span>1,000₫</span></p>
                             <h2>
-                                Grand Total
-                                <span id="grand-total">{{ grandTotal | currency:'USD':'symbol':'1.2-2' }}</span>
+                                Tổng thanh toán
+                                <span id="grand-total">{{ grandTotal | number:'1.0-0' }}₫</span>
                             </h2>
                         </div>
                         <div class="cart-btn">
-                            <button type="button" (click)="proceedToCheckout()">Checkout</button>
+                            <button type="button" (click)="proceedToCheckout()">Thanh toán</button>
                         </div>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 // declare var $: any; // Import jQuery nếu bạn đang dùng jQuery
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -12,6 +13,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class HomeComponent implements OnInit {
   products: any[] = [];
+  // Base URL for images
+  private baseImageUrl = 'https://localhost:7163';
 
   constructor(private http: HttpClient) {}
 
@@ -34,7 +37,7 @@ export class HomeComponent implements OnInit {
   sliderImages = [
     {
       imageUrl: 'assets/img/slider-1.jpg',
-      caption: 'Some text goes here that describes the image',
+      caption: 'Khám phá những bộ sưu tập thời trang độc đáo',
     },
     // {
     //   imageUrl: 'assets/img/slider-2.jpg',
@@ -58,45 +61,45 @@ export class HomeComponent implements OnInit {
   features = [
     {
       icon: 'fab fa-cc-mastercard',
-      title: 'Secure Payment',
-      description: 'Lorem ipsum dolor sit amet consectetur elit',
+      title: 'Thanh toán an toàn',
+      description: 'Giao dịch bảo mật tuyệt đối.',
     },
     {
       icon: 'fa fa-truck',
-      title: 'Worldwide Delivery',
-      description: 'Lorem ipsum dolor sit amet consectetur elit',
+      title: 'Giao hàng mọi nơi',
+      description: 'Nhanh chóng, đúng hẹn.',
     },
     {
       icon: 'fa fa-sync-alt',
-      title: '90 Days Return',
-      description: 'Lorem ipsum dolor sit amet consectetur elit',
+      title: 'Đổi trả trong 90 ngày',
+      description: 'Đổi trả dễ dàng, linh hoạt.',
     },
     {
       icon: 'fa fa-comments',
-      title: '24/7 Support',
-      description: 'Lorem ipsum dolor sit amet consectetur elit',
+      title: 'Hỗ trợ 24/7',
+      description: 'Luôn sẵn sàng hỗ trợ bạn.',
     },
-  ];
+  ];  
 
   categories = [
     {
       imageUrl: 'assets/img/category-1.jpg',
-      caption: 'Some text goes here that describes the image',
+      caption: 'Phong cách thanh lịch cho mọi dịp – Tự tin tỏa sáng mỗi ngày',
       heightClass: 'ch-400',
     },
     {
       imageUrl: 'assets/img/category-2.jpg',
-      caption: 'Some text goes here that describes the image',
+      caption: 'Thời trang năng động, trẻ trung – Bắt kịp xu hướng mới nhất',
       heightClass: 'ch-400',
     },
     {
       imageUrl: 'assets/img/category-3.jpg',
-      caption: 'Some text goes here that describes the image',
+      caption: 'Sự kết hợp hoàn hảo giữa thoải mái và đẳng cấp',
       heightClass: 'ch-400',
     },
     {
       imageUrl: 'assets/img/category-2.jpg',
-      caption: 'Some text goes here that describes the image',
+      caption: 'Khám phá bộ sưu tập mới – Cập nhật phong cách riêng của bạn',
       heightClass: 'ch-400',
     },
   ];
@@ -150,4 +153,15 @@ export class HomeComponent implements OnInit {
   //     ],
   //   });
   // }
+
+  // Get full image URL
+  getImageUrl(imageUrl: string | undefined): string {
+    if (!imageUrl) return 'assets/img/placeholder.jpg';
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    // Nếu là relative URL, thêm base URL
+    return this.baseImageUrl + imageUrl;
+  }
 }

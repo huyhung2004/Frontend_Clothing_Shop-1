@@ -218,8 +218,12 @@ export class ProductAdminComponent implements OnInit {
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
       return imageUrl;
     }
-    // Nếu là relative URL, thêm base URL
-    return this.baseImageUrl + imageUrl;
+    // Nếu bắt đầu bằng /, là relative URL, thêm base URL
+    if (imageUrl.startsWith('/')) {
+      return this.baseImageUrl + imageUrl;
+    }
+    // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
+    return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
   }
 
 }

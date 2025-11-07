@@ -101,6 +101,24 @@ export class HomeComponent implements OnInit {
     },
   ];
 
+  // Base URL for images
+  private baseImageUrl = 'https://localhost:7163';
+
+  // Get full image URL
+  getImageUrl(imageUrl: string | undefined): string {
+    if (!imageUrl) return 'assets/img/placeholder.jpg';
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    // Nếu bắt đầu bằng /, là relative URL, thêm base URL
+    if (imageUrl.startsWith('/')) {
+      return this.baseImageUrl + imageUrl;
+    }
+    // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
+    return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
+  }
+
   // products = [
   //   { id: 1, name: 'Product 1', image: 'product-1.jpg', price: 100 },
   //   { id: 2, name: 'Product 2', image: 'product-2.jpg', price: 150 },

@@ -108,7 +108,7 @@
                     </div>
                     <div class="product-image">
                         <a routerLink="/product-detail/{{ product.id }}">
-                            <img [src]="'assets/image/' + product.image" alt="Product Image">
+                            <img [src]="getImageUrl(product.image)" alt="Product Image">
                         </a>
                         <div class="product-action">
                             <a routerLink="/product-detail/{{ product.id }}"><i class="fa fa-cart-plus"></i></a>

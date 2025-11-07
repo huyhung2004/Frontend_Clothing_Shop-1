@@ -216,11 +216,16 @@ export class ProductAdminEditComponent implements OnInit {
 
   getImageUrl(url: string | undefined): string {
     if (!url) return '';
-    // If URL starts with /, it's a relative URL, prepend the base URL
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    // Nếu bắt đầu bằng /, là relative URL, thêm base URL
     if (url.startsWith('/')) {
       return `https://localhost:7163${url}`;
     }
-    return url;
+    // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
+    return `https://localhost:7163/uploads/products/${url}`;
   }
 
   onSubmit(): void {

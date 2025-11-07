@@ -1,7 +1,7 @@
 <div class="review-dialog-container">
     <!-- Left side: Display product image -->
     <div class="left-side">
-        <img [src]="'assets/image/' + data.product.productImageUrl" alt="{{ data.product.name }}"
+        <img [src]="getImageUrl(data.product.productImageUrl)" alt="{{ data.product.name }}"
             class="product-image" />
     </div>
 

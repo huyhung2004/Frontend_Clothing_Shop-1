@@ -3,10 +3,20 @@ import { Product } from '../../dto/product.dto';
 import { ProductImage } from '../../dto/productImage.dto';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
+import { ProductVariantService } from '../../services/productvariant.service';
 import { CartService } from '../../services/cart.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AccountService, Review } from '../../services/account.service';
+
+interface ProductVariant {
+  id: number;
+  color: string;
+  size: string;
+  price: number;
+  stockQuantity: number;
+  productId: number;
+}
 
 @Component({
   selector: 'app-productdetail',
@@ -19,16 +29,22 @@ export class ProductdetailComponent implements OnInit {
   product!: Product;
   productImages: ProductImage[] = [];
   quantity: number = 1;
-  // Nếu có lựa chọn màu, bạn có thể lấy từ UI. Ở đây sử dụng giá trị mặc định.
-  color: string = 'white';
+
+  sizes: string[] = [];
+  colors: string[] = [];
+  selectedSize: string | null = null;
+  selectedColor: string | null = null;
+  currentStock: number = 0;
+
+  variants: ProductVariant[] = [];
   reviews: Review[] = [];
-  
-  // Base URL for images
-  private baseImageUrl = 'https://localhost:7163';
+
+  private baseImageUrl = 'https://localhost:7163'; // your backend URL
 
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
+    private productVariantService: ProductVariantService,
     private accountService: AccountService,
     private cartService: CartService,
     private router: Router
@@ -40,82 +56,124 @@ export class ProductdetailComponent implements OnInit {
       this.productService.getProductDetail(+id).subscribe((data) => {
         this.product = data.product;
         this.productImages = data.anhSps;
+
+        this.productVariantService.getVariantsByProduct(+id).subscribe((variants) => {
+          if (Array.isArray(variants) && variants.length) {
+            this.variants = variants;
+
+            const sizeSet = new Set<string>();
+            const colorSet = new Set<string>();
+            variants.forEach((v) => {
+              if (v.size) sizeSet.add(v.size);
+              if (v.color) colorSet.add(v.color);
+            });
+
+            this.sizes = [...sizeSet];
+            this.colors = [...colorSet];
+
+            // Optionally select default first color & size
+            this.selectedColor = this.colors[0] ?? null;
+            this.selectedSize = this.sizes[0] ?? null;
+
+            this.updateCurrentStock();
+          }
+        });
       });
-      // Lấy danh sách review của sản phẩm
+
       this.loadReviews(+id);
     }
   }
+
   loadReviews(productId: number): void {
     this.accountService.getReviewsByProduct(productId).subscribe({
       next: (data) => {
         this.reviews = data;
       },
       error: (err) => {
-        console.error('Lỗi khi lấy review:', err);
+        console.error('Error loading reviews:', err);
       },
     });
   }
+
   onVideoPlay(event: Event): void {
     const playingVideo = event.target as HTMLVideoElement;
-    // Ép kiểu danh sách các phần tử thành HTMLVideoElement
-    const reviewVideos = document.querySelectorAll(
-      '.review-video'
-    ) as NodeListOf<HTMLVideoElement>;
+    const reviewVideos = document.querySelectorAll('.review-video') as NodeListOf<HTMLVideoElement>;
     reviewVideos.forEach((video) => {
-      if (video !== playingVideo) {
-        video.pause();
-      }
+      if (video !== playingVideo) video.pause();
     });
   }
 
-  onMinus(): void {
-    if (this.quantity > 1) {
-      this.quantity--;
+  onSelectSize(size: string | null): void {
+    this.selectedSize = size;
+    this.updateCurrentStock();
+  }
+
+  onSelectColor(color: string | null): void {
+    this.selectedColor = color;
+    if (color) this.updateCurrentStock();
+  }
+
+  updateCurrentStock(): void {
+    if (!this.selectedColor || !this.selectedSize) {
+      this.currentStock = 0;
+      return;
     }
+    const variant = this.variants.find(
+      (v) => v.color === this.selectedColor && v.size === this.selectedSize
+    );
+    this.currentStock = variant ? variant.stockQuantity : 0;
+
+    if (this.quantity > this.currentStock) this.quantity = this.currentStock;
+  }
+
+  onMinus(): void {
+    if (this.quantity > 1) this.quantity--;
   }
 
   onPlus(): void {
-    this.quantity++;
+    if (this.quantity < this.currentStock) this.quantity++;
+  }
+
+  canPurchase(): boolean {
+    return this.currentStock > 0;
   }
 
   addToCart(): void {
-    // Gọi API thêm vào giỏ hàng
-    this.cartService
-      .addCart(this.product.id, this.quantity, this.color, this.product.price)
-      .subscribe({
-        next: (res) => {
-          alert('Thêm vào giỏ hàng thành công!');
-        },
-        error: (err) => {
-          console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', err);
-          alert(
-            'Thêm vào giỏ hàng thất bại , bạn phải thêm địa chỉ giao hàng mặc định trước'
-          );
-        },
-      });
+    if (!this.canPurchase()) return;
+
+    this.cartService.addCart(
+      this.product.id,
+      this.quantity,
+      this.selectedColor ?? '',
+      this.product.price
+    ).subscribe({
+      next: () => alert('Thêm vào giỏ hàng thành công!'),
+      error: (err) => {
+        console.error('Add to cart error:', err);
+        alert('Thêm vào giỏ hàng thất bại, vui lòng thử lại.');
+      },
+    });
   }
 
   buyNow(): void {
-    // Gọi API mua ngay
-    this.cartService
-      .buyNow(this.product.id, this.quantity, this.color, this.product.price)
-      .subscribe({
-        next: (res) => {
-          // alert('Đơn hàng mua ngay được tạo thành công!');
-          // Nếu muốn chuyển hướng tới trang Checkout, có thể làm như sau:
-          console.log('Response from buyNow:', res.orderId);
-          this.router.navigate(['/checkoutbuynow', res.orderId], {
-            replaceUrl: true,
-          });
-        },
-        error: (err) => {
-          console.error('Lỗi khi xử lý mua ngay:', err);
-          alert('Xử lý mua ngay thất bại');
-        },
-      });
+    if (!this.canPurchase()) return;
+
+    this.cartService.buyNow(
+      this.product.id,
+      this.quantity,
+      this.selectedColor ?? '',
+      this.product.price
+    ).subscribe({
+      next: (res) => {
+        this.router.navigate(['/checkoutbuynow', res.orderId], { replaceUrl: true });
+      },
+      error: (err) => {
+        console.error('Buy now error:', err);
+        alert('Xử lý mua ngay thất bại.');
+      },
+    });
   }
 
-  // Get full image URL
   getImageUrl(imageUrl: string | undefined): string {
     if (!imageUrl) return 'assets/img/placeholder.jpg';
     // Nếu đã là URL đầy đủ (http/https), trả về như cũ
@@ -128,5 +186,6 @@ export class ProductdetailComponent implements OnInit {
     }
     // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
     return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
+
   }
 }

@@ -31,7 +31,7 @@ export class LayoutsComponent {
       'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css',
       'assets/lib/slick/slick.css',
       'assets/lib/slick/slick-theme.css',
-      'assets/css/style.css',
+      'assets/css/style_new.css',
     ];
 
     links.forEach((linkHref) => {

@@ -55,6 +55,17 @@ export class AccountComponent {
     // 'returned',
   ];
 
+  statusLabels: { [key: string]: string } = {
+    processing: 'Đang xử lý',
+    addressChanged: 'Đã đổi địa chỉ',
+    shipped: 'Đang vận chuyển',
+    delivered: 'Đã giao hàng',
+    completed: 'Hoàn tất',
+    cancelled: 'Đã hủy',
+    // returned: 'Đã trả hàng' // nếu cần
+  };
+  
+
   // // Trạng thái được chọn, mặc định là 'all' để hiển thị tất cả
   selectedStatus: string = 'processing';
   // Map lưu trạng thái review của các sản phẩm: key là productId, value là boolean
@@ -89,17 +100,17 @@ export class AccountComponent {
         this.accountService.changeOrderAddress(payload).subscribe({
           next: (response) => {
             if (response.success) {
-              alert('Order shipping address updated successfully.');
+              alert('Đổi địa chỉ giao hàng thành công!');
               this.fetchAccount();
             } else {
               alert(
-                response.message || 'Failed to update order shipping address.'
+                response.message || 'Đổi địa chỉ giao hàng thất bại!'
               );
             }
           },
           error: (error) => {
             console.error('Error updating shipping address:', error);
-            alert('An error occurred while updating the shipping address.');
+            alert('Đã có lỗi xảy ra khi cập nhật địa chỉ!');
           },
         });
       }
@@ -213,10 +224,10 @@ export class AccountComponent {
             this.userId = this.accounts[0].id;
           }
         } else {
-          alert(response.message || 'Failed to load account data');
+          alert(response.message || 'Không tải được dữ liệu tài khoản');
         }
       },
-      error: () => alert('Error fetching account data'),
+      error: () => alert('Lỗi tải dữ liệu tài khoản'),
     });
   }
   reviewProduct(product: any): void {
@@ -229,7 +240,7 @@ export class AccountComponent {
       if (reviewData) {
         // Sau khi người dùng submit, reviewData chứa thông tin đánh giá
         // Gọi API từ service để lưu review
-        console.log('Review submitted:', reviewData);
+        console.log('Đánh giá thành công:', reviewData);
         // Ví dụ: this.accountService.submitReview(reviewData).subscribe(...);
       }
     });
@@ -244,7 +255,7 @@ export class AccountComponent {
           },
           error: (error) => {
             console.error(
-              `Error checking review for product ${product.productId}:`,
+              `Lỗi kiểm tra đánh giá sản phẩm ${product.productId}:`,
               error
             );
             this.reviewedMap[product.productId] = false;
@@ -276,9 +287,9 @@ export class AccountComponent {
         }
       },
       error: (error) => {
-        console.error('Error fetching reviews for product:', error);
-        alert('Could not fetch reviews for this product.');
-      },
+        console.error('Lỗi khi lấy đánh giá sản phẩm:', error);
+        alert('Không thể lấy đánh giá cho sản phẩm này.');
+      },      
     });
   }
 
@@ -315,18 +326,18 @@ export class AccountComponent {
   }
 
   logout(): void {
-    if (confirm('Are you sure you want to log out?')) {
+    if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
       this.accountService.logout().subscribe({
         next: (response: any) => {
           // Xử lý phản hồi thành công từ server
-          console.log('Logout successful', response);
+          console.log('Đăng xuất thành công!', response);
           this.tokenService.removeToken();
           // Xóa selectedItems khỏi session
           sessionStorage.removeItem('selectedItems');
           this.router.navigate(['/home']);
         },
         error: (error: any) => {
-          console.error('Logout error', error);
+          console.error('Lỗi đăng xuất', error);
           // Xử lý lỗi nếu cần, sau đó thực hiện logout cục bộ
           this.tokenService.removeToken();
           // Xóa selectedItems khỏi session
@@ -346,24 +357,24 @@ export class AccountComponent {
       .subscribe({
         next: (response) => {
           if (response.success) {
-            alert('Account details updated successfully');
+            alert('Cập nhật tài khoản thành công');
             this.fetchAccount();
           } else {
-            alert(response.message || 'Failed to update account details');
+            alert(response.message || 'Cập nhật tài khoản thất bại');
             console.log(response.message);
           }
         },
-        error: () => alert('Failed to update account details'),
+        error: () => alert('Cập nhật tài khoản thất bại'),
       });
   }
 
   changePassword(): void {
     if (this.newPassword !== this.confirmPassword) {
-      alert('New password and confirm password do not match');
+      alert('Mật khẩu mới và mật khẩu nhập lại không khớp');
       return;
     }
     if (!this.newPassword || !this.confirmPassword) {
-      alert('New password and confirm password cannot be empty');
+      alert('Mật khẩu mới và mật khẩu nhập lại không được để trống');
       return;
     }
     this.accountService
@@ -374,13 +385,13 @@ export class AccountComponent {
       .subscribe({
         next: (response) => {
           if (response.success) {
-            alert('Password changed successfully');
+            alert('Đổi mật khẩu thành công!');
             window.location.href = '/Home/Home';
           } else {
-            alert(response.message || 'Failed to change password');
+            alert(response.message || 'Đổi mật khẩu thất bại');
           }
         },
-        error: () => alert('Failed to change password'),
+        error: () => alert('Đổi mật khẩu thất bại'),
       });
   }
 
@@ -388,7 +399,7 @@ export class AccountComponent {
     const phoneNumberRegex = /^\d{10,11}$/;
     if (!phoneNumber || !phoneNumberRegex.test(phoneNumber)) {
       alert(
-        'Phone number must be between 10 and 11 digits and contain only numbers.'
+        'Số điện thoại phải có từ 10 đến 11 chữ số và chỉ bao gồm các ký tự số.'
       );
       return false;
     }

@@ -1,18 +1,95 @@
-/* login.component.css */
-:host {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh; /* chiếm 100% chiều cao viewport */
-    background-color: #f4f6f9; /* màu nền tùy chỉnh */
-  }
-  
-  .login-box {
-    width: 100%;
-    max-width: 400px; /* giới hạn độ rộng của form */
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    border-radius: 5px;
-  }
-  
+#login-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.login-box {
+  background: #fff;
+  border-radius: 6px;
+  padding: 40px 35px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Heading */
+.section-title {
+  font-family: "Marcellus", serif;
+  font-size: 3.5rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #111;
+  margin-bottom: 1.5rem;
+}
+
+.section-title::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 2px;
+  background-color: #000;
+  margin-top: 0.5rem;
+}
+
+/* Form labels and inputs */
+.form-label {
+  font-family: "Jost", sans-serif;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-control {
+  border-radius: 0;
+  border: 1px solid #ccc;
+  padding: 10px 12px;
+  font-size: 1rem;
+  width: 100%;
+}
+
+/* Unified button style */
+.btn-main {
+  background-color: #111;
+  color: #fff;
+  border: none;
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+  font-weight: 600;
+  border-radius: 0;
+}
+
+.btn-main:hover {
+  background-color: #333;
+}
+
+/* Separator (- OR -) */
+.separator {
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #555;
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+/* Icons inside buttons */
+.btn-main i {
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
+/* Links */
+a {
+  color: #111;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: #555;
+  text-decoration: underline;
+}

@@ -1,66 +1,98 @@
-<div class="register-box">
-    <div class="register-logo">
-        <a href="#"><b>Admin</b>LTE</a>
-    </div>
-    <div class="card">
-        <div class="card-body register-card-body">
-            <p class="login-box-msg">Register a new membership</p>
-
+<section id="register-form" class="py-5">
+    <div class="container-sm">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-6">
+          <div class="register-box shadow-sm rounded p-5 bg-white mx-auto text-start">
+            <!-- Heading -->
+            <h2 class="section-title text-uppercase mb-4">Đăng ký</h2>
+  
             <form [formGroup]="registerForm">
-                <div class="input-group mb-3">
-                    <input type="text" formControlName="fullName" class="form-control" placeholder="Full name" />
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-user"></span>
-                        </div>
-                    </div>
+              <!-- Full Name -->
+              <div class="form-group mb-3">
+                <label for="fullName" class="form-label fw-semibold">Họ tên *</label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="fullName"
+                    formControlName="fullName"
+                    class="form-control"
+                    placeholder="Điền họ và tên"
+                  />
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
                 </div>
-
-                <div class="input-group mb-3">
-                    <input type="tel" formControlName="phoneNumber" class="form-control" placeholder="Phone number"
-                        (input)="validatePhoneNumber($event)" />
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-phone"></span>
-                        </div>
-                    </div>
+              </div>
+  
+              <!-- Phone Number -->
+              <div class="form-group mb-3">
+                <label for="phoneNumber" class="form-label fw-semibold">Số điện thoại *</label>
+                <div class="input-group">
+                  <input
+                    type="tel"
+                    id="phoneNumber"
+                    formControlName="phoneNumber"
+                    class="form-control"
+                    placeholder="Điền số điện thoại"
+                    (input)="validatePhoneNumber($event)"
+                  />
+                  <span class="input-group-text"><i class="fas fa-phone"></i></span>
                 </div>
-
-                <div class="input-group mb-3">
-                    <input type="password" formControlName="password" class="form-control" placeholder="Password" />
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
-                        </div>
-                    </div>
+              </div>
+  
+              <!-- Password -->
+              <div class="form-group mb-3">
+                <label for="password" class="form-label fw-semibold">Mật khẩu *</label>
+                <div class="input-group">
+                  <input
+                    type="password"
+                    id="password"
+                    formControlName="password"
+                    class="form-control"
+                    placeholder="Nhập mật khẩu"
+                  />
+                  <span class="input-group-text"><i class="fas fa-lock"></i></span>
                 </div>
-
-                <div class="input-group mb-3">
-                    <input type="password" formControlName="confirmPassword" class="form-control"
-                        placeholder="Retype password" />
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
-                        </div>
-                    </div>
+              </div>
+  
+              <!-- Confirm Password -->
+              <div class="form-group mb-4">
+                <label for="confirmPassword" class="form-label fw-semibold">Nhập lại mật khẩu *</label>
+                <div class="input-group">
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    formControlName="confirmPassword"
+                    class="form-control"
+                    placeholder="Nhập lại mật khẩu"
+                  />
+                  <span class="input-group-text"><i class="fas fa-lock"></i></span>
                 </div>
-
-                <div class="row">
-                    <div class="col-8">
-                        <div class="icheck-primary">
-                            <input type="checkbox" id="agreeTerms" formControlName="agreeTerms" />
-                            <label for="agreeTerms">I agree to the <a href="#">terms</a></label>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <button type="button" (click)="registerUser()" class="btn btn-primary btn-block">
-                            Register
-                        </button>
-                    </div>
+              </div>
+  
+              <!-- Terms and Button -->
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="agreeTerms"
+                    formControlName="agreeTerms"
+                  />
+                  <label class="form-check-label" for="agreeTerms">
+                   Tôi đồng ý với <a href="#">điều khoản sử dụng</a>
+                  </label>
                 </div>
+                <button type="button" (click)="registerUser()" class="btn btn-main text-uppercase px-4 py-2">
+                  Đăng ký
+                </button>
+              </div>
             </form>
-
-            <a routerLink="/admin/login" class="text-center">I already have a membership</a>
+  
+            <div class="text-start mt-3">
+              <a routerLink="/admin/login" class="d-block">Tôi đã có tài khoản</a>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
+  </section>
+  

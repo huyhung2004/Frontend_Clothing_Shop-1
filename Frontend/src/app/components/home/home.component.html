@@ -1,93 +1,154 @@
-<!-- Main Slider Start -->
-<div class="header">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="header-slider normal-slider">
-                    <div *ngFor="let slide of sliderImages" class="header-slider-item">
-                        <img [src]="slide.imageUrl" alt="Slider Image" />
-                        <div class="header-slider-caption">
-                            <p>{{ slide.caption }}</p>
-                            <a class="btn" routerLink="/product">
-                                <i class="fa fa-shopping-cart"></i>Shop Now
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="header-img">
-                    <div *ngFor="let category of categories" class="img-item">
-                        <img [src]="category.imageUrl" />
-                        <a class="img-text" routerLink="/product">
-                            <p>{{ category.caption }}</p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- Hero Section -->
+<section class="hero-section text-white">
+  <div class="hero-content container">
+    <div class="row">
+      <div class="col-md-6 offset-md-6 text-end">
+        <h2 class="display-1 text-uppercase mt-5 pt-5">Thời thượng</h2>
+        <p class="caption">Phong cách hiện đại, đẳng cấp</p>
+        <a routerLink="/product" class="btn btn-dark text-uppercase mt-3"
+          >Khám phá</a
+        >
+      </div>
     </div>
-</div>
+  </div>
+</section>
 
-<!-- Main Slider End -->
-
-<!-- Brand Start -->
-<div class="brand">
-    <div class="container-fluid">
-        <div class="brand-slider">
-            <div *ngFor="let brand of brandImages" class="brand-item">
-                <img [src]="brand" alt="">
-            </div>
+<!-- Features Section -->
+<section class="features py-5">
+  <div class="container">
+    <div class="row">
+      <div
+        *ngFor="let feature of features; let i = index"
+        class="col-md-3 text-center"
+        [attr.data-aos]="'fade-in'"
+        [attr.data-aos-delay]="i * 300"
+      >
+        <div class="py-5">
+          <i [class]="feature.icon" style="font-size: 38px"></i>
+          <h4 class="element-title text-capitalize my-3">
+            {{ feature.title }}
+          </h4>
+          <p>{{ feature.description }}</p>
         </div>
+      </div>
     </div>
-</div>
-<!-- Brand End -->
+  </div>
+</section>
 
-<!-- Feature Start-->
-<div class="feature">
-    <div class="container-fluid">
-        <div class="row align-items-center">
-            <div *ngFor="let feature of features" class="col-lg-3 col-md-6 feature-col">
-                <div class="feature-content">
-                    <i [class]="feature.icon"></i>
-                    <h2>{{ feature.title }}</h2>
-                    <p>{{ feature.description }}</p>
-                </div>
-            </div>
-        </div>
+<!-- Collection Section -->
+<section class="collection bg-light">
+  <div class="collection-item d-flex flex-wrap align-items-center my-5">
+    <div class="col-md-6">
+      <div class="image-holder">
+        <img
+          src="assets/img/slider-1.jpg"
+          alt="collection"
+          class="product-image img-fluid"
+        />
+      </div>
     </div>
-</div>
-<!-- Feature End-->
+    <div class="col-md-6">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <h3 class="element-title text-uppercase">
+            Phong Cách Thời Thượng Mỗi Ngày
+          </h3>
+          <p>
+            Khám phá những bộ sưu tập thời trang độc đáo, nơi phong cách cá nhân gặp gỡ xu hướng hiện đại. Từ trang phục thanh lịch đến những thiết kế phá cách, mỗi sản phẩm đều được chọn lọc kỹ lưỡng để tôn vinh cá tính riêng của bạn, giúp bạn luôn nổi bật trong mọi hoàn cảnh.
+          </p>
+          <a routerLink="/product" class="btn btn-dark text-uppercase mt-3"
+            >Khám phá</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<!-- Category Start-->
-<div class="category">
-    <div class="container-fluid">
-        <div class="row">
-            <div *ngFor="let category of categories" class="col-md-3">
-                <div class="category-item" [ngClass]="category.heightClass">
-                    <img [src]="category.imageUrl" />
-                    <a class="category-name" routerLink="/product">
-                        <p>{{ category.caption }}</p>
-                    </a>
-                </div>
-            </div>
-        </div>
+<!-- Products Section -->
+<section
+  id="new-arrival"
+  class="new-arrival product-carousel product-element swiper-menu py-5 position-relative overflow-hidden"
+>
+  <div class="container position-relative">
+    <div
+      class="d-flex flex-wrap justify-content-between align-items-center mb-5"
+    >
+      <h4 class="element-title text-uppercase mb-0">Sản phẩm của chúng tôi</h4>
+      <a routerLink="/product" class="btn-link text-uppercase d-flex align-items-center">
+        Xem thêm
+        <svg width="16" height="16" viewBox="0 0 24 24" class="ms-2">
+          <use xlink:href="#angle-right"></use>
+        </svg>
+      </a>
     </div>
-</div>
-<!-- Category End-->
+    
+    <div class="swiper product-swiper" data-aos="zoom-out">
+      <div class="swiper-wrapper">
+        <div *ngFor="let product of products" class="swiper-slide">
+          <div class="product-item text-center position-relative">
+            <!-- Product Image -->
+            <div class="image-holder position-relative mb-3">
+              <a [routerLink]="['/product-detail', product.id]" class="d-block">
+                <img
+                  [src]="getImageUrl(product.image)"
+                  [alt]="product.name"
+                  class="product-image img-fluid w-100"
+                />
+              </a>
+              
+              <!-- Wishlist Button -->
+              <button class="btn-wishlist position-absolute">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                  <use xlink:href="#heart"></use>
+                </svg>
+              </button>
+              
+              <!-- Add to Cart Button -->
+              <button class="btn-add-cart position-absolute w-100">
+                Thêm vào giỏ
+              </button>
+            </div>
+            
+            <!-- Product Info -->
+            <div class="product-info text-start">
+              <h5 class="product-name text-uppercase mb-2">
+                <a [routerLink]="['/product-detail', product.id]" class="text-decoration-none text-dark">
+                  {{ product.name }}
+                </a>
+              </h5>
+              <div class="product-price">
+                {{ product.price | number:'1.0-0' }} ₫
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Navigation Arrows - Inside container but positioned absolutely -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+    
+    <!-- Pagination -->
+    <div class="swiper-pagination mt-4"></div>
+  </div>
+</section>
 
-<!-- Call to Action Start -->
-<div class="call-to-action">
-    <div class="container-fluid">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h1>Call us for any queries</h1>
-            </div>
-            <div class="col-md-6">
-                <a href="tel:+0123456789">+012-345-6789</a>
-            </div>
-        </div>
+<!-- Brand Section -->
+<section class="logo-bar py-5">
+  <div class="container">
+    <div class="row">
+      <div class="logo-content d-flex flex-wrap justify-content-between">
+        <img
+          *ngFor="let brand of brandImages"
+          [src]="brand"
+          alt="logo"
+          class="logo-image img-fluid"
+        />
+      </div>
     </div>
+
 </div>
 <!-- Call to Action End -->
 
@@ -128,3 +189,7 @@
     </div>
 </div>
 <!-- Featured Product End -->
+
+  </div>
+</section>
+

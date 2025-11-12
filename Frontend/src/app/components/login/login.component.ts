@@ -54,10 +54,17 @@ export class LoginComponent {
         const decoded = this.jwtHelper.decodeToken(response.token);
         console.log('Decoded token:', decoded);
 
+        // Save token to TokenService so AuthGuard can access it
+        if (response.token) {
+          this.tokenService.setToken(response.token);
+        }
+
         if (decoded?.role === 'Admin') {
           this.router.navigate(['/adminDashboard/welcome']);
+          console.log('redirecting to admin dashboard');
         } else {
           this.router.navigate(['/home']);
+          console.log('redirecting to home page');
         }
       },
       error: (error: any) => {

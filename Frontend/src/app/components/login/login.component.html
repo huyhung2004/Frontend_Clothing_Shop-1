@@ -1,58 +1,70 @@
-<!-- src/app/login/login.component.html -->
-<div class="login-box">
-    <div class="login-logo">
-        <!-- Sử dụng routerLink nếu muốn chuyển hướng trong Angular -->
-        <a routerLink="/admin/login"><b>Login</b></a>
-    </div>
-    <!-- /.login-logo -->
-    <div class="card">
-        <div class="card-body login-card-body">
+<section id="login-form" class="py-5">
+    <div class="container-sm">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-6">
+          <div class="login-box shadow-sm rounded p-5 bg-white mx-auto text-start">
+            <!-- Heading -->
+            <h2 class="section-title text-uppercase mb-4">Đăng nhập</h2>
+  
             <form (ngSubmit)="onSubmit()">
-                <div class="input-group mb-3">
-                    <input type="tel" class="form-control" placeholder="Phone number" [(ngModel)]="phoneNumber"
-                        name="phoneNumber" pattern="[0-9]{10,11}" maxlength="11" (input)="validatePhoneNumber()"
-                        required />
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-phone"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Password" [(ngModel)]="password"
-                        name="password" required />
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-                    </div>
-                </div>
+              <!-- Phone number -->
+              <div class="form-group mb-3">
+                <label for="phoneNumber" class="form-label fw-semibold">Số điện thoại *</label>
+                <input
+                  type="tel"
+                  id="phoneNumber"
+                  class="form-control"
+                  placeholder="Điền số điện thoại"
+                  [(ngModel)]="phoneNumber"
+                  name="phoneNumber"
+                  pattern="[0-9]{10,11}"
+                  maxlength="11"
+                  (input)="validatePhoneNumber()"
+                  required
+                />
+              </div>
+  
+              <!-- Password -->
+              <div class="form-group mb-4">
+                <label for="password" class="form-label fw-semibold">Mật khẩu *</label>
+                <input
+                  type="password"
+                  id="password"
+                  class="form-control"
+                  placeholder="Điền mật khẩu"
+                  [(ngModel)]="password"
+                  name="password"
+                  required
+                />
+              </div>
+  
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-main w-100 text-uppercase py-2 mb-3">
+                <i class="fas fa-sign-in-alt me-2"></i> Đăng nhập
+              </button>
             </form>
-
-            <div class="social-auth-links text-center mb-3">
-                <p>- OR -</p>
-                <a (click)="onFacebookLogin()" class="btn btn-block btn-primary">
-                    <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
-                </a>
-                <a href="#" class="btn btn-block btn-danger">
-                    <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
-                </a>
+  
+            <!-- Social login -->
+            <div class="social-auth-links text-center my-4">
+              <p class="separator">- HOẶC -</p>
+              <button type="button" (click)="onFacebookLogin()" class="btn btn-main w-100 text-uppercase py-2 mb-2">
+                <i class="fab fa-facebook-f me-2"></i> Đăng nhập bằng Facebook
+              </button>
+              <button type="button" class="btn btn-main w-100 text-uppercase py-2">
+                <i class="fab fa-google me-2"></i> Đăng nhập bằng Google
+              </button>
             </div>
-
-            <!-- /.social-auth-links -->
-
-            <p class="mb-1">
-                <a routerLink="/forgot-password">I forgot my password</a>
-            </p>
-            <p class="mb-0">
-                <a routerLink="/admin/register" class="text-center">Register a new membership</a>
-            </p>
+  
+            <!-- Links -->
+            <div class="text-start mt-3">
+              <a routerLink="/forgot-password" class="d-block mb-2">
+                Quên mật khẩu
+              </a>
+              <a routerLink="/admin/register">Đăng ký</a>
+            </div>
+          </div>
         </div>
-        <!-- /.login-card-body -->
+      </div>
     </div>
-</div>
+  </section>
+  

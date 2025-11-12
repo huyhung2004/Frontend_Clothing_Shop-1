@@ -1,170 +1,235 @@
 <!-- Breadcrumb Start -->
-<div class="breadcrumb-wrap">
-    <div class="container-fluid">
-        <ul class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a routerLink="/home">Home</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a routerLink="/product">Products</a>
-            </li>
-            <li class="breadcrumb-item active">Product List</li>
-        </ul>
+<!-- <div class="breadcrumb-wrap">
+  <div class="container-fluid">
+    <nav class="breadcrumb mb-0">
+      <a class="breadcrumb-item nav-link" routerLink="/home">Home</a>
+      <a class="breadcrumb-item nav-link active"><span aria-current="page">Products</span></a>
+    </nav>
+  </div>
+</div> -->
+
+<section class="py-3 border-bottom">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center">
+      <nav class="breadcrumb mb-0">
+        <a class="breadcrumb-item nav-link" [routerLink]="['/home']">Trang chủ</a>
+        <a class="breadcrumb-item nav-link active"><span aria-current="page">Sản phẩm</span></a>
+      </nav>
     </div>
-</div>
+  </div>
+</section>
 <!-- Breadcrumb End -->
 <!-- Product List Start -->
-<div class="product-view">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="filter-bar d-flex flex-wrap align-items-center mb-4 p-3 bg-white shadow-sm rounded">
-                    <!-- Search -->
-                    <div class="filter-item search-item position-relative">
-                        <div class="input-group">
-                            <span class="input-group-text bg-transparent border-end-0">
-                                <i class="fa fa-search"></i>
-                            </span>
-                            <input type="text" class="form-control border-start-0" [(ngModel)]="searchTerm"
-                                placeholder="Search by name" (input)="onSearchInputChange()" />
-                        </div>
-                        <ul *ngIf="showSuggestions" class="list-group suggestions-dropdown mt-1">
-                            <li class="list-group-item" *ngFor="let p of suggestedProducts"
-                                (click)="selectSuggestion(p.name)">
-                                {{ p.name }}
-                            </li>
-                        </ul>
-                    </div>
+<div class="py-5 product-view">
+  <div class="container">
+    <div class="row g-5">
+      <!-- MAIN CONTENT -->
+      <main class="main-content col-md-9">
+        <!-- FILTER BAR -->
+        <div
+          class="filter-bar d-flex flex-wrap align-items-center mb-4 p-3 bg-white shadow-sm rounded"
+        >
+          <!-- Search -->
+          <div
+            class="filter-item search-item flex-grow-1 position-relative me-3"
+          >
+            <div class="input-group">
+              <span class="input-group-text bg-transparent border-end-0">
+                <i class="fa fa-search"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control border-start-0"
+                [(ngModel)]="searchTerm"
+                placeholder="Tìm theo tên"
+                (input)="onSearchInputChange()"
+              />
+            </div>
+            <ul
+              *ngIf="showSuggestions"
+              class="list-group suggestions-dropdown mt-1"
+            >
+              <li
+                class="list-group-item"
+                *ngFor="let p of suggestedProducts"
+                (click)="selectSuggestion(p.name)"
+              >
+                {{ p.name }}
+              </li>
+            </ul>
+          </div>
 
-                    <!-- Upload Image -->
-                    <div class="filter-item upload-item text-center">
-                        <label class="btn btn-outline-primary w-100 mb-0">
-                            <i class="fa fa-image me-1"></i> Upload Image
-                            <input type="file" accept="image/*" hidden (change)="onImageSelected($event)" />
-                        </label>
+          <!-- Upload Image -->
+          <div class="filter-item upload-item me-3">
+            <label class="btn btn-outline-dark mb-0 w-100">
+              <i class="fa fa-image me-1"></i> Tải hình ảnh
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                (change)="onImageSelected($event)"
+              />
+            </label>
 
-                        <!-- preview ảnh -->
-                        <div *ngIf="previewUrl" class="mt-2 preview-wrapper text-center">
-                            <img [src]="previewUrl" alt="Preview" class="img-fluid rounded"
-                                style="max-height: 150px;" />
-                            <button type="button" class="btn-close preview-close" aria-label="Close"
-                                (click)="clearPreview()"></button>
-                        </div>
-
-                        <div *ngIf="loadingImage" class="mt-2 small text-muted">
-                            Uploading... {{ imageUploadProgress }}%
-                        </div>
-                    </div>
-
-                    <!-- Price Range -->
-                    <div class="filter-item price-item">
-                        <div class="dropdown w-100">
-                            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
-                                id="priceRangeMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                {{ selectedPriceLabel }}
-                            </button>
-                            <ul class="dropdown-menu w-100" aria-labelledby="priceRangeMenu">
-                                <li><a class="dropdown-item" (click)="setPriceRange(0,9999,'All Products')">All
-                                        Products</a></li>
-                                <li>
-                                    <hr class="dropdown-divider" />
-                                </li>
-                                <li><a class="dropdown-item" (click)="setPriceRange(0,10,'$0–$10')">$0–$10</a></li>
-                                <li><a class="dropdown-item" (click)="setPriceRange(10,20,'$10–$20')">$10–$20</a></li>
-                                <li><a class="dropdown-item" (click)="setPriceRange(20,30,'$20–$30')">$20–$30</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <!-- END FILTER BAR -->
-                <!-- Product Grid -->
-                <div class="row">
-                    <div class="col-md-4 mb-4" *ngFor="let item of paginatedProducts">
-                        <div class="product-item">
-                            <div class="product-title">
-                                <a [routerLink]="['/product-detail', item.id]">{{ item.name }}</a>
-                                <div class="ratting">
-                                    <i class="fa fa-star" *ngFor="let star of [1,2,3,4,5]"></i>
-                                </div>
-                            </div>
-                            <div class="product-image">
-                                <a [routerLink]="['/product-detail', item.id]">
-                                    <img [src]="getImageUrl(item.image)" alt="Product Image" />
-                                </a>
-                                <div class="product-action">
-                                    <a [routerLink]="['/product-detail', item.id]"><i class="fa fa-cart-plus"></i></a>
-                                    <a href="#"><i class="fa fa-heart"></i></a>
-                                    <a [routerLink]="['/product-detail', item.id]"><i class="fa fa-search"></i></a>
-                                </div>
-                            </div>
-                            <div class="product-price">
-                                <h3><span>$</span>{{ item.price }}</h3>
-                                <a class="btn" [routerLink]="['/product-detail', item.id]">
-                                    <i class="fa fa-shopping-cart"></i> Buy Now
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div *ngIf="previewUrl" class="mt-2 text-center position-relative">
+              <img
+                [src]="previewUrl"
+                alt="Preview"
+                class="img-fluid rounded"
+                style="max-height: 150px"
+              />
+              <button
+                type="button"
+                class="btn-close position-absolute top-0 end-0"
+                aria-label="Close"
+                (click)="clearPreview()"
+              ></button>
             </div>
 
-            <!-- Side Bar Start -->
-            <div class="col-lg-4 sidebar">
-                <div class="sidebar-widget category">
-                    <h2 class="title">Category</h2>
-                    <nav class="navbar bg-light">
-                        <ul class="navbar-nav">
-                            <li class="nav-item" *ngFor="let category of categories">
-                                <a class="nav-link" style="cursor:pointer" (click)="filterByCategory(category.id)">
-                                    {{ category.name }}
-                                </a>
-                            </li>
-
-
-                        </ul>
-                    </nav>
-                </div>
-
-                <div class="sidebar-widget brands">
-                    <h2 class="title">Our Brands</h2>
-                    <ul>
-                        <li class="nav-item" *ngFor="let brand of brands">
-                            <a class="nav-link" style="cursor:pointer" (click)="filterByBrand(brand.id)">
-                                {{ brand.name }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-
+            <div *ngIf="loadingImage" class="mt-2 small text-muted text-center">
+              Đang tải... {{ imageUploadProgress }}%
             </div>
-            <!-- Side Bar End -->
+          </div>
+
+          <!-- Price Range -->
+          <div class="filter-item price-item">
+            <div class="dropdown w-100">
+              <button
+                class="btn btn-outline-dark dropdown-toggle w-100"
+                type="button"
+                id="priceRangeMenu"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {{ selectedPriceLabel }}
+              </button>
+              <ul class="dropdown-menu w-100" aria-labelledby="priceRangeMenu">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    (click)="setPriceRange(0, 100000000, 'Tất cả sản phẩm')"
+                    >Tất cả sản phẩm</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    (click)="setPriceRange(0, 250000, '0đ–250,000đ')"
+                    >0đ–250,000đ</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    (click)="setPriceRange(250000, 500000, '250,000đ–500,000đ')"
+                    >250,000đ–500,000đ</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    (click)="setPriceRange(500000, 100000000, '>=500,000đ')"
+                    >>=500,000đ</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
+
+        <!-- PRODUCT GRID -->
+        <div class="row">
+          <div class="col-md-4 mb-4" *ngFor="let item of paginatedProducts">
+            <div
+              class="product-item text-center position-relative"
+              (click)="onProductClick(item)"
+              style="cursor: pointer;"
+            >
+              <!-- Image -->
+              <div class="image-holder position-relative">
+                <img
+                  [src]="getImageUrl(item.image)"
+                  alt="Product Image"
+                  class="img-fluid product-image"
+                />
+        
+                <!-- Add to Cart -->
+                <button
+                  class="btn-icon btn-cart position-absolute top-0 end-0 m-2"
+                  (click)="onAddToCart(item, $event)"
+                >
+                  <i class="fa fa-cart-plus"></i>
+                </button>
+              </div>
+        
+              <!-- Product info -->
+              <div class="product-content mt-3 text-start">
+                <h5 class="product-title text-uppercase mb-1">{{ item.name }}</h5>
+                <span class="product-price d-block mb-2">
+                  {{ item.price | number:'1.0-0' }} ₫
+                </span>
+        
+                <!-- Buy Now -->
+                <button
+                  class="btn btn-buy-now text-uppercase"
+                  (click)="onBuyNow(item, $event)"
+                >
+                  Mua Ngay
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </main>
+
+      <!-- SIDEBAR -->
+      <aside class="col-md-3 sidebar">
+        <div class="sidebar-widget mb-5">
+          <h4 class="text-uppercase border-bottom pb-2">Danh mục</h4>
+          <ul class="list-unstyled mt-3">
+            <li *ngFor="let category of categories">
+              <a
+                style="cursor: pointer"
+                class="d-block py-1 text-decoration-none text-dark"
+                (click)="filterByCategory(category.id)"
+                >{{ category.name }}</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-widget">
+          <h4 class="text-uppercase border-bottom pb-2">Thương hiệu</h4>
+          <ul class="list-unstyled mt-3">
+            <li *ngFor="let brand of brands">
+              <a
+                style="cursor: pointer"
+                class="d-block py-1 text-decoration-none text-dark"
+                (click)="filterByBrand(brand.id)"
+                >{{ brand.name }}</a
+              >
+            </li>
+          </ul>
+        </div>
+      </aside>
     </div>
+  </div>
 </div>
+
 <!-- Product List End -->
 
-<div class="col-md-12">
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center align-items-center">
-            <!-- Prev arrow -->
-            <li class="page-item" [class.disabled]="currentPage === 1">
-                <a class="page-link" (click)="pageChanged(currentPage - 1)" aria-label="Previous">
-                    <span aria-hidden="true">«</span>
-                </a>
-            </li>
+<ul class="pagination justify-content-center align-items-center">
+  <li class="page-item" [class.disabled]="currentPage === 1">
+    <a class="page-link" (click)="pageChanged(currentPage - 1)">«</a>
+  </li>
 
-            <!-- Số trang động -->
-            <li class="page-item" *ngFor="let p of visiblePages" [class.active]="p === currentPage">
-                <a class="page-link" (click)="pageChanged(p)">{{ p }}</a>
-            </li>
+  <li class="page-item" *ngFor="let p of visiblePages" [class.active]="p === currentPage">
+    <a class="page-link" (click)="pageChanged(p)">{{ p }}</a>
+  </li>
 
-            <!-- Next arrow -->
-            <li class="page-item" [class.disabled]="currentPage === totalPages">
-                <a class="page-link" (click)="pageChanged(currentPage + 1)" aria-label="Next">
-                    <span aria-hidden="true">»</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div>
+  <li class="page-item" [class.disabled]="currentPage === totalPages">
+    <a class="page-link" (click)="pageChanged(currentPage + 1)">»</a>
+  </li>
+</ul>

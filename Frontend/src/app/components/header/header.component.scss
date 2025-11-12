@@ -1,0 +1,50 @@
+.navbar {
+    transition: background 1s, color 1s;
+    background: transparent !important;
+    min-height: 56px;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    border-bottom: 1.5px solid rgba(255,255,255,0.15) !important;
+  }
+
+.navbar .navbar-brand img {
+  height: 32px !important;
+  max-height: 32px !important;
+  width: auto;
+  margin-right: 8px;
+}
+
+/* Inverted header with white text */
+.navbar.inverted {
+    background-color: #111 !important;
+    color: #fff !important;
+    filter: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+  
+  /* Fix logo inversion */
+  .navbar.inverted img {
+    filter: invert(1) hue-rotate(180deg);
+  }
+  
+  /* Force all text to white */
+  .navbar.inverted .navbar-brand,
+  .navbar.inverted .nav-link,
+  .navbar.inverted .btn,
+  .navbar.inverted .offcanvas-title,
+  .navbar.inverted svg {
+    color: #fff !important;
+    fill: #fff !important;
+    filter: none;
+  }
+  
+  /* Optional: hover effect */
+  .navbar.inverted .nav-link:hover {
+    color: #ffd700 !important; /* gold highlight */
+  }
+  
+  /* Optional: SVG icons white */
+  .navbar.inverted svg {
+    filter: invert(1);
+  }
+  

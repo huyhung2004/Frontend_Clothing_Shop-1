@@ -2,13 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { CartItem } from '../../dto/cart/cartItems.dto';
+import { CartItem } from '../../dto/Cart/cartItems.dto';
 import { CartService } from '../../services/cart.service';
 import { CheckoutService } from '../../services/checkout.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-cart',
+  standalone: true,
   imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss'],
@@ -17,7 +18,10 @@ export class CartComponent implements OnInit {
   cartItems: CartItem[] = [];
   selectedItems: number[] = [];
   subTotal: number = 0;
-  grandTotal: number = 1; // Phí vận chuyển cố định là $1
+  grandTotal: number = 0; 
+  shippingFee: number = 1000; // 1000₫ cố định
+  // In CartComponent
+private baseImageUrl = 'https://localhost:7163';
 
   constructor(
     private cartService: CartService,
@@ -96,7 +100,7 @@ export class CartComponent implements OnInit {
       }
     }
     this.subTotal = subTotal;
-    this.grandTotal = subTotal + 1; // Cộng thêm phí vận chuyển cố định
+    this.grandTotal = subTotal + this.shippingFee;
   }
 
   // Cập nhật số lượng của sản phẩm trong giỏ hàng
@@ -153,21 +157,12 @@ export class CartComponent implements OnInit {
     }
   }
 
-  // Base URL for images
-  private baseImageUrl = 'https://localhost:7163';
 
-  // Get full image URL
   getImageUrl(imageUrl: string | undefined): string {
-    if (!imageUrl) return 'assets/img/placeholder.jpg';
-    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
-    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-      return imageUrl;
-    }
-    // Nếu bắt đầu bằng /, là relative URL, thêm base URL
-    if (imageUrl.startsWith('/')) {
-      return this.baseImageUrl + imageUrl;
-    }
-    // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
-    return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
+  if (!imageUrl) return 'assets/img/placeholder.jpg';
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl;
   }
+  return this.baseImageUrl + imageUrl;
+}
 }

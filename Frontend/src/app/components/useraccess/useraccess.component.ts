@@ -13,6 +13,8 @@ export class UseraccessComponent implements OnInit, OnDestroy {
   dropdownOpen: boolean = false;
   hasAccessToken: boolean = false;
   private intervalCheck: any;
+  username: string = '';
+
 
   constructor() {}
 

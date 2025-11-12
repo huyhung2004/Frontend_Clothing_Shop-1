@@ -81,7 +81,10 @@
   <div class="products-grid" *ngIf="viewMode === 'grid'">
     <div class="product-card" *ngFor="let product of filteredProducts">
       <div class="product-image">
-        <img [src]="getImageUrl(product.image)" [alt]="product.name">
+        <img [src]="getImageUrl(product.image)" 
+             [alt]="product.name"
+             loading="lazy"
+             onerror="this.src='assets/img/placeholder.jpg'">
         <div class="product-overlay">
           <button class="overlay-btn" (click)="openEditDialog(product)" title="Chỉnh sửa">
             <i class="fas fa-edit"></i>
@@ -140,8 +143,11 @@
             <td><span class="table-id">#{{ product.id }}</span></td>
             <td>
               <div class="table-product">
-                <img [src]="getImageUrl(product.image)" [alt]="product.name"
-                  class="table-product-img">
+                <img [src]="getImageUrl(product.image)" 
+                     [alt]="product.name"
+                     class="table-product-img"
+                     loading="lazy"
+                     onerror="this.src='assets/img/placeholder.jpg'">
                 <span class="table-product-name">{{ product.name }}</span>
               </div>
             </td>
@@ -178,9 +184,13 @@
       Trước
     </button>
     <div class="pagination-pages">
-      <button *ngFor="let page of pages" class="pagination-page" [class.active]="page === currentPage"
-        (click)="goToPage(page)">
-        {{ page }}
+      <button *ngFor="let page of pages" 
+              class="pagination-page" 
+              [class.active]="page === currentPage"
+              [class.ellipsis]="page === -1"
+              [disabled]="page === -1"
+              (click)="goToPage(page)">
+        {{ page === -1 ? '...' : page }}
       </button>
     </div>
     <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">

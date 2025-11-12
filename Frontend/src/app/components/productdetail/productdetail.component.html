@@ -39,6 +39,7 @@
                     [src]="getImageUrl(image.imageUrl)"
                     alt="Product Thumbnail"
                     class="thumb-image img-fluid border"
+                    loading="lazy"
                     (error)="onImageError($event)"
                   />
                 </div>
@@ -60,6 +61,7 @@
                       [src]="getImageUrl(image.imageUrl)"
                       class="d-block w-100 img-fluid"
                       alt="Product Image"
+                      loading="lazy"
                       (error)="onImageError($event)"
                     />
                   </div>

@@ -36,9 +36,6 @@ export class ProductAdminComponent implements OnInit {
   selectedBrand = '';
   sortBy = 'name';
   viewMode: 'grid' | 'table' = 'grid';
-  
-  // Base URL for images
-  private baseImageUrl = 'https://localhost:7163';
 
   constructor(
     private productsService: ProductService,
@@ -55,7 +52,7 @@ export class ProductAdminComponent implements OnInit {
   }
 
   getProducts(page: number): void {
-    const itemsPerPage = 10; // số sản phẩm mỗi trang
+    const itemsPerPage = 50; // Tăng từ 10 lên 50 sản phẩm mỗi trang
     this.productsService.getProducts(page, itemsPerPage).subscribe(response => {
       this.products = response.items;
       this.allProducts = response.items;
@@ -63,13 +60,60 @@ export class ProductAdminComponent implements OnInit {
       this.totalProducts = response.total;
       this.totalPages = Math.ceil(response.total / itemsPerPage);
       this.currentPage = page;
-      this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+      // Chỉ hiển thị tối đa 10 trang xung quanh trang hiện tại
+      this.pages = this.getVisiblePages();
       this.applyFilters();
     });
   }
 
+  // Tính toán các trang cần hiển thị (chỉ hiển thị một phần, không phải tất cả)
+  getVisiblePages(): number[] {
+    const maxVisiblePages = 10; // Chỉ hiển thị tối đa 10 trang
+    const pages: number[] = [];
+    
+    if (this.totalPages <= maxVisiblePages) {
+      // Nếu tổng số trang nhỏ hơn maxVisiblePages, hiển thị tất cả
+      return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+    }
+    
+    // Tính toán trang đầu và trang cuối cần hiển thị
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+    
+    // Điều chỉnh nếu gần cuối danh sách
+    if (endPage - startPage < maxVisiblePages - 1) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    // Thêm trang đầu tiên
+    if (startPage > 1) {
+      pages.push(1);
+      if (startPage > 2) {
+        pages.push(-1); // -1 đại diện cho "..."
+      }
+    }
+    
+    // Thêm các trang ở giữa
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    
+    // Thêm trang cuối cùng
+    if (endPage < this.totalPages) {
+      if (endPage < this.totalPages - 1) {
+        pages.push(-1); // -1 đại diện cho "..."
+      }
+      pages.push(this.totalPages);
+    }
+    
+    return pages;
+  }
+
   goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages || page === -1) return; // -1 là dấu "..."
     this.getProducts(page);
+    // Scroll to top khi chuyển trang
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   openEditDialog(product: Product): void {
@@ -211,19 +255,23 @@ export class ProductAdminComponent implements OnInit {
     return brand ? brand.name : 'N/A';
   }
 
-  // Get full image URL
+  // Get full image URL from assets
   getImageUrl(imageUrl: string | undefined): string {
     if (!imageUrl) return 'assets/img/placeholder.jpg';
-    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
+    
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ (cho trường hợp ảnh external)
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
       return imageUrl;
     }
-    // Nếu bắt đầu bằng /, là relative URL, thêm base URL
-    if (imageUrl.startsWith('/')) {
-      return this.baseImageUrl + imageUrl;
+    
+    // Nếu đã có đường dẫn assets, trả về như cũ
+    if (imageUrl.startsWith('assets/')) {
+      return imageUrl;
     }
-    // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
-    return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
+    
+    // Nếu chỉ là tên file, đọc từ thư mục assets/image/
+    // Database chỉ lưu tên file (vd: "product-1.jpg")
+    return `assets/image/${imageUrl}`;
   }
 
 }

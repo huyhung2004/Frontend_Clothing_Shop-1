@@ -48,9 +48,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     },
   ];  
 
-  private baseImageUrl = 'https://localhost:7163';
-
-
   // products = [
   //   { id: 1, name: 'Product 1', image: 'product-1.jpg', price: 100 },
   //   { id: 2, name: 'Product 2', image: 'product-2.jpg', price: 150 },
@@ -231,10 +228,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
   // }
 
   getAllProducts(): void {
-    this.http.get<any>('https://localhost:7163/api/products/all').subscribe({
+    // Chỉ lấy 24 sản phẩm đầu tiên cho trang Home để tránh lag
+    this.http.get<any>('https://localhost:7163/api/products/paged?page=1&pageSize=24').subscribe({
       next: (data) => {
-        this.products = data.$values ? data.$values : data;
-        console.log('Products:', this.products);
+        // API trả về { items: [...], total: number }
+        this.products = data.items || data.$values || data;
+        console.log('Products loaded for home:', this.products.length);
         
         // Reinitialize swiper after products are loaded
         setTimeout(() => {
@@ -245,19 +244,23 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Get full image URL
+  // Get full image URL from assets
   getImageUrl(imageUrl: string | undefined): string {
     if (!imageUrl) return 'assets/img/placeholder.jpg';
-    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
+    
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ (cho trường hợp ảnh external)
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
       return imageUrl;
     }
-    // Nếu bắt đầu bằng /, là relative URL, thêm base URL
-    if (imageUrl.startsWith('/')) {
-      return this.baseImageUrl + imageUrl;
+    
+    // Nếu đã có đường dẫn assets, trả về như cũ
+    if (imageUrl.startsWith('assets/')) {
+      return imageUrl;
     }
-    // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
-    return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
+    
+    // Nếu chỉ là tên file, đọc từ thư mục assets/image/
+    // Database chỉ lưu tên file (vd: "product-1.jpg")
+    return `assets/image/${imageUrl}`;
   }
 
   onProductClick(item: any): void {

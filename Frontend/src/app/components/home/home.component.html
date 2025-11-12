@@ -94,6 +94,8 @@
                   [src]="getImageUrl(product.image)"
                   [alt]="product.name"
                   class="product-image img-fluid w-100"
+                  loading="lazy"
+                  onerror="this.src='assets/img/placeholder.jpg'"
                 />
               </a>
               

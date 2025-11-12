@@ -406,21 +406,22 @@ export class AccountComponent {
     return true;
   }
 
-  // Base URL for images
-  private baseImageUrl = 'https://localhost:7163';
-
-  // Get full image URL
+  // Get full image URL from assets
   getImageUrl(imageUrl: string | undefined): string {
     if (!imageUrl) return 'assets/img/placeholder.jpg';
-    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
+    
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ (cho trường hợp ảnh external)
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
       return imageUrl;
     }
-    // Nếu bắt đầu bằng /, là relative URL, thêm base URL
-    if (imageUrl.startsWith('/')) {
-      return this.baseImageUrl + imageUrl;
+    
+    // Nếu đã có đường dẫn assets, trả về như cũ
+    if (imageUrl.startsWith('assets/')) {
+      return imageUrl;
     }
-    // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
-    return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
+    
+    // Nếu chỉ là tên file, đọc từ thư mục assets/image/
+    // Database chỉ lưu tên file (vd: "product-1.jpg")
+    return `assets/image/${imageUrl}`;
   }
 }

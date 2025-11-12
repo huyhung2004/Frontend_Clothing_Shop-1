@@ -152,6 +152,8 @@
                   [src]="getImageUrl(item.image)"
                   alt="Product Image"
                   class="img-fluid product-image"
+                  loading="lazy"
+                  onerror="this.src='assets/img/placeholder.jpg'"
                 />
         
                 <!-- Add to Cart -->

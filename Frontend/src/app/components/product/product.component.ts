@@ -31,7 +31,7 @@ export class ProductComponent implements OnInit {
   selectedBrandId: number | null = null;
 
   currentPage = 1;
-  pageSize = 6;
+  pageSize = 12; // Tăng từ 6 lên 12 sản phẩm mỗi trang
 
   suggestedProducts: Product[] = [];
   showSuggestions = false;
@@ -43,9 +43,6 @@ export class ProductComponent implements OnInit {
   
   maxVisiblePages = 18;
   
-  // Base URL for images
-  private baseImageUrl = 'https://localhost:7163';
-
   constructor(private productService: ProductService,private imgService: ImageSearchService,private router: Router) {}
 
   ngOnInit(): void {
@@ -231,19 +228,23 @@ export class ProductComponent implements OnInit {
     return Math.ceil(this.filteredProducts.length / this.pageSize);
   }
 
-  // Get full image URL
+  // Get full image URL from assets
   getImageUrl(imageUrl: string | undefined): string {
     if (!imageUrl) return 'assets/img/placeholder.jpg';
-    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
+    
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ (cho trường hợp ảnh external)
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
       return imageUrl;
     }
-    // Nếu bắt đầu bằng /, là relative URL, thêm base URL
-    if (imageUrl.startsWith('/')) {
-      return this.baseImageUrl + imageUrl;
+    
+    // Nếu đã có đường dẫn assets, trả về như cũ
+    if (imageUrl.startsWith('assets/')) {
+      return imageUrl;
     }
-    // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
-    return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
+    
+    // Nếu chỉ là tên file, đọc từ thư mục assets/image/
+    // Database chỉ lưu tên file (vd: "product-1.jpg")
+    return `assets/image/${imageUrl}`;
   }
 
   onProductClick(item: any): void {

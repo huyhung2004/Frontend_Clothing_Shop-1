@@ -215,17 +215,21 @@ export class ProductAdminEditComponent implements OnInit {
   }
 
   getImageUrl(url: string | undefined): string {
-    if (!url) return '';
-    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
+    if (!url) return 'assets/img/placeholder.jpg';
+    
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ (cho trường hợp ảnh external)
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return url;
     }
-    // Nếu bắt đầu bằng /, là relative URL, thêm base URL
-    if (url.startsWith('/')) {
-      return `https://localhost:7163${url}`;
+    
+    // Nếu đã có đường dẫn assets, trả về như cũ
+    if (url.startsWith('assets/')) {
+      return url;
     }
-    // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
-    return `https://localhost:7163/uploads/products/${url}`;
+    
+    // Nếu chỉ là tên file, đọc từ thư mục assets/image/
+    // Database chỉ lưu tên file (vd: "product-1.jpg")
+    return `assets/image/${url}`;
   }
 
   onSubmit(): void {

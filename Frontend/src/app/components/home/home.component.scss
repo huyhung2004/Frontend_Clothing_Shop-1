@@ -26,6 +26,207 @@
   margin-bottom: 20px;
 }
 
+// Featured Product Section
+.featured-product {
+  background: #f8f9fa;
+  
+  .container {
+    padding: 0 15px;
+  }
+  
+  .btn-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      color: var(--bs-primary, #8C907E);
+      
+      svg {
+        transform: translateX(3px);
+      }
+    }
+    
+    svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.3s ease;
+      fill: currentColor;
+    }
+  }
+  
+  .product-item {
+    background: #fff;
+    padding: 15px;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    &:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      transform: translateY(-4px);
+      
+      .btn-add-cart {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      
+      .btn-wishlist {
+        opacity: 1;
+      }
+    }
+    
+    .image-holder {
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+      
+      .product-image {
+        height: 350px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+      
+      &:hover {
+        .product-image {
+          transform: scale(1.05);
+        }
+      }
+      
+      .btn-wishlist {
+        top: 15px;
+        right: 15px;
+        background: #fff;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        opacity: 0;
+        z-index: 2;
+        
+        &:hover {
+          background: var(--bs-primary, #8C907E);
+          
+          svg {
+            fill: #fff;
+          }
+        }
+        
+        svg {
+          width: 18px;
+          height: 18px;
+          fill: #333;
+          transition: fill 0.3s ease;
+        }
+      }
+      
+      .btn-add-cart {
+        bottom: 0;
+        left: 0;
+        background: #333;
+        color: #fff;
+        border: none;
+        padding: 12px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateY(10px);
+        z-index: 2;
+        
+        &:hover {
+          background: var(--bs-primary, #8C907E);
+        }
+      }
+    }
+    
+    .product-info {
+      padding: 15px 0 0;
+      
+      .product-name {
+        font-family: var(--heading-font, "Marcellus", Roboto, sans-serif);
+        font-size: 1.1rem;
+        font-weight: 400;
+        line-height: 1.3;
+        
+        a {
+          color: #333;
+          transition: color 0.3s ease;
+          
+          &:hover {
+            color: var(--bs-primary, #8C907E);
+          }
+        }
+      }
+      
+      .product-price {
+        font-size: 1.125rem;
+        font-weight: 500;
+        color: #333;
+        margin-top: 0.5rem;
+      }
+    }
+  }
+  
+  // Responsive
+  @media (max-width: 1200px) {
+    .product-item {
+      .image-holder {
+        .product-image {
+          height: 300px;
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .product-item {
+      .image-holder {
+        .product-image {
+          height: 250px;
+        }
+        
+        .btn-wishlist,
+        .btn-add-cart {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .product-item {
+      padding: 10px;
+      
+      .image-holder {
+        .product-image {
+          height: 200px;
+        }
+      }
+      
+      .product-info {
+        .product-name {
+          font-size: 1rem;
+        }
+        
+        .product-price {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
 // Slideshow
 .slideshow {
   height: 100vh !important;

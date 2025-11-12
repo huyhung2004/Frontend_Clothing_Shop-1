@@ -38,6 +38,7 @@ export class ProductdetailComponent implements OnInit {
 
   variants: ProductVariant[] = [];
   reviews: Review[] = [];
+  selectedImageIndex: number = 0;
 
   private baseImageUrl = 'https://localhost:7163'; // your backend URL
 
@@ -55,7 +56,27 @@ export class ProductdetailComponent implements OnInit {
     if (id) {
       this.productService.getProductDetail(+id).subscribe((data) => {
         this.product = data.product;
-        this.productImages = data.anhSps;
+        this.productImages = data.anhSps || [];
+        
+        // Nếu không có ảnh phụ, thêm ảnh đại diện vào đầu danh sách
+        if (this.productImages.length === 0 && this.product.image) {
+          this.productImages = [{
+            id: 0,
+            productId: this.product.id,
+            imageUrl: this.product.image
+          }];
+        } else if (this.product.image && this.productImages.length > 0) {
+          // Kiểm tra xem ảnh đại diện đã có trong danh sách chưa
+          const hasMainImage = this.productImages.some(img => img.imageUrl === this.product.image);
+          if (!hasMainImage) {
+            // Thêm ảnh đại diện vào đầu danh sách
+            this.productImages.unshift({
+              id: 0,
+              productId: this.product.id,
+              imageUrl: this.product.image
+            });
+          }
+        }
 
         this.productVariantService.getVariantsByProduct(+id).subscribe((variants) => {
           if (Array.isArray(variants) && variants.length) {
@@ -174,6 +195,18 @@ export class ProductdetailComponent implements OnInit {
     });
   }
 
+  selectImage(index: number): void {
+    this.selectedImageIndex = index;
+    // Update carousel to show selected image
+    const carousel = document.querySelector('#productCarousel');
+    if (carousel) {
+      const carouselInstance = (window as any).bootstrap?.Carousel?.getInstance(carousel);
+      if (carouselInstance) {
+        carouselInstance.to(index);
+      }
+    }
+  }
+
   getImageUrl(imageUrl: string | undefined): string {
     if (!imageUrl) return 'assets/img/placeholder.jpg';
     // Nếu đã là URL đầy đủ (http/https), trả về như cũ
@@ -186,6 +219,5 @@ export class ProductdetailComponent implements OnInit {
     }
     // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
     return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
-
   }
 }

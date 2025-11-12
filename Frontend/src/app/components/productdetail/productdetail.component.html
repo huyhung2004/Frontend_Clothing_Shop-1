@@ -33,13 +33,13 @@
                   class="thumb-wrapper"
                   [class.active]="i === 0"
                   style="cursor: pointer"
+                  (click)="selectImage(i)"
                 >
                   <img
                     [src]="getImageUrl(image.imageUrl)"
                     alt="Product Thumbnail"
                     class="thumb-image img-fluid border"
-                    [attr.data-bs-target]="'#productCarousel'"
-                    [attr.data-bs-slide-to]="i"
+                    (error)="$event.target.src='assets/img/placeholder.jpg'"
                   />
                 </div>
               </div>
@@ -55,11 +55,12 @@
             >
               <div class="carousel-inner">
                 <ng-container *ngFor="let image of productImages; let i = index">
-                  <div class="carousel-item" [ngClass]="{ active: i === 0 }">
+                  <div class="carousel-item" [ngClass]="{ active: i === selectedImageIndex }">
                     <img
                       [src]="getImageUrl(image.imageUrl)"
                       class="d-block w-100 img-fluid"
                       alt="Product Image"
+                      (error)="$event.target.src='assets/img/placeholder.jpg'"
                     />
                   </div>
                 </ng-container>

@@ -248,12 +248,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
   // Get full image URL
   getImageUrl(imageUrl: string | undefined): string {
     if (!imageUrl) return 'assets/img/placeholder.jpg';
-    // If already full URL (http/https), return as is
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
       return imageUrl;
     }
-    // If relative URL, add base URL
-    return this.baseImageUrl + imageUrl;
+    // Nếu bắt đầu bằng /, là relative URL, thêm base URL
+    if (imageUrl.startsWith('/')) {
+      return this.baseImageUrl + imageUrl;
+    }
+    // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
+    return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
   }
 
   onProductClick(item: any): void {

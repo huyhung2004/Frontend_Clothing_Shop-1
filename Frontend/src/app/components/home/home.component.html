@@ -152,44 +152,60 @@
 </div>
 <!-- Call to Action End -->
 
-<!-- Featured Product Start -->
-<div class="featured-product product">
-    <div class="container-fluid">
-        <div class="section-header">
-            <h1>Featured Product</h1>
-        </div>
-        <div class="row align-items-center product-slider product-slider-4">
-            <div *ngFor="let product of products" class="col-lg-3">
-                <div class="product-item">
-                    <div class="product-title">
-                        <a href="#">{{ product.name }}</a>
-                        <div class="ratting">
-                            <i class="fa fa-star" *ngFor="let star of [].constructor(5); let i = index"></i>
-                        </div>
-                    </div>
-                    <div class="product-image">
-                        <a routerLink="/product-detail/{{ product.id }}">
-                            <img [src]="getImageUrl(product.image)" alt="Product Image">
-                        </a>
-                        <div class="product-action">
-                            <a routerLink="/product-detail/{{ product.id }}"><i class="fa fa-cart-plus"></i></a>
-                            <a href="#"><i class="fa fa-heart"></i></a>
-                            <a routerLink="/product-detail/{{ product.id }}"><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="product-price">
-                        <h3><span>$</span>{{ product.price }}</h3>
-                        <a class="btn" routerLink="/product-detail/{{ product.id }}">
-                            <i class="fa fa-shopping-cart"></i>Buy Now
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- Featured Product Section -->
+<section class="featured-product py-5 bg-light">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-5">
+      <h4 class="element-title text-uppercase mb-0">Sản phẩm nổi bật</h4>
+      <a routerLink="/product" class="btn-link text-uppercase d-flex align-items-center">
+        Xem thêm
+        <svg width="16" height="16" viewBox="0 0 24 24" class="ms-2">
+          <use xlink:href="#angle-right"></use>
+        </svg>
+      </a>
     </div>
-</div>
-<!-- Featured Product End -->
-
+    
+    <div class="row g-4">
+      <div *ngFor="let product of products" class="col-lg-3 col-md-4 col-sm-6">
+        <div class="product-item text-center position-relative h-100">
+          <!-- Product Image -->
+          <div class="image-holder position-relative mb-3">
+            <a [routerLink]="['/product-detail', product.id]" class="d-block">
+              <img
+                [src]="getImageUrl(product.image)"
+                [alt]="product.name"
+                class="product-image img-fluid w-100"
+              />
+            </a>
+            
+            <!-- Wishlist Button -->
+            <button class="btn-wishlist position-absolute">
+              <svg width="20" height="20" viewBox="0 0 24 24">
+                <use xlink:href="#heart"></use>
+              </svg>
+            </button>
+            
+            <!-- Add to Cart Button -->
+            <button class="btn-add-cart position-absolute w-100">
+              Thêm vào giỏ
+            </button>
+          </div>
+          
+          <!-- Product Info -->
+          <div class="product-info text-start">
+            <h5 class="product-name text-uppercase mb-2">
+              <a [routerLink]="['/product-detail', product.id]" class="text-decoration-none text-dark">
+                {{ product.name }}
+              </a>
+            </h5>
+            <div class="product-price">
+              {{ product.price | number:'1.0-0' }} ₫
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
+<!-- Featured Product End -->
 

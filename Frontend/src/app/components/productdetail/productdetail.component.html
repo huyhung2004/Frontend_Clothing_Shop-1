@@ -39,7 +39,7 @@
                     [src]="getImageUrl(image.imageUrl)"
                     alt="Product Thumbnail"
                     class="thumb-image img-fluid border"
-                    (error)="$event.target.src='assets/img/placeholder.jpg'"
+                    (error)="onImageError($event)"
                   />
                 </div>
               </div>
@@ -60,7 +60,7 @@
                       [src]="getImageUrl(image.imageUrl)"
                       class="d-block w-100 img-fluid"
                       alt="Product Image"
-                      (error)="$event.target.src='assets/img/placeholder.jpg'"
+                      (error)="onImageError($event)"
                     />
                   </div>
                 </ng-container>

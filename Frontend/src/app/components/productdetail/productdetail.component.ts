@@ -220,4 +220,11 @@ export class ProductdetailComponent implements OnInit {
     // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
     return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
   }
+
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img) {
+      img.src = 'assets/img/placeholder.jpg';
+    }
+  }
 }

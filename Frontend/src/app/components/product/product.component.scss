@@ -163,3 +163,27 @@
 .product-view .container-fluid {
   background: transparent;
 }
+
+/* Active state for selected category and brand */
+.sidebar-widget .nav-link.active {
+  background-color: #ff6f61 !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-widget .nav-link:hover {
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.sidebar-widget .nav-link.active:hover {
+  background-color: #e85a4f !important;
+  color: #fff !important;
+}
+
+/* Add left padding to categories */
+.sidebar-widget.category .nav-link {
+  padding-left: 1rem;
+}

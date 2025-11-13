@@ -308,7 +308,7 @@ $border-color: #e0e0e0;
     border-collapse: collapse;
 
     thead {
-      background: linear-gradient(135deg, $primary-color 0%, darken($primary-color, 5%) 100%);
+      background: linear-gradient(135deg, $primary-color 0%, color.adjust($primary-color, $lightness: -5%) 100%);
       
       tr th {
         padding: 1.2rem 1rem;
@@ -360,7 +360,7 @@ $border-color: #e0e0e0;
               width: 45px;
               height: 45px;
               border-radius: 50%;
-              background: linear-gradient(135deg, $accent-color, darken($accent-color, 10%));
+              background: linear-gradient(135deg, $accent-color, color.adjust($accent-color, $lightness: -10%)); 
               display: flex;
               align-items: center;
               justify-content: center;
@@ -402,11 +402,11 @@ $border-color: #e0e0e0;
             font-size: 0.85rem;
             font-weight: 600;
             background: rgba($accent-color, 0.15);
-            color: darken($accent-color, 10%);
+            color: color.adjust($accent-color, $lightness: -10%);
 
             &.role-admin {
               background: rgba($secondary-color, 0.15);
-              color: darken($secondary-color, 10%);
+              color: color.adjust($secondary-color, $lightness: -10%);
             }
           }
 
@@ -421,12 +421,12 @@ $border-color: #e0e0e0;
 
             &.status-active {
               background: rgba($success-color, 0.15);
-              color: darken($success-color, 10%);
+              color: color.adjust($success-color, $lightness: -10%);
             }
 
             &.status-inactive {
               background: rgba($text-secondary, 0.15);
-              color: darken($text-secondary, 10%);
+              color: color.adjust($text-secondary, $lightness: -10%);
             }
           }
 

@@ -106,7 +106,10 @@ export class ProductComponent implements OnInit {
     this.currentPage = 1;
   }
 
-  searchByName(): void {
+  searchByName(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
     this.searchTerm = this.searchTerm.trim();
     this.applyFilters();
     this.showSuggestions = false;
@@ -192,12 +195,22 @@ export class ProductComponent implements OnInit {
   }
 
   filterByCategory(catId: number): void {
-    this.selectedCategoryId = catId;
+    // Toggle: if already selected, remove filter; otherwise, set filter
+    if (this.selectedCategoryId === catId) {
+      this.selectedCategoryId = null;
+    } else {
+      this.selectedCategoryId = catId;
+    }
     this.applyFilters();
   }
 
   filterByBrand(brandId: number): void {
-    this.selectedBrandId = brandId;
+    // Toggle: if already selected, remove filter; otherwise, set filter
+    if (this.selectedBrandId === brandId) {
+      this.selectedBrandId = null;
+    } else {
+      this.selectedBrandId = brandId;
+    }
     this.applyFilters();
   }
   totalProductsFromServer: number = 0;

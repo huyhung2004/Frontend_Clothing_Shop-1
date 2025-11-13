@@ -33,6 +33,7 @@
                   placeholder="Tìm theo tên"
                   [(ngModel)]="searchTerm"
                   (input)="onSearchInputChange()"
+                  (keydown.enter)="searchByName($event)"
                 />
               </div>
 
@@ -191,6 +192,7 @@
               <li class="nav-item" *ngFor="let category of categories">
                 <a
                   class="nav-link"
+                  [class.active]="selectedCategoryId === category.id"
                   style="cursor: pointer"
                   (click)="filterByCategory(category.id)"
                 >
@@ -207,6 +209,7 @@
             <li class="nav-item" *ngFor="let brand of brands">
               <a
                 class="nav-link"
+                [class.active]="selectedBrandId === brand.id"
                 style="cursor: pointer"
                 (click)="filterByBrand(brand.id)"
               >

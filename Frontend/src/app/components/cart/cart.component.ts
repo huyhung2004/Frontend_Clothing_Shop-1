@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { CartItem } from '../../dto/cart/cartItems.dto';
+import { CartItem } from '../../dto/Cart/cartItems.dto';
 import { CartService } from '../../services/cart.service';
 import { CheckoutService } from '../../services/checkout.service';
 import { HttpClient } from '@angular/common/http';
@@ -17,7 +17,7 @@ export class CartComponent implements OnInit {
   cartItems: CartItem[] = [];
   selectedItems: number[] = [];
   subTotal: number = 0;
-  grandTotal: number = 1; // Phí vận chuyển cố định là $1
+  grandTotal: number = 1000; // Phí vận chuyển cố định là $1
 
   constructor(
     private cartService: CartService,
@@ -96,7 +96,7 @@ export class CartComponent implements OnInit {
       }
     }
     this.subTotal = subTotal;
-    this.grandTotal = subTotal + 1; // Cộng thêm phí vận chuyển cố định
+    this.grandTotal = subTotal + 1000; // Cộng thêm phí vận chuyển cố định
   }
 
   // Cập nhật số lượng của sản phẩm trong giỏ hàng

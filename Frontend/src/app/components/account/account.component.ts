@@ -55,6 +55,16 @@ export class AccountComponent {
     // 'returned',
   ];
 
+  statusLabels: { [key: string]: string } = {
+    processing: 'Đang xử lý',
+    addressChanged: 'Đã đổi địa chỉ',
+    shipped: 'Đang vận chuyển',
+    delivered: 'Đã giao hàng',
+    completed: 'Hoàn tất',
+    cancelled: 'Đã hủy',
+    // returned: 'Đã trả hàng' // nếu cần
+  };
+
   // // Trạng thái được chọn, mặc định là 'all' để hiển thị tất cả
   selectedStatus: string = 'processing';
   // Map lưu trạng thái review của các sản phẩm: key là productId, value là boolean
@@ -65,7 +75,7 @@ export class AccountComponent {
     private dialog: MatDialog,
     private paymentService: PaymentService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.fetchAccount();
@@ -89,17 +99,17 @@ export class AccountComponent {
         this.accountService.changeOrderAddress(payload).subscribe({
           next: (response) => {
             if (response.success) {
-              alert('Order shipping address updated successfully.');
+              alert('Đổi địa chỉ giao hàng thành công.');
               this.fetchAccount();
             } else {
               alert(
-                response.message || 'Failed to update order shipping address.'
+                response.message || 'Đổi địa chỉ giao hàng thất bại.'
               );
             }
           },
           error: (error) => {
             console.error('Error updating shipping address:', error);
-            alert('An error occurred while updating the shipping address.');
+            alert('Đã xảy ra lỗi khi đổi địa chỉ giao hàng.');
           },
         });
       }
@@ -199,26 +209,37 @@ export class AccountComponent {
   //   });
   // }
   fetchAccount(): void {
-    this.accountService.getMyAccount().subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.accounts = response.data;
-          // Nhóm các order có cùng orderId thành groupedOrders
-          this.groupOrders();
-          this.checkReviewedForProducts();
-          // Nếu dữ liệu chứa thông tin account, prefill input
-          if (this.accounts.length > 0) {
-            this.fullname = this.accounts[0].fullname;
-            this.phoneNumber = this.accounts[0].phoneNumber;
-            this.userId = this.accounts[0].id;
-          }
-        } else {
-          alert(response.message || 'Failed to load account data');
+  this.accountService.getMyAccount().subscribe({
+    next: (response) => {
+      if (response.success) {
+        this.accounts = response.data;
+        
+        // DEBUG: Log the actual data structure
+        console.log('=== ACCOUNT DATA DEBUG ===');
+        console.log('Raw account data:', this.accounts);
+        if (this.accounts.length > 0) {
+          console.log('First order product structure:', this.accounts[0]);
+          console.log('Available properties:', Object.keys(this.accounts[0]));
         }
-      },
-      error: () => alert('Error fetching account data'),
-    });
-  }
+        console.log('=== END DEBUG ===');
+        
+        // Nhóm các order có cùng orderId thành groupedOrders
+        this.groupOrders();
+        this.checkReviewedForProducts();
+        // Nếu dữ liệu chứa thông tin account, prefill input
+        if (this.accounts.length > 0) {
+          this.fullname = this.accounts[0].fullname;
+          this.phoneNumber = this.accounts[0].phoneNumber;
+          this.userId = this.accounts[0].id;
+        }
+      } else {
+        alert(response.message || 'Lỗi khi tải dữ liệu tài khoản');
+      }
+    },
+    error: () => alert('Lỗi khi lấy dữ liệu tài khoản'),
+  });
+}
+
   reviewProduct(product: any): void {
     const dialogRef = this.dialog.open(ReviewDialogComponent, {
       width: '1000px',
@@ -277,7 +298,7 @@ export class AccountComponent {
       },
       error: (error) => {
         console.error('Error fetching reviews for product:', error);
-        alert('Could not fetch reviews for this product.');
+        alert('Đã xảy ra lỗi khi lấy đánh giá cho sản phẩm này.');
       },
     });
   }
@@ -315,7 +336,7 @@ export class AccountComponent {
   }
 
   logout(): void {
-    if (confirm('Are you sure you want to log out?')) {
+    if (confirm('Bạn có chắc chắn muốn đăng xuất không?')) {
       this.accountService.logout().subscribe({
         next: (response: any) => {
           // Xử lý phản hồi thành công từ server
@@ -346,24 +367,28 @@ export class AccountComponent {
       .subscribe({
         next: (response) => {
           if (response.success) {
-            alert('Account details updated successfully');
+            alert('Cập nhật thông tin tài khoản thành công');
             this.fetchAccount();
           } else {
-            alert(response.message || 'Failed to update account details');
+            if (response.message === 'Account details updated successfully') {
+              alert('Cập nhật thông tin tài khoản thành công');
+            } else {
+              alert(response.message || 'Cập nhật thông tin tài khoản thất bại');
+            }
             console.log(response.message);
           }
         },
-        error: () => alert('Failed to update account details'),
+        error: () => alert('Cập nhật thông tin tài khoản thất bại'),
       });
   }
 
   changePassword(): void {
     if (this.newPassword !== this.confirmPassword) {
-      alert('New password and confirm password do not match');
+      alert('Mật khẩu mới và mật khẩu nhập lại không khớp');
       return;
     }
     if (!this.newPassword || !this.confirmPassword) {
-      alert('New password and confirm password cannot be empty');
+      alert('Mật khẩu mới và mật khẩu nhập lại không được để trống');
       return;
     }
     this.accountService
@@ -374,13 +399,13 @@ export class AccountComponent {
       .subscribe({
         next: (response) => {
           if (response.success) {
-            alert('Password changed successfully');
+            alert('Đổi mật khẩu thành công');
             window.location.href = '/Home/Home';
           } else {
-            alert(response.message || 'Failed to change password');
+            alert(response.message || 'Đổi mật khẩu thất bại');
           }
         },
-        error: () => alert('Failed to change password'),
+        error: () => alert('Đổi mật khẩu thất bại'),
       });
   }
 
@@ -388,7 +413,7 @@ export class AccountComponent {
     const phoneNumberRegex = /^\d{10,11}$/;
     if (!phoneNumber || !phoneNumberRegex.test(phoneNumber)) {
       alert(
-        'Phone number must be between 10 and 11 digits and contain only numbers.'
+        'Số điện thoại phải có từ 10 đến 11 chữ số và chỉ chứa ký tự số.'
       );
       return false;
     }

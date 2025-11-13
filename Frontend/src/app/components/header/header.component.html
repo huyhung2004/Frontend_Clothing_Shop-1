@@ -24,12 +24,11 @@
 
             <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                 <div class="navbar-nav mr-auto">
-                    <a routerLink="/home" class="nav-item nav-link" [class.active]="activeRoute('/home')">Home</a>
+                    <a routerLink="/home" class="nav-item nav-link" [class.active]="activeRoute('/home')">Trang chủ</a>
                     <a routerLink="/product" class="nav-item nav-link"
-                        [class.active]="activeRoute('/product')">Products</a>
-                    <a routerLink="/cart" class="nav-item nav-link" [class.active]="activeRoute('/cart')">Cart</a>
-                    <a routerLink="/account" class="nav-item nav-link" [class.active]="activeRoute('/account')">My
-                        Account</a>
+                        [class.active]="activeRoute('/product')">Sản phẩm</a>
+                    <a routerLink="/cart" class="nav-item nav-link" [class.active]="activeRoute('/cart')">Giỏ hàng</a>
+                    <a routerLink="/account" class="nav-item nav-link" [class.active]="activeRoute('/account')">Quản lý</a>
                 </div>
                 <div class="navbar-nav ml-auto">
                     <app-useraccess></app-useraccess>

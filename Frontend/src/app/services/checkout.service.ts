@@ -16,6 +16,13 @@ export interface Checkout {
   totalMoney?: number;
   paymentMethod?: string;
   selectedItems?: number[];
+
+  // ADD THESE PROPERTIES FOR VARIANT SUPPORT
+  productVariantId?: number | null;
+  size?: string | null;
+  color?: string | null;
+  // productImageUrl?: string;
+  productVariantIds?: number[]; // For multiple items
 }
 export interface CheckoutRequest {
   orderId: number;
@@ -86,4 +93,8 @@ export class CheckoutService {
   placeOrderBuyNow(orderRequest: Checkout): Observable<any> {
     return this.http.post(`${this.baseUrl}/place-order-buynow`, orderRequest);
   }
+
+  validateStock(orderId: number): Observable<any> {
+  return this.http.post<any>(`${this.baseUrl}/validate-stock`, { orderId });
+}
 }

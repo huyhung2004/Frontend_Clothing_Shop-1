@@ -2,14 +2,14 @@
 <div class="login-box">
     <div class="login-logo">
         <!-- Sử dụng routerLink nếu muốn chuyển hướng trong Angular -->
-        <a routerLink="/admin/login"><b>Login</b></a>
+        <a><b>Đăng nhập</b></a>
     </div>
     <!-- /.login-logo -->
     <div class="card">
         <div class="card-body login-card-body">
             <form (ngSubmit)="onSubmit()">
                 <div class="input-group mb-3">
-                    <input type="tel" class="form-control" placeholder="Phone number" [(ngModel)]="phoneNumber"
+                    <input type="tel" class="form-control" placeholder="Số điện thoại" [(ngModel)]="phoneNumber"
                         name="phoneNumber" pattern="[0-9]{10,11}" maxlength="11" (input)="validatePhoneNumber()"
                         required />
                     <div class="input-group-append">
@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Password" [(ngModel)]="password"
+                    <input type="password" class="form-control" placeholder="Mật khẩu" [(ngModel)]="password"
                         name="password" required />
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -28,29 +28,31 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                    <div class="col-3"></div>
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
                     </div>
+                    <div class="col-3"></div>
                 </div>
             </form>
 
             <div class="social-auth-links text-center mb-3">
-                <p>- OR -</p>
+                <p>- HOẶC -</p>
                 <a (click)="onFacebookLogin()" class="btn btn-block btn-primary">
-                    <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
+                    <i class="fab fa-facebook mr-2"></i> Đăng nhập bằng Facebook
                 </a>
                 <a href="#" class="btn btn-block btn-danger">
-                    <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
+                    <i class="fab fa-google-plus mr-2"></i> Đăng nhập bằng Google
                 </a>
             </div>
 
             <!-- /.social-auth-links -->
 
             <p class="mb-1">
-                <a routerLink="/forgot-password">I forgot my password</a>
+                <a routerLink="/forgot-password">Quên mật khẩu?</a>
             </p>
             <p class="mb-0">
-                <a routerLink="/admin/register" class="text-center">Register a new membership</a>
+                <a routerLink="/admin/register" class="text-center">Đăng ký tài khoản mới</a>
             </p>
         </div>
         <!-- /.login-card-body -->

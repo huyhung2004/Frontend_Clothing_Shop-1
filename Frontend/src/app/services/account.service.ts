@@ -48,6 +48,11 @@ export interface Account {
   paymentMethod: string;
   captureId?: string;
   totalMoney: number;
+
+  // ADD VARIANT PROPERTIES
+  productVariantId?: number;
+  size?: string;
+  color?: string;
 }
 export interface OtpVerificationRequest {
   phoneNumber: string;
@@ -117,9 +122,13 @@ export class AccountService {
       request
     );
   }
+
   cancelOrder(payload: { orderId: number }): Observable<any> {
-    return this.http.patch<any>(`${this.accountApiUrl}/CancelOrder`, payload);
-  }
+  return this.http.patch<any>(`${this.accountApiUrl}/CancelOrder`, payload, {
+    withCredentials: true
+  });
+}
+
   // Phương thức thêm review với file media
   addReview(request: ReviewRequest): Observable<any> {
     // Tạo đối tượng FormData để gửi dữ liệu dạng multipart/form-data

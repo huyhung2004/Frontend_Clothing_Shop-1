@@ -69,46 +69,63 @@ export class CheckoutComponent implements OnInit {
 
   ngOnInit(): void {
     // Lấy orderId từ route parameter (nếu có)
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      const orderId = Number(params.get('orderId'));
-      if (orderId) {
-        this.orderId = orderId;
-        // Gọi API checkout để lấy danh sách sản phẩm trong đơn hàng
-        const storedSelectedItems = sessionStorage.getItem('selectedItems');
-        const selectedItems: number[] = storedSelectedItems
-          ? JSON.parse(storedSelectedItems)
-          : [];
-        const request: CheckoutRequest = {
-          orderId: orderId,
-          selectedItems,
-        };
-        this.checkoutService.getCheckoutItems(request).subscribe({
-          next: (response) => {
-            // Giả sử response có orderId và mảng items
-            this.orderId = response.orderId;
-            this.checkoutItems = response.items;
-            this.totalPrice = this.checkoutItems.reduce(
-              (sum, item) => sum + item.price * (item.numberOfProducts || 0),
-              0
-            );
-            this.grandTotal = this.totalPrice + this.shippingCost;
-            if (this.checkoutItems.length > 0) {
-              const firstItem = this.checkoutItems[0];
-              this.checkoutForm.patchValue({
-                fullname: firstItem.fullname,
-                phoneNumber: firstItem.phoneNumber,
-                address: firstItem.address,
-              });
-            }
-          },
-          error: (error) => {
-            console.error('Lỗi khi lấy dữ liệu checkout', error);
-          },
-        });
-      } else {
-        console.error('orderId không được cung cấp trong URL.');
-      }
-    });
+  this.route.paramMap.subscribe((params: ParamMap) => {
+    const orderId = Number(params.get('orderId'));
+    if (orderId) {
+      this.orderId = orderId;
+      // Gọi API checkout để lấy danh sách sản phẩm trong đơn hàng
+      const storedSelectedItems = sessionStorage.getItem('selectedItems');
+      const selectedItems: number[] = storedSelectedItems
+        ? JSON.parse(storedSelectedItems)
+        : [];
+      const request: CheckoutRequest = {
+        orderId: orderId,
+        selectedItems,
+      };
+      this.checkoutService.getCheckoutItems(request).subscribe({
+        next: (response) => {
+          this.orderId = response.orderId;
+          this.checkoutItems = response.items;
+          
+          // ADD DEBUG LOGGING HERE
+          console.log('=== CHECKOUT ITEMS DEBUG ===');
+          console.log('Full response:', response);
+          console.log('Checkout items:', this.checkoutItems);
+          this.checkoutItems.forEach((item, index) => {
+            console.log(`Item ${index + 1}:`, {
+              name: item.name,
+              productVariantId: item.productVariantId,
+              size: item.size,
+              color: item.color,
+              hasVariantId: !!item.productVariantId,
+              productId: item.productId,
+              numberOfProducts: item.numberOfProducts
+            });
+          });
+          console.log('=== END DEBUG ===');
+
+          this.totalPrice = this.checkoutItems.reduce(
+            (sum, item) => sum + item.price * (item.numberOfProducts || 0),
+            0
+          );
+          this.grandTotal = this.totalPrice + this.shippingCost;
+          if (this.checkoutItems.length > 0) {
+            const firstItem = this.checkoutItems[0];
+            this.checkoutForm.patchValue({
+              fullname: firstItem.fullname,
+              phoneNumber: firstItem.phoneNumber,
+              address: firstItem.address,
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Lỗi khi lấy dữ liệu checkout', error);
+        },
+      });
+    } else {
+      console.error('orderId không được cung cấp trong URL.');
+    }
+  });
 
     // Xử lý callback sau thanh toán PayPal (ví dụ: ?paymentStatus=success&token=PAYPAL_ORDER_ID)
     this.route.queryParamMap.subscribe((params) => {
@@ -189,49 +206,161 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+  // placeOrder(): void {
+  //   if (this.checkoutForm.invalid) {
+  //     alert('Vui lòng điền đầy đủ thông tin và chọn phương thức thanh toán.');
+  //     return;
+  //   }
+
+  //   // First, validate that all items have variants
+  //   this.validateCartItemsBeforeCheckout();
+
+  //   const formValue = this.checkoutForm.value;
+  //   const storedSelectedItems = sessionStorage.getItem('selectedItems');
+  //   const selectedItems: number[] = storedSelectedItems
+  //     ? JSON.parse(storedSelectedItems)
+  //     : [];
+
+  //   // Extract variant IDs from checkout items
+  //   const productVariantIds = this.checkoutItems
+  //     .map(item => item.productVariantId)
+  //     .filter(id => id != null && id !== 0) as number[];
+
+  //   const orderRequest: Checkout = {
+  //     name: '',
+  //     productId: 0,
+  //     id: this.orderId,
+  //     fullname: formValue.fullname,
+  //     price: this.totalPrice,
+  //     numberOfProducts: 0,
+  //     phoneNumber: formValue.phoneNumber,
+  //     address: formValue.address,
+  //     orderDate: new Date(),
+  //     totalMoney: this.grandTotal,
+  //     paymentMethod: formValue.paymentMethod,
+  //     selectedItems: selectedItems,
+  //     productVariantIds: productVariantIds // Include variant IDs
+  //   };
+
+  //   // Lưu orderRequest vào sessionStorage để sử dụng trong callback
+  //   sessionStorage.setItem('orderRequest', JSON.stringify(orderRequest));
+
+  //   // Validate stock before proceeding with payment
+  //   this.validateStockBeforeOrder(orderRequest);
+  // }
+
+  // ADD THIS METHOD TO VALIDATE CART ITEMS BEFORE CHECKOUT
+
   placeOrder(): void {
-    if (this.checkoutForm.invalid) {
-      alert('Vui lòng điền đầy đủ thông tin và chọn phương thức thanh toán.');
+  if (this.checkoutForm.invalid) {
+    alert('Vui lòng điền đầy đủ thông tin và chọn phương thức thanh toán.');
+    return;
+  }
+
+  // First, validate that all items have variants
+  const invalidItems = this.checkoutItems.filter(item => 
+    !item.productVariantId || item.productVariantId === 0
+  );
+  
+  if (invalidItems.length > 0) {
+    const itemNames = invalidItems.map(item => item.name).join(', ');
+    alert(`Các sản phẩm sau không có thông tin size/màu sắc: ${itemNames}. Vui lòng xóa và thêm lại vào giỏ hàng.`);
+    this.router.navigate(['/cart']);
+    return;
+  }
+
+  const formValue = this.checkoutForm.value;
+  const storedSelectedItems = sessionStorage.getItem('selectedItems');
+  const selectedItems: number[] = storedSelectedItems
+    ? JSON.parse(storedSelectedItems)
+    : [];
+
+  // Extract variant IDs from checkout items
+  const productVariantIds = this.checkoutItems
+    .map(item => item.productVariantId)
+    .filter(id => id != null && id !== 0) as number[];
+
+  const orderRequest: Checkout = {
+    name: '',
+    productId: 0,
+    id: this.orderId,
+    fullname: formValue.fullname,
+    price: this.totalPrice,
+    numberOfProducts: 0,
+    phoneNumber: formValue.phoneNumber,
+    address: formValue.address,
+    orderDate: new Date(),
+    totalMoney: this.grandTotal,
+    paymentMethod: formValue.paymentMethod,
+    selectedItems: selectedItems,
+    productVariantIds: productVariantIds // Include variant IDs
+  };
+
+  // Lưu orderRequest vào sessionStorage để sử dụng trong callback
+  sessionStorage.setItem('orderRequest', JSON.stringify(orderRequest));
+
+  // Validate stock before proceeding with payment
+  this.validateStockBeforeOrder(orderRequest);
+}
+
+  validateCartItemsBeforeCheckout(): void {
+    const invalidItems = this.checkoutItems.filter(item =>
+      !item.productVariantId || item.productVariantId === 0
+    );
+
+    if (invalidItems.length > 0) {
+      const itemNames = invalidItems.map(item => item.name).join(', ');
+      alert(`Các sản phẩm sau không có thông tin size/màu sắc: ${itemNames}. Vui lòng xóa và thêm lại vào giỏ hàng.`);
+      this.router.navigate(['/cart']);
       return;
     }
-    const formValue = this.checkoutForm.value;
-    const storedSelectedItems = sessionStorage.getItem('selectedItems');
-    const selectedItems: number[] = storedSelectedItems
-      ? JSON.parse(storedSelectedItems)
-      : [];
-    const orderRequest: Checkout = {
-      name: '', // Nếu có tên đơn hàng cụ thể
-      productId: 0,
-      id: this.orderId,
-      fullname: formValue.fullname,
-      price: this.totalPrice,
-      numberOfProducts: 0,
-      phoneNumber: formValue.phoneNumber,
-      address: formValue.address,
-      orderDate: new Date(),
-      totalMoney: this.grandTotal,
-      paymentMethod: formValue.paymentMethod,
-      selectedItems: selectedItems,
-    };
+  }
 
-    // Lưu orderRequest vào sessionStorage để sử dụng trong callback
-    sessionStorage.setItem('orderRequest', JSON.stringify(orderRequest));
+  validateStockBeforeOrder(orderRequest: Checkout): void {
+    this.checkoutService.validateStock(this.orderId).subscribe({
+      next: (validationResponse) => {
+        if (validationResponse.isValid) {
+          // Stock is valid, proceed with payment
+          this.proceedWithPayment(orderRequest);
+        } else {
+          // Show stock validation errors
+          const errorMessage = validationResponse.errors?.join('\n') || 'Một vài sản phẩm không đủ hàng.';
+          alert(`Không thể đặt hàng:\n${errorMessage}`);
 
-    // Nếu phương thức thanh toán là online, gọi API tạo link thanh toán
-    if (formValue.paymentMethod === 'Direct Bank Transfer') {
+          // Optionally redirect back to cart
+          this.router.navigate(['/cart']);
+        }
+      },
+      error: (err) => {
+        console.error('Error validating stock:', err);
+        alert('Xảy ra lỗi khi kiểm tra tồn kho. Vui lòng thử lại sau.');
+      }
+    });
+  }
+
+  proceedWithPayment(orderRequest: Checkout): void {
+    if (orderRequest.paymentMethod === 'Direct Bank Transfer') {
       this.makePayment(orderRequest);
-    } else if (formValue.paymentMethod === 'Paypal') {
+    } else if (orderRequest.paymentMethod === 'Paypal') {
       this.makePaymentPayPal(orderRequest);
     } else {
-      // Các phương thức khác đặt hàng truyền thống
+      // For other payment methods, place order directly
       this.checkoutService.placeOrder(orderRequest).subscribe({
         next: () => {
           sessionStorage.removeItem('selectedItems');
+          sessionStorage.removeItem('orderRequest');
           this.router.navigate(['/account'], { replaceUrl: true });
         },
         error: (err) => {
-          alert('Có lỗi xảy ra khi đặt hàng.');
-          console.error(err);
+          console.error('Error placing order:', err);
+          if (err.error?.details) {
+            const errorDetails = Array.isArray(err.error.details)
+              ? err.error.details.join('\n')
+              : err.error.details;
+            alert(`Order failed:\n${errorDetails}`);
+          } else {
+            alert('Có lỗi xảy ra khi đặt hàng.');
+          }
         },
       });
     }

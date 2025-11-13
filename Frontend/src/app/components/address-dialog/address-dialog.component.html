@@ -2,12 +2,12 @@
     <div class="modal-content">
         <!-- Header -->
         <div class="modal-header">
-            <h5 class="modal-title">Select Shipping Address</h5>
+            <h5 class="modal-title">Chọn địa chỉ nhận hàng</h5>
         </div>
         <!-- Body -->
         <div class="modal-body">
             <div *ngIf="addresses.length === 0" class="alert alert-warning">
-                No addresses found. Please add a new one!
+                Không tìm thấy địa chỉ. Vui lòng thêm địa chỉ mới.
             </div>
             <div *ngFor="let addr of addresses" class="address-item p-3 border rounded mb-2" [ngClass]="{
             'border border-info': selectedAddress?.id === addr.id
@@ -17,7 +17,7 @@
                         [checked]="selectedAddress?.id === addr.id" (click)="$event.stopPropagation()" />
                     <label class="form-check-label">
                         <strong>{{ addr.fullname }}</strong>
-                        <span *ngIf="addr.isDefault" class="badge badge-success ml-2">Default</span>
+                        <span *ngIf="addr.isDefault" class="badge badge-success ml-2">Mặc định</span>
                     </label>
                 </div>
                 <div class="mt-2">
@@ -31,10 +31,10 @@
         <!-- Footer -->
         <div class="modal-footer">
             <button type="button" class="btn btn-primary" (click)="confirm()">
-                Confirm
+                Xác nhận
             </button>
             <button type="button" class="btn btn-secondary" (click)="close()">
-                Close
+                Đóng
             </button>
         </div>
     </div>

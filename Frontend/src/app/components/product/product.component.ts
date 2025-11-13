@@ -61,8 +61,15 @@ export class ProductComponent implements OnInit {
     // this.filteredProducts = [];
   }
   private loadAllProducts(): void {
-    this.productService.getAllProducts().subscribe((data: Product[]) => {
-      this.products = data;
+    // Sử dụng phân trang từ server thay vì load tất cả
+    this.loadProducts(this.currentPage);
+  }
+
+  private loadProducts(page: number): void {
+    this.productService.getProducts(page, this.pageSize).subscribe(response => {
+      this.products = response.items;
+      this.totalProductsFromServer = response.total;
+      this.currentPage = page;
       this.applyFilters();
     });
   }
@@ -80,6 +87,7 @@ export class ProductComponent implements OnInit {
   }
 
   applyFilters(): void {
+    // Filter trên client-side cho các sản phẩm đã load
     this.filteredProducts = this.products.filter((p) => {
       const matchName = p.name
         .toLowerCase()
@@ -94,6 +102,7 @@ export class ProductComponent implements OnInit {
         : true;
       return matchName && matchPrice && matchCategory && matchBrand;
     });
+    // Reset về trang 1 khi filter
     this.currentPage = 1;
   }
 
@@ -191,8 +200,16 @@ export class ProductComponent implements OnInit {
     this.selectedBrandId = brandId;
     this.applyFilters();
   }
+  totalProductsFromServer: number = 0;
+  
   get totalPages(): number {
-    return Math.ceil(this.filteredProducts.length / this.pageSize);
+    // Nếu có filter/search, tính dựa trên filteredProducts
+    if (this.searchTerm || this.selectedCategoryId || this.selectedBrandId || 
+        this.selectedMinPrice > 0 || this.selectedMaxPrice < Infinity) {
+      return Math.ceil(this.filteredProducts.length / this.pageSize);
+    }
+    // Nếu không có filter, dùng total từ server
+    return Math.ceil(this.totalProductsFromServer / this.pageSize);
   }
 
   get visiblePages(): number[] {
@@ -218,17 +235,26 @@ export class ProductComponent implements OnInit {
   }
 
   pageChanged(page: number): void {
-    if (page < 1 || page > this.totalPages) return;
-    this.currentPage = page;
+    if (page < 1) return;
+    // Load sản phẩm từ server khi chuyển trang
+    this.loadProducts(page);
+    // Scroll to top khi chuyển trang
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   get paginatedProducts(): Product[] {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.filteredProducts.slice(startIndex, startIndex + this.pageSize);
+    // Nếu có filter/search, hiển thị filteredProducts (đã được filter)
+    // Nếu không có filter, hiển thị products trực tiếp (đã được phân trang từ server)
+    if (this.searchTerm || this.selectedCategoryId || this.selectedBrandId || 
+        this.selectedMinPrice > 0 || this.selectedMaxPrice < Infinity) {
+      // Có filter: phân trang trên client
+      const startIndex = (this.currentPage - 1) * this.pageSize;
+      return this.filteredProducts.slice(startIndex, startIndex + this.pageSize);
+    } else {
+      // Không có filter: dùng products từ server (đã được phân trang)
+      return this.filteredProducts;
+    }
   }
 
-  getTotalPages(): number {
-    return Math.ceil(this.filteredProducts.length / this.pageSize);
-  }
 
   // Get full image URL
   getImageUrl(imageUrl: string | undefined): string {
@@ -242,6 +268,6 @@ export class ProductComponent implements OnInit {
       return this.baseImageUrl + imageUrl;
     }
     // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
-    return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
+    return `${this.baseImageUrl}/uploads/image/${imageUrl}`;
   }
 }

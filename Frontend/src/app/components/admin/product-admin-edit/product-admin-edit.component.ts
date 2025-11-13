@@ -225,7 +225,7 @@ export class ProductAdminEditComponent implements OnInit {
       return `https://localhost:7163${url}`;
     }
     // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
-    return `https://localhost:7163/uploads/products/${url}`;
+    return `https://localhost:7163/uploads/image/${url}`;
   }
 
   onSubmit(): void {

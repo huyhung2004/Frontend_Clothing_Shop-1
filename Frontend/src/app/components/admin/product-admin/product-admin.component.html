@@ -172,7 +172,11 @@
   </div>
 
   <!-- Pagination -->
-  <div class="pagination-container" *ngIf="pages.length > 1">
+  <div class="pagination-container" *ngIf="totalPages > 1">
+    <button class="pagination-btn" [disabled]="currentPage === 1" (click)="goToPage(1)">
+      <i class="fas fa-angle-double-left"></i>
+      Đầu
+    </button>
     <button class="pagination-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
       <i class="fas fa-chevron-left"></i>
       Trước
@@ -187,5 +191,10 @@
       Sau
       <i class="fas fa-chevron-right"></i>
     </button>
+    <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="goToPage(totalPages)">
+      Cuối
+      <i class="fas fa-angle-double-right"></i>
+    </button>
+    <span class="pagination-info">Trang {{ currentPage }} / {{ totalPages }} ({{ totalProducts }} sản phẩm)</span>
   </div>
 </div>

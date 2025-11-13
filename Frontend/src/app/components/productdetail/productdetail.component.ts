@@ -258,5 +258,23 @@ export class ProductdetailComponent implements OnInit {
         },
       });
   }
+
+  // Base URL for images
+  private baseImageUrl = 'https://localhost:7163';
+
+  // Get full image URL
+  getImageUrl(imageUrl: string | undefined): string {
+    if (!imageUrl) return 'assets/img/placeholder.jpg';
+    // Nếu đã là URL đầy đủ (http/https), trả về như cũ
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    // Nếu bắt đầu bằng /, là relative URL, thêm base URL
+    if (imageUrl.startsWith('/')) {
+      return this.baseImageUrl + imageUrl;
+    }
+    // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
+    return `${this.baseImageUrl}/uploads/image/${imageUrl}`;
+  }
 }
 

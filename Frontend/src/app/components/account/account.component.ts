@@ -435,6 +435,6 @@ export class AccountComponent {
       return this.baseImageUrl + imageUrl;
     }
     // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
-    return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
+    return `${this.baseImageUrl}/uploads/image/${imageUrl}`;
   }
 }

@@ -63,9 +63,34 @@ export class ProductAdminComponent implements OnInit {
       this.totalProducts = response.total;
       this.totalPages = Math.ceil(response.total / itemsPerPage);
       this.currentPage = page;
-      this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+      // Tối ưu: chỉ tạo mảng pages cho visible pages (tối đa 10 trang)
+      this.pages = this.getVisiblePages();
       this.applyFilters();
     });
+  }
+
+  // Tối ưu phân trang: chỉ hiển thị một số trang gần trang hiện tại
+  getVisiblePages(): number[] {
+    const maxVisible = 10; // Tối đa 10 trang hiển thị
+    const total = this.totalPages;
+    
+    if (total <= maxVisible) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    const half = Math.floor(maxVisible / 2);
+    let start = this.currentPage - half;
+    let end = this.currentPage + half;
+
+    if (start < 1) {
+      start = 1;
+      end = maxVisible;
+    } else if (end > total) {
+      end = total;
+      start = total - maxVisible + 1;
+    }
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
 
   goToPage(page: number): void {
@@ -223,7 +248,7 @@ export class ProductAdminComponent implements OnInit {
       return this.baseImageUrl + imageUrl;
     }
     // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
-    return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
+    return `${this.baseImageUrl}/uploads/image/${imageUrl}`;
   }
 
 }

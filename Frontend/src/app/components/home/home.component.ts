@@ -19,15 +19,38 @@ export class HomeComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.getAllProducts();
+    this.getTopSellingProducts();
   }
 
+  // Lấy 30 sản phẩm bán chạy nhất
+  getTopSellingProducts(): void {
+    this.http.get<any>('https://localhost:7163/api/products/top-selling?limit=30').subscribe({
+      next: (data) => {
+        console.log('Top selling products:', data);
+        // Kiểm tra nếu có thuộc tính $values thì gán nó cho products, ngược lại gán data trực tiếp
+        this.products = data.$values ? data.$values : data;
+        // Đảm bảo chỉ lấy 30 sản phẩm đầu tiên
+        if (this.products.length > 30) {
+          this.products = this.products.slice(0, 30);
+        }
+      },
+      error: (error) => {
+        console.error('Lỗi khi lấy sản phẩm bán chạy:', error);
+        // Fallback: nếu API lỗi, load tất cả sản phẩm
+        this.getAllProducts();
+      },
+    });
+  }
+
+  // Fallback method nếu API top-selling lỗi
   getAllProducts(): void {
     this.http.get<any>('https://localhost:7163/api/products/all').subscribe({
       next: (data) => {
         console.log(data);
         // Kiểm tra nếu có thuộc tính $values thì gán nó cho products, ngược lại gán data trực tiếp
-        this.products = data.$values ? data.$values : data;
+        const allProducts = data.$values ? data.$values : data;
+        // Chỉ lấy 30 sản phẩm đầu tiên
+        this.products = allProducts.slice(0, 30);
       },
       error: (error) => {
         console.error('Lỗi khi lấy sản phẩm:', error);
@@ -116,7 +139,7 @@ export class HomeComponent implements OnInit {
       return this.baseImageUrl + imageUrl;
     }
     // Nếu chỉ là tên file, thêm đường dẫn đầy đủ
-    return `${this.baseImageUrl}/uploads/products/${imageUrl}`;
+    return `${this.baseImageUrl}/uploads/image/${imageUrl}`;
   }
 
   // products = [

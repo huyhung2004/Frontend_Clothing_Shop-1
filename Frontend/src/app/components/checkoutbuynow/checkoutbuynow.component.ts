@@ -243,7 +243,7 @@ export class CheckoutbuynowComponent implements OnInit {
   makePayment(orderRequest: Checkout): void {
     const paymentData: PaymentRequest = {
       orderCode: orderRequest.id,
-      amount: Math.floor((orderRequest.totalMoney ?? 0) * 25000),
+      amount: Math.floor(orderRequest.totalMoney||1000),
       description: `TT DH #${orderRequest.id}`,
       buyerName: orderRequest.fullname,
       buyerEmail: 'buyer-email@gmail.com',
@@ -252,7 +252,7 @@ export class CheckoutbuynowComponent implements OnInit {
       items: this.checkoutItems.map((item) => ({
         name: item.name,
         quantity: item.numberOfProducts || 1,
-        price: Math.floor((item.price ?? 0) * 25000),
+        price: Math.floor(item.price),
       })),
       cancelUrl: `https://localhost:4200/checkoutbuynow/${this.orderId}`,
       returnUrl: `https://localhost:4200/checkoutbuynow/${this.orderId}?paymentStatus=success`,
@@ -276,7 +276,7 @@ export class CheckoutbuynowComponent implements OnInit {
   makePaymentPayPal(orderRequest: Checkout): void {
     const paymentData: PaymentRequest = {
       orderCode: orderRequest.id,
-      amount: Math.floor(orderRequest.totalMoney || 1),
+      amount: Math.floor((orderRequest.totalMoney ?? 0) / 25000),
       description: `TT DH #${orderRequest.id}`,
       buyerName: orderRequest.fullname,
       buyerEmail: 'buyer-email@gmail.com',
@@ -285,7 +285,7 @@ export class CheckoutbuynowComponent implements OnInit {
       items: this.checkoutItems.map((item) => ({
         name: item.name,
         quantity: item.numberOfProducts || 1,
-        price: Math.floor(item.price),
+        price: Math.floor((item.price ?? 0) / 25000),
       })),
       cancelUrl: `https://localhost:4200/checkoutbuynow/${this.orderId}`,
       returnUrl: `https://localhost:4200/checkoutbuynow/${this.orderId}?paymentStatus=success`,

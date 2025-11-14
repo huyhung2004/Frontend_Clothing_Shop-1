@@ -49,7 +49,7 @@ export class ReviewDialogComponent implements OnInit {
         'video/mp4',
         'video/webm',
       ];
-      const maxSize = 15 * 1024 * 1024; // 15MB
+      const maxSize = 100 * 1024 * 1024; // 15MB
       const files = Array.from(event.target.files) as File[];
       files.forEach((file) => {
         if (!allowedTypes.includes(file.type)) {

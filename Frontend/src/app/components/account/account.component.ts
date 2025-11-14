@@ -122,7 +122,7 @@ export class AccountComponent {
         // Tạo đối tượng refund request
         const refundRequest: RefundRequest = {
           captureId: order.captureId,
-          amount: order.totalMoney, // Giả sử totalMoney đã tính theo đơn vị tiền tệ của bạn
+          amount: Math.floor((order.totalMoney ?? 0) / 25000), // Chuyển từ VND sang USD
           currency: 'USD', // Hoặc mã tiền tệ khác nếu cần
         };
         // Gọi API hoàn tiền qua PaymentService

@@ -29,7 +29,7 @@ export class OrderAdminComponent implements OnInit {
 
   // Filter options
   statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
-  paymentMethodOptions = ['COD', 'PayPal', 'Credit Card'];
+  paymentMethodOptions = ['COD', 'Cash on Delivery', 'PayPal', 'Credit Card'];
 
   // Order statistics
   orderStats = {

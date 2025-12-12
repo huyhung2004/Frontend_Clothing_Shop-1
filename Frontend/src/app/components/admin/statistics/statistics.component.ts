@@ -15,6 +15,7 @@ Chart.register(...registerables);
 })
 export class StatisticsComponent implements OnInit, OnDestroy {
   isLoading = true;
+  isExporting = false;
   
   // Thống kê tổng quan
   totalRevenue: number = 0;
@@ -397,6 +398,39 @@ export class StatisticsComponent implements OnInit, OnDestroy {
             position: 'bottom'
           }
         }
+      }
+    });
+  }
+
+  public exportPdf(): void {
+    this.isExporting = true;
+    this.statisticsService.exportStatisticsPdf().subscribe({
+      next: (blob: Blob) => {
+        // Tạo URL từ blob
+        const url = window.URL.createObjectURL(blob);
+        // Tạo link tạm để download
+        const link = document.createElement('a');
+        link.href = url;
+        
+        // Tạo tên file với timestamp
+        const now = new Date();
+        const timestamp = now.toISOString().slice(0, 19).replace(/[:-]/g, '').replace('T', '_');
+        link.download = `BaoCaoThongKe_${timestamp}.pdf`;
+        
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+        
+        // Cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        this.isExporting = false;
+      },
+      error: (error) => {
+        console.error('Lỗi khi xuất PDF:', error);
+        alert('Có lỗi xảy ra khi xuất PDF. Vui lòng thử lại!');
+        this.isExporting = false;
       }
     });
   }

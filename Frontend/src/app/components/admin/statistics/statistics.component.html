@@ -2,11 +2,20 @@
   <!-- Header -->
   <div class="page-header">
     <div class="header-content">
-      <h1 class="page-title">
-        <i class="fas fa-chart-line"></i>
-        Thống Kê & Báo Cáo
-      </h1>
-      <p class="page-subtitle">Tổng quan chi tiết về hoạt động kinh doanh của bạn</p>
+      <div class="header-left">
+        <h1 class="page-title">
+          <i class="fas fa-chart-line"></i>
+          Thống Kê & Báo Cáo
+        </h1>
+        <p class="page-subtitle">Tổng quan chi tiết về hoạt động kinh doanh của bạn</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-export-pdf" (click)="exportPdf()" [disabled]="isLoading || isExporting">
+          <i class="fas fa-file-pdf" *ngIf="!isExporting"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="isExporting"></i>
+          <span>{{ isExporting ? 'Đang xuất...' : 'Xuất PDF' }}</span>
+        </button>
+      </div>
     </div>
   </div>
 

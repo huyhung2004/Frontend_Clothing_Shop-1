@@ -79,5 +79,12 @@ export class SharedService {
   loadAverageItemsPerOrder(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/average-items-per-order`);
   }
+
+  // API xuất PDF thống kê
+  exportStatisticsPdf(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/export-pdf`, {
+      responseType: 'blob'
+    });
+  }
 }
 

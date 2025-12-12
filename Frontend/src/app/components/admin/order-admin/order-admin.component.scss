@@ -10,6 +10,7 @@ $success-color-dark: color.adjust($success-color, $lightness: -10%);
 $warning-color: #f39c12;
 $warning-color-dark: color.adjust($warning-color, $lightness: -10%);
 $danger-color: #e74c3c;
+$danger-color-dark: color.adjust($danger-color, $lightness: -10%);
 $info-color: #3498db;
 $info-color-dark: color.adjust($info-color, $lightness: -10%);
 $purple-color: #9b59b6;
@@ -158,6 +159,14 @@ $border-color: #e0e0e0;
       
       .stat-icon {
         background: linear-gradient(135deg, $success-color, $success-color-dark);
+      }
+    }
+
+    &.cancelled {
+      color: $danger-color;
+      
+      .stat-icon {
+        background: linear-gradient(135deg, $danger-color, $danger-color-dark);
       }
     }
   }

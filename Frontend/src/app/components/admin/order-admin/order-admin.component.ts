@@ -31,6 +31,15 @@ export class OrderAdminComponent implements OnInit {
   statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
   paymentMethodOptions = ['COD', 'PayPal', 'Credit Card'];
 
+  // Order statistics
+  orderStats = {
+    pending: 0,
+    processing: 0,
+    shipped: 0,
+    delivered: 0,
+    cancelled: 0
+  };
+
   constructor(
     private orderService: OrderService,
     private router: Router,
@@ -39,6 +48,18 @@ export class OrderAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.getOrders(this.currentPage);
+    this.loadOrderStatistics();
+  }
+
+  loadOrderStatistics(): void {
+    this.orderService.getOrderStatistics().subscribe({
+      next: (stats) => {
+        this.orderStats = stats;
+      },
+      error: (error) => {
+        console.error('Error loading order statistics:', error);
+      }
+    });
   }
 
   getOrders(page: number): void {
@@ -102,6 +123,7 @@ export class OrderAdminComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.getOrders(this.currentPage);
+        this.loadOrderStatistics(); // Reload statistics after update
       }
     });
   }
@@ -156,6 +178,19 @@ export class OrderAdminComponent implements OnInit {
   }
 
   getOrderCountByStatus(status: string): number {
-    return this.orders.filter(order => order.status?.toLowerCase() === status.toLowerCase()).length;
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return this.orderStats.pending;
+      case 'processing':
+        return this.orderStats.processing;
+      case 'shipped':
+        return this.orderStats.shipped;
+      case 'delivered':
+        return this.orderStats.delivered;
+      case 'cancelled':
+        return this.orderStats.cancelled;
+      default:
+        return 0;
+    }
   }
 }

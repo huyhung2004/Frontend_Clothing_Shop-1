@@ -55,4 +55,20 @@ export class OrderService {
   deleteOrder(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/Delete/${id}`);
   }
+
+  getOrderStatistics(): Observable<{
+    pending: number;
+    processing: number;
+    shipped: number;
+    delivered: number;
+    cancelled: number;
+  }> {
+    return this.http.get<{
+      pending: number;
+      processing: number;
+      shipped: number;
+      delivered: number;
+      cancelled: number;
+    }>(`${this.baseUrl}/statistics`);
+  }
 }
